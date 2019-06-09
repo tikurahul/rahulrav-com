@@ -4,6 +4,7 @@
 
 # User-specific stuff
 .idea/**/workspace.xml
+.idea/modules/
 .idea/**/tasks.xml
 .idea/**/dictionaries
 .idea/**/shelf
@@ -19,3 +20,7 @@ annotations/
 
 # MacOS
 .DS_Store
+
+# Tools output
+src/main/tools/out
+src/main/tools/node_modules

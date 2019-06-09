@@ -15,4 +15,12 @@ fun Routing.main() {
     resources("files/well-known")
   }
 
+  static("blog") {
+    resources("blog/html")
+  }
+
+  static("assets") {
+    resources("blog/assets")
+  }
+
 }
