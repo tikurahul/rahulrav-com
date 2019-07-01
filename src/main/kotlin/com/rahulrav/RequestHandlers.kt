@@ -1,5 +1,6 @@
 package com.rahulrav
 
+import io.ktor.http.content.defaultResource
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.response.respond
@@ -17,6 +18,7 @@ fun Routing.main() {
 
   static("blog") {
     resources("blog/html")
+    defaultResource("blog/html/toc.html")
   }
 
   static("assets") {

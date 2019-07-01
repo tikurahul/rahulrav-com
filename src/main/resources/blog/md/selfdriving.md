@@ -43,7 +43,11 @@ A few more tweaks after, and I had Donkey `3.0.2` running really well on a Jetso
 
 The race was a lot of run, and I managed to do my personal best which was a lap-time of `13.1s` around the track. My 3-lap timing was `37s`. My previous finish was `27s` for 1 lap. (I have come a long way). 
 
-Here is a video of my second heat. The first one was my best, but I was unable to capture it on video.
+Here is a video of the race. The first one was my best, and in the second video I tried to make it go faster.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ZuLRl7sVpfU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<br/>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/zwWEDV8BoDY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
