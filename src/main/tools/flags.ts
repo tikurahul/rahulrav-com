@@ -6,7 +6,7 @@ export const IS_PROFILE = false;
 
 /* The MDL styles URL. */
 // For more themes https://getmdl.io/customize/index.html
-export const MATERIAL_STYLES_URL = 'https://code.getmdl.io/1.3.0/material.indigo-green.min.css';
+export const MATERIAL_STYLES_URL = 'https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css';
 
 /* The MDL JavaScript URL. */
 export const MATERIAL_JAVASCRIPT_URL = 'https://code.getmdl.io/1.3.0/material.min.js';
