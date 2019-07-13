@@ -38,7 +38,7 @@ function resolvePath(path: string, parent: string) {
     });
     const title = capitalized.join(' ');
     try {
-      const outputPath = `${output}/${name}.html`
+      const outputPath = `${output}/${name.toLocaleLowerCase()}.html`
       await convert(title, path, outputPath);
       log(`${outputPath}`);
     } catch (error) {
