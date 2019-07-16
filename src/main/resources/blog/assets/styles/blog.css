@@ -10,6 +10,7 @@ main {
 
 .content {
   border-radius: 2px;
-  padding: 2rem 6rem;
+  padding: 1vw 2vw;
   margin-bottom: 5rem; 
+  overflow: auto;
 }
