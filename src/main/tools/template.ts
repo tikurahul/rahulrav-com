@@ -12,13 +12,13 @@ export function templated(title: string, content: string): string {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
         <title>${title}</title>
-        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="${MATERIAL_STYLES_URL}">
         <link rel="stylesheet" href="${HIGHLIGHT_STYLES}">
         <link rel="stylesheet" href="${BLOG_STYLES_URL}">
       </head>
-      <body>
+      <body class="mdl-layout mdl-js-layout">
         <header class="mdl-layout__header mdl-layout__header--scroll">
           <div class="mdl-layout__header-row">
             <span class="mdl-layout-title">${title}</span>
@@ -28,26 +28,34 @@ export function templated(title: string, content: string): string {
             </nav>
           </div>
         </header>
-        <main class="mdl-layout__content">
-          <div class="mdl-grid content">
-            <div class="mdl-cell mdl-cell--8-col">
-              ${content}
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title">Rahul's Blog</span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="${BLOG_TABLE_OF_CONTENTS_URL}">Other Articles</a>
+          </nav>
+        </div>
+        <div class="content">
+          <main class="mdl-layout__content">
+            <div class="mdl-grid content">
+              <div class="mdl-cell mdl-cell--8-col">
+                ${content}
+              </div>
             </div>
-          </div>
-          <footer class="mdl-mini-footer">
-            <div class="mdl-mini-footer--left-section">
-            </div>
-          </footer>
-        </main>
-        <script src="${MATERIAL_JAVASCRIPT_URL}"></script>
-        <script src="${HIGHLIGHT_JS}"></script>
-        <script type="text/javascript">
-          document.addEventListener('DOMContentLoaded', (event) => {
-            document.querySelectorAll('pre code').forEach((block) => {
-              hljs.highlightBlock(block);
+            <footer class="mdl-mini-footer">
+              <div class="mdl-mini-footer--left-section">
+              </div>
+            </footer>
+          </main>
+          <script src="${MATERIAL_JAVASCRIPT_URL}"></script>
+          <script src="${HIGHLIGHT_JS}"></script>
+          <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', (event) => {
+              document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+              });
             });
-          });
-        </script>
+          </script>
+        </div>
       </body>
     </html>
   `;

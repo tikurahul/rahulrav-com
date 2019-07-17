@@ -1,4 +1,4 @@
-body {
+body .content {
   max-width: 1600px;
   width: calc(100% - 16px);
   margin: 0 auto;
@@ -13,4 +13,8 @@ main {
   padding: 1vw 2vw;
   margin-bottom: 5rem; 
   overflow: auto;
+}
+
+.content::-webkit-scrollbar {
+  width: 0;
 }
