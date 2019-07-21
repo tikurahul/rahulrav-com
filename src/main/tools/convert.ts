@@ -59,7 +59,6 @@ export async function convert(title: string, source: string, destination: string
   });
 
   converter.setFlavor('github');
-  log(`Converting from ${source} and writing outputs to ${destination}`);
   const markdown = await fileReader(source, { encoding: 'utf-8' });
   const contents = converter.makeHtml(markdown);
   const result = templated(title, contents);

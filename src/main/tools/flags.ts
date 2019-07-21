@@ -19,8 +19,9 @@ export const HIGHLIGHT_JS = '/assets/highlight/highlight.pack.js';
 export const BLOG_STYLES_URL = '/assets/styles/blog.css';
 
 /** Table of Contents */
-export const BLOG_TABLE_OF_CONTENTS_URL = '/blog/table_of_contents.html';
+export const BLOG_TABLE_OF_CONTENTS_URL = '/blog/toc.html';
 
 /** Paths */
+export const MANIFEST_PATH = '../../resources/blog/md/manifest.json';
 export const MARKDOWN_PATH = '../../resources/blog/md';
 export const HTML_PATH = '../../resources/blog/html';

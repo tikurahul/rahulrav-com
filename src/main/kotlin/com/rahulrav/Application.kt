@@ -8,17 +8,14 @@ import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.application.log
-import io.ktor.features.AutoHeadResponse
-import io.ktor.features.CORS
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.StatusPages
+import io.ktor.features.*
 import io.ktor.gson.gson
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
+import io.ktor.http.content.CachingOptions
 import io.ktor.response.respond
 import io.ktor.routing.routing
 import org.slf4j.LoggerFactory
+import java.time.Duration
 import java.util.logging.Level
 
 object AppContext {
@@ -44,12 +41,19 @@ fun Application.main() {
       call.respond(HttpStatusCode.InternalServerError, "Something bad happened ${cause.message}")
     }
   }
-
+  install(CachingHeaders) {
+    val defaultCacheControl = CachingOptions(CacheControl.MaxAge(maxAgeSeconds = Duration.ofDays(1).seconds.toInt()))
+    options { content ->
+      when (content.contentType?.withoutParameters()) {
+        ContentType.Image.Any, ContentType.Text.CSS -> defaultCacheControl
+        else -> null
+      }
+    }
+  }
   install(CORS) {
     anyHost()
     // For Static Content
     install(AutoHeadResponse)
-
     // allow Authorization headers and Range Headers for CORS
     header(HttpHeaders.Authorization)
     header(HttpHeaders.Range)

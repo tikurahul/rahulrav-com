@@ -18,7 +18,7 @@ fun Routing.main() {
 
   static("blog") {
     resources("blog/html")
-    defaultResource("blog/html/table_of_contents.html")
+    defaultResource("blog/html/toc.html")
   }
 
   static("assets") {
