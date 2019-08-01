@@ -45,7 +45,7 @@ fun Application.main() {
     val defaultCacheControl = CachingOptions(CacheControl.MaxAge(maxAgeSeconds = Duration.ofDays(1).seconds.toInt()))
     options { content ->
       when (content.contentType?.withoutParameters()) {
-        ContentType.Image.Any, ContentType.Text.CSS -> defaultCacheControl
+        ContentType.Image.PNG, ContentType.Image.JPEG, ContentType.Text.CSS -> defaultCacheControl
         else -> null
       }
     }
