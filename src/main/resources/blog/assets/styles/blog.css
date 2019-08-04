@@ -18,3 +18,8 @@ main {
 .content::-webkit-scrollbar {
   width: 0;
 }
+
+.footer {
+  background-color: none;
+  border-top: 1px solid rgb(63,81,181);
+}

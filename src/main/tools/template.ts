@@ -41,9 +41,14 @@ export function templated(title: string, content: string): string {
                 ${content}
               </div>
             </div>
-            <footer class="mdl-mini-footer">
-              <div class="mdl-mini-footer--left-section">
-              </div>
+            <footer class="footer">
+              <p>
+                Rahul Ravikumar &nbsp;
+                  <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+                  <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+                  <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+                  <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+              </p>
             </footer>
           </main>
           <script src="${MATERIAL_JAVASCRIPT_URL}"></script>

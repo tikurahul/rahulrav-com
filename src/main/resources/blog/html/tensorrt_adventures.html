@@ -1,57 +1,79 @@
+<!doctype html>
+<html lang="en">
 
-    <!doctype html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-        <title>TensorRT Adventures</title>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css">
-        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
-        <link rel="stylesheet" href="/assets/styles/blog.css">
-      </head>
-      <body class="mdl-layout mdl-js-layout">
-        <header class="mdl-layout__header mdl-layout__header--scroll">
-          <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">TensorRT Adventures</span>
-            <div class="mdl-layout-spacer"></div>
-            <nav class="mdl-navigation">
-              <a class="mdl-navigation__link" href="/blog/table_of_contents.html">More</a>
-            </nav>
-          </div>
-        </header>
-        <div class="mdl-layout__drawer">
-          <span class="mdl-layout-title">Rahul's Blog</span>
-          <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/blog/table_of_contents.html">Other Articles</a>
-          </nav>
-        </div>
-        <div class="content">
-          <main class="mdl-layout__content">
-            <div class="mdl-grid content">
-              <div class="mdl-cell mdl-cell--8-col">
-                <h4 id="tensorrt-and-the-jetson-nano">TensorRT and the Jetson Nano</h4>
-<p>This blog post is a continuation of my previous article on <a href="/blog/self_driving_radio_controlled_cars.html">Self Driving RC Cars</a>.</p>
-<p>After setting up my RC car with a Jetson Nano i figured that I should go beyond the standard ML models. I wanted to try some Transfer learning based on <code class="prettyprint">Resnet 18</code>. </p>
-<h4 id="preliminary-benchmarks">Preliminary Benchmarks</h4>
-<p>The first step was going to be benchmarking the existing ML model to see how much headroom I had. <code class="prettyprint">Resnet 18</code> was going to be a more complicated model and I needed to make sure that the Jetson Nano was capable enough.</p>
-<p>The standard <a href="https://docs.donkeycar.com">Donkey Car</a> model is based on the Nvidia <a href="https://arxiv.org/abs/1604.07316">End to End Learning for Self-Driving Cars</a> paper. </p>
-<p>I was using a Camera resolution of <code class="prettyprint">224px x 224px</code> and upon profiling my ML model I determined that the standard <a href="https://docs.donkeycar.com">Donkey Car</a> model was doing inferences at the rate of <strong> <code class="prettyprint">25 Hz</code></strong> or about <strong> <code class="prettyprint">25</code> inferences per second</strong>. It's important to remember that the RC car needs to do inferences at <code class="prettyprint">20 Hz</code> at the very least for it to be capable of self-driving. I was currently <code class="prettyprint">~5 Hz</code> faster than the required minimum. Not great.</p>
-<h4 id="performance-mode">Performance Mode</h4>
-<p>The Jetson Nano is also capable of running in <code class="prettyprint">performance</code> mode. To run a Nano in <code class="prettyprint">performance</code> mode you need to run the following script. This script runs the Nano in maximum clock speed. I also set the fan to high given I had a <a href="https://www.newegg.com/noctua-nf-a4x20-5v-pwm-case-fan/p/1YF-000T-00094">Noctua</a> fan installed. This would ensure that my Nano would not get thermal throttled.</p>
-<pre class="prettyprint linenums"><code class="bash language-bash">#!/bin/bash
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <title>TensorRT and the Jetson Nano</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css">
+  <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
+  <link rel="stylesheet" href="/assets/styles/blog.css">
+</head>
+
+<body class="mdl-layout mdl-js-layout">
+  <header class="mdl-layout__header mdl-layout__header--scroll">
+    <div class="mdl-layout__header-row">
+      <span class="mdl-layout-title">TensorRT and the Jetson Nano</span>
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="/blog/toc.html">More</a>
+      </nav>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">Rahul's Blog</span>
+    <nav class="mdl-navigation">
+      <a class="mdl-navigation__link" href="/blog/toc.html">Other Articles</a>
+    </nav>
+  </div>
+  <div class="content">
+    <main class="mdl-layout__content">
+      <div class="mdl-grid content">
+        <div class="mdl-cell mdl-cell--8-col">
+          <h4 id="tensorrt-and-the-jetson-nano">TensorRT and the Jetson Nano</h4>
+          <p>This blog post is a continuation of my previous article on <a
+              href="/blog/self_driving_radio_controlled_cars.html">Self Driving RC Cars</a>.</p>
+          <p>After setting up my RC car with a Jetson Nano i figured that I should go beyond the standard ML models. I
+            wanted to try some Transfer learning based on <code class="prettyprint">Resnet 18</code>. </p>
+          <h4 id="preliminary-benchmarks">Preliminary Benchmarks</h4>
+          <p>The first step was going to be benchmarking the existing ML model to see how much headroom I had. <code
+              class="prettyprint">Resnet 18</code> was going to be a more complicated model and I needed to make sure
+            that the Jetson Nano was capable enough.</p>
+          <p>The standard <a href="https://docs.donkeycar.com">Donkey Car</a> model is based on the Nvidia <a
+              href="https://arxiv.org/abs/1604.07316">End to End Learning for Self-Driving Cars</a> paper. </p>
+          <p>I was using a Camera resolution of <code class="prettyprint">224px x 224px</code> and upon profiling my ML
+            model I determined that the standard <a href="https://docs.donkeycar.com">Donkey Car</a> model was doing
+            inferences at the rate of <strong> <code class="prettyprint">25 Hz</code></strong> or about <strong> <code
+                class="prettyprint">25</code> inferences per second</strong>. It's important to remember that the RC car
+            needs to do inferences at <code class="prettyprint">20 Hz</code> at the very least for it to be capable of
+            self-driving. I was currently <code class="prettyprint">~5 Hz</code> faster than the required minimum. Not
+            great.</p>
+          <h4 id="performance-mode">Performance Mode</h4>
+          <p>The Jetson Nano is also capable of running in <code class="prettyprint">performance</code> mode. To run a
+            Nano in <code class="prettyprint">performance</code> mode you need to run the following script. This script
+            runs the Nano in maximum clock speed. I also set the fan to high given I had a <a
+              href="https://www.newegg.com/noctua-nf-a4x20-5v-pwm-case-fan/p/1YF-000T-00094">Noctua</a> fan installed.
+            This would ensure that my Nano would not get thermal throttled.</p>
+          <pre class="prettyprint linenums"><code class="bash language-bash">#!/bin/bash
 sleep 2
 echo 'Maximum performance.'
 sudo /usr/bin/jetson_clocks
 sudo sh -c 'echo 255 &gt; /sys/devices/pwm-fan/target_pwm'</code></pre>
-<p>Once I set the Nvidia Jetson to run in performance mode, my inference rate went up to <strong> <code class="prettyprint">40-42 Hz</code></strong>. Much better !</p>
-<h4 id="hello-tensorrt">Hello TensorRT</h4>
-<p> <code class="prettyprint">TensorRT</code> is a framework from Nvidia for high-performance inference. The Nvidia Jetson Nano supports <code class="prettyprint">TensorRT</code> via the <code class="prettyprint">Jetpack</code> SDK. To make inferences faster, I realized that I was going to have to convert my <code class="prettyprint">Keras</code> model to a <code class="prettyprint">TensorRT</code> model.</p>
-<h5 id="freezing-the-keras-model">Freezing the Keras Model</h5>
-<p>The first step in converting a <code class="prettyprint">Keras</code> model to a <code class="prettyprint">TensorRT</code> model is freezing the model.</p>
-<pre class="prettyprint linenums"><code class="python language-python">'''
+          <p>Once I set the Nvidia Jetson to run in performance mode, my inference rate went up to <strong> <code
+                class="prettyprint">40-42 Hz</code></strong>. Much better !</p>
+          <h4 id="hello-tensorrt">Hello TensorRT</h4>
+          <p> <code class="prettyprint">TensorRT</code> is a framework from Nvidia for high-performance inference. The
+            Nvidia Jetson Nano supports <code class="prettyprint">TensorRT</code> via the <code
+              class="prettyprint">Jetpack</code> SDK. To make inferences faster, I realized that I was going to have to
+            convert my <code class="prettyprint">Keras</code> model to a <code class="prettyprint">TensorRT</code>
+            model.</p>
+          <h5 id="freezing-the-keras-model">Freezing the Keras Model</h5>
+          <p>The first step in converting a <code class="prettyprint">Keras</code> model to a <code
+              class="prettyprint">TensorRT</code> model is freezing the model.</p>
+          <pre class="prettyprint linenums"><code class="python language-python">'''
 Usage:
     freeze_model.py --model="mymodel.h5" --output="frozen_model.pb"
 
@@ -101,19 +123,24 @@ with graph.as_default():
     print ('Inputs = [%s], Outputs = [%s]' % (input_names, output_names))
     print ('Writing metadata to %s' % output_meta.as_posix())
     print ('To convert use: \n   `convert-to-uff %s`' % (output))</code></pre>
-<p>The 2 main steps are:</p>
-<ul>
-<li>Converting variables to constants in a <code class="prettyprint">Tensorflow</code> graph definition.</li>
-<li>Removing of training nodes. </li>
-</ul>
-<p><a href="https://github.com/tikurahul/donkey/blob/donkey-v3-dev/scripts/freeze_model.py">Here</a> is the full source code on GitHub.</p>
-<p>The above script stores the frozen graph definition as a <code class="prettyprint">protobuf</code>. I could now use <code class="prettyprint">convert-to-uff</code> to convert the frozen graph definition to <code class="prettyprint">UFF</code> format.</p>
-<pre class="prettyprint linenums"><code class="bash language-bash"># Linear.pb is a frozen Tensorflow graph.
+          <p>The 2 main steps are:</p>
+          <ul>
+            <li>Converting variables to constants in a <code class="prettyprint">Tensorflow</code> graph definition.
+            </li>
+            <li>Removing of training nodes. </li>
+          </ul>
+          <p><a href="https://github.com/tikurahul/donkey/blob/donkey-v3-dev/scripts/freeze_model.py">Here</a> is the
+            full source code on GitHub.</p>
+          <p>The above script stores the frozen graph definition as a <code class="prettyprint">protobuf</code>. I could
+            now use <code class="prettyprint">convert-to-uff</code> to convert the frozen graph definition to <code
+              class="prettyprint">UFF</code> format.</p>
+          <pre class="prettyprint linenums"><code class="bash language-bash"># Linear.pb is a frozen Tensorflow graph.
 # Converts it and saves the result in Linear.uff
 convert-to-uff ../../models/Linear.pb</code></pre>
-<h5 id="inference">Inference</h5>
-<p>Now that I had the UFF model, I needed to use the <code class="prettyprint">tensorrt</code> python API and <code class="prettyprint">pycuda</code> to run inferences. </p>
-<pre class="prettyprint linenums"><code class="python language-python">from collections import namedtuple
+          <h5 id="inference">Inference</h5>
+          <p>Now that I had the UFF model, I needed to use the <code class="prettyprint">tensorrt</code> python API and
+            <code class="prettyprint">pycuda</code> to run inferences. </p>
+          <pre class="prettyprint linenums"><code class="python language-python">from collections import namedtuple
 from donkeycar.parts.keras import KerasPilot
 import json
 import numpy as np
@@ -210,51 +237,61 @@ class TensorRTLinear(KerasPilot):
         stream.synchronize()
         # Return only the host outputs.
         return [out.host_memory for out in outputs]</code></pre>
-<p><a href="https://github.com/tikurahul/donkey/blob/donkey-v3-dev/donkeycar/parts/tensorrt.py">Here</a> is the full source code on GitHub.</p>
-<h5 id="benchmarks">Benchmarks</h5>
-<p>When using the <code class="prettyprint">TensorRT</code> based UFF model the Jetson Nano, I could do inferences at a frequency of <strong> <code class="prettyprint">100-105Hz</code></strong>. <br />
-This meant that I had the headroom to build a <code class="prettyprint">Resnet 18</code> based model.</p>
-<h4 id="final-comparison">Final Comparison</h4>
-<p>Here is the final comparison of all techniques used to speed up ML inference. Using <code class="prettyprint">TensorRT</code>, I had improved the rate of inference by <strong> <code class="prettyprint">2.5x</code></strong> the previous result.</p>
-<table class="mdl-data-table mdl-js-data-table" >
-<thead>
-<tr>
-<th id="model">Model</th>
-<th id="inference_frequency">Inference Frequency</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Keras [TF-GPU]</td>
-<td> <code class="prettyprint">25 Hz</code></td>
-</tr>
-<tr>
-<td>Keras [TF-GPU + Performance Mode]</td>
-<td> <code class="prettyprint">40-42 Hz</code></td>
-</tr>
-<tr>
-<td>TensorRT</td>
-<td> <code class="prettyprint">100-105 Hz</code></td>
-</tr>
-</tbody>
-</table>
-              </div>
-            </div>
-            <footer class="mdl-mini-footer">
-              <div class="mdl-mini-footer--left-section">
-              </div>
-            </footer>
-          </main>
-          <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-          <script src="/assets/highlight/highlight.pack.js"></script>
-          <script type="text/javascript">
-            document.addEventListener('DOMContentLoaded', (event) => {
-              document.querySelectorAll('pre code').forEach((block) => {
-                hljs.highlightBlock(block);
-              });
-            });
-          </script>
+          <p><a href="https://github.com/tikurahul/donkey/blob/donkey-v3-dev/donkeycar/parts/tensorrt.py">Here</a> is
+            the full source code on GitHub.</p>
+          <h5 id="benchmarks">Benchmarks</h5>
+          <p>When using the <code class="prettyprint">TensorRT</code> based UFF model the Jetson Nano, I could do
+            inferences at a frequency of <strong> <code class="prettyprint">100-105Hz</code></strong>. <br />
+            This meant that I had the headroom to build a <code class="prettyprint">Resnet 18</code> based model.</p>
+          <h4 id="final-comparison">Final Comparison</h4>
+          <p>Here is the final comparison of all techniques used to speed up ML inference. Using <code
+              class="prettyprint">TensorRT</code>, I had improved the rate of inference by <strong> <code
+                class="prettyprint">2.5x</code></strong> the previous result.</p>
+          <table class="mdl-data-table mdl-js-data-table">
+            <thead>
+              <tr>
+                <th id="model">Model</th>
+                <th id="inference_frequency">Inference Frequency</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Keras [TF-GPU]</td>
+                <td> <code class="prettyprint">25 Hz</code></td>
+              </tr>
+              <tr>
+                <td>Keras [TF-GPU + Performance Mode]</td>
+                <td> <code class="prettyprint">40-42 Hz</code></td>
+              </tr>
+              <tr>
+                <td>TensorRT</td>
+                <td> <code class="prettyprint">100-105 Hz</code></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </body>
-    </html>
-  
+      </div>
+      <footer class="footer">
+        <p>
+          Rahul Ravikumar &nbsp;
+          <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+          <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+          <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+          <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+        </p>
+      </footer>
+    </main>
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="/assets/highlight/highlight.pack.js"></script>
+    <script type="text/javascript">
+      // Highlight code snippets
+      document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('pre code').forEach((block) => {
+          hljs.highlightBlock(block);
+        });
+      });
+    </script>
+  </div>
+</body>
+
+</html>

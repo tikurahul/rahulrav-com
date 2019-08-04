@@ -1,88 +1,141 @@
+<!doctype html>
+<html lang="en">
 
-    <!doctype html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-        <title>Self Driving Radio Controlled Cars</title>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css">
-        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
-        <link rel="stylesheet" href="/assets/styles/blog.css">
-      </head>
-      <body class="mdl-layout mdl-js-layout">
-        <header class="mdl-layout__header mdl-layout__header--scroll">
-          <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">Self Driving Radio Controlled Cars</span>
-            <div class="mdl-layout-spacer"></div>
-            <nav class="mdl-navigation">
-              <a class="mdl-navigation__link" href="/blog/table_of_contents.html">More</a>
-            </nav>
-          </div>
-        </header>
-        <div class="mdl-layout__drawer">
-          <span class="mdl-layout-title">Rahul's Blog</span>
-          <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/blog/table_of_contents.html">Other Articles</a>
-          </nav>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <title>Self Driving Radio Controlled Cars</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css">
+  <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
+  <link rel="stylesheet" href="/assets/styles/blog.css">
+</head>
+
+<body class="mdl-layout mdl-js-layout">
+  <header class="mdl-layout__header mdl-layout__header--scroll">
+    <div class="mdl-layout__header-row">
+      <span class="mdl-layout-title">Self Driving Radio Controlled Cars</span>
+      <div class="mdl-layout-spacer"></div>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="/blog/toc.html">More</a>
+      </nav>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">Rahul's Blog</span>
+    <nav class="mdl-navigation">
+      <a class="mdl-navigation__link" href="/blog/toc.html">Other Articles</a>
+    </nav>
+  </div>
+  <div class="content">
+    <main class="mdl-layout__content">
+      <div class="mdl-grid content">
+        <div class="mdl-cell mdl-cell--8-col">
+          <p>June 30 2019, Sunday</p>
+          <h3 id="adventures-building-a-self-driving-rc-car">Adventures building a Self Driving RC Car</h3>
+          <p>Having read some amazing books on Machine Learning, I had been looking for opportunities to apply ML from
+            first principles in the real world. That was what got me curious about the wonderful <a
+              href="https://docs.donkeycar.com">Donkey Car</a> project. The project is essentially a how-to guide to
+            building your own RC car which can drive itself around a track using classicial control theory, computer
+            vision or in my case Machine Learning. After attending a DIYRobocars meetup, I could not wait to build my
+            own car.</p>
+          <p>I knew I wanted to do something different with <em>my</em> donkey car. So for my first build I chose an <a
+              href="https://www.amazon.com/gp/product/B00FS83U42/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00FS83U42&linkCode=as2&tag=rahulrav30day-20&linkId=82561a94ffc14365fe9ba794e61d0156">Asus
+              Tinkerboard S</a>, a <a href="http://jevois.org/">JeVois</a> camera and <a
+              href="http://docs.donkeycar.com/guide/build_hardware/#parts-needed0">other</a> standard bill of materials.
+          </p>
+          <p>I went with a <a
+              href="https://www.amazon.com/gp/product/B00FS83U42/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00FS83U42&linkCode=as2&tag=rahulrav30day-20&linkId=82561a94ffc14365fe9ba794e61d0156">Asus
+              Tinkerboard S</a> despite knowing that most members of the Donkey community were using a Rasbperri Pi 3B+.
+            My main motivations were:</p>
+          <ul>
+            <li>More RAM (2 GB vs. the 1 GB in the Raspberry Pi)</li>
+            <li>16 GB of EMMC Flash (The Pi required the use of a Micro SD card which is not great for I/O)</li>
+          </ul>
+          <p>I chose the <a href="http://jevois.org/">JeVois</a> camera because I liked having the freedom of doing some
+            computer vision as well. The <a href="http://jevois.org/">JeVois</a> is a full-fledged Linux computer which
+            has an on-board GPU as well. I ended up taking advantage of the camera by implementing a <a
+              href="https://journals.sagepub.com/doi/full/10.1177/1550147718793803">fast contrast stretching</a>
+            algorithm to normalize for lighting conditions as a preprocessing step for the ML model.</p>
+          <h4 id="learnings">Learnings</h4>
+          <p>Choosing the <a
+              href="https://www.amazon.com/gp/product/B00FS83U42/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00FS83U42&linkCode=as2&tag=rahulrav30day-20&linkId=82561a94ffc14365fe9ba794e61d0156">Asus
+              Tinkerboard S</a> required me to understand a lot about the <code class="prettyprint">donkeycar</code>
+            framework. This was because everything in the documentation assumed that you were using a Raspberry Pi and
+            in my case I was not. To make matters more difficult I had also chosen a different camera so I to write my
+            own module to make things work.</p>
+          <p>I also realized that, while the <a
+              href="https://www.amazon.com/gp/product/B00FS83U42/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00FS83U42&linkCode=as2&tag=rahulrav30day-20&linkId=82561a94ffc14365fe9ba794e61d0156">Asus
+              Tinkerboard S</a> had advantages over the Raspberry Pi 3B+, I had just enough headroom to run the stock
+            Nvidia <a
+              href="https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf">End
+              to End Self Driving</a> model at a resolution of <code class="prettyprint">160 x 128 px</code>. </p>
+          <h4 id="hello-jetson-nano">Hello, Jetson Nano</h4>
+          <p>I wanted to experiment with more sophisticated models. As i was constrained by the CPU on the <a
+              href="https://www.amazon.com/gp/product/B00FS83U42/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00FS83U42&linkCode=as2&tag=rahulrav30day-20&linkId=82561a94ffc14365fe9ba794e61d0156">Asus
+              Tinkerboard S</a>, I decided to level-up using the <a
+              href="https://developer.nvidia.com/embedded/jetson-nano-developer-kit">Nvidia Jetson Nano</a>.</p>
+          <p>The <a href="https://developer.nvidia.com/embedded/jetson-nano-developer-kit">Nvidia Jetson Nano</a> is an
+            <em>amazing</em> single board computer which has a real GPU with <code class="prettyprint">128</code> CUDA
+            cores. Nvidia also has great software support including their Jetpack SDK, and they ship a customized
+            version of Tensorflow <code class="prettyprint">1.13.1</code> for the Nano. </p>
+          <p>For the last couple of weeks, I was busy building a new car with the Jetson Nano. </p>
+          <p>
+            <img src="/assets/images/donkey_top_view.jpg" alt="Top View" title="Top View" width="640px" />
+            <br /> <br />
+            <img src="/assets/images/donkey_side_view.jpg" alt="Side View" title="Side View" width="640px" />
+          </p>
+          <p>The Jetson Nano has been an absolute joy to use. I am running both the fast contrast stretching algorithms,
+            as well as the ML model on the GPU. I compiled Open CV 4.1 for the Jetson Nano and contributed a <a
+              href="http://docs.donkeycar.com/guide/robot_sbc/setup_jetson_nano/#step-4-install-opencv">how-to guide</a>
+            on doing that.</p>
+          <p>A few more tweaks after, and I had Donkey <code class="prettyprint">3.0.2</code> running really well on a
+            Jetson Nano. I also added some more components to the bill of materials including a <a
+              href="https://www.amazon.com/gp/product/B07MM68H8M/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B07MM68H8M&linkCode=as2&tag=rahulrav30day-20&linkId=b79b276e51d99f4b1992fde28ca7f4a8">PiOLED
+              Display</a> which I added to the car to display some stats. The source code for this additional module is
+            <a href="https://github.com/tikurahul/donkey/blob/donkey-v3-dev/donkeycar/parts/oled.py">here</a>.</p>
+          <h4 id="the-race">The Race</h4>
+          <p>The race was a lot of run, and I managed to do my personal best which was a lap-time of <code
+              class="prettyprint">13.1s</code> around the track. My 3-lap timing was <code
+              class="prettyprint">37s</code>. My previous finish was <code class="prettyprint">27s</code> for 1 lap. (I
+            have come a long way). </p>
+          <p>Here is a video of the race. The first one was my best, and in the second video I tried to make it go
+            faster.</p>
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/ZuLRl7sVpfU" frameborder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <p><br /></p>
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/zwWEDV8BoDY" frameborder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <h4 id="epilogue">Epilogue</h4>
+          <p>If you are wondering why the car looks familiar, <a
+              href="https://twitter.com/NVIDIAEmbedded">@NvidiaEmbedded</a> recently <a
+              href="https://twitter.com/NVIDIAEmbedded/status/1143993091537481729">tweeted</a> a picture of my car.
+            Thank you for the shout-out <a href="https://twitter.com/NVIDIAEmbedded">@NvidiaEmbedded</a>.</p>
         </div>
-        <div class="content">
-          <main class="mdl-layout__content">
-            <div class="mdl-grid content">
-              <div class="mdl-cell mdl-cell--8-col">
-                <p>June 30 2019, Sunday</p>
-<h3 id="adventures-building-a-self-driving-rc-car">Adventures building a Self Driving RC Car</h3>
-<p>Having read some amazing books on Machine Learning, I had been looking for opportunities to apply ML from first principles in the real world. That was what got me curious about the wonderful <a href="https://docs.donkeycar.com">Donkey Car</a> project. The project is essentially a how-to guide to building your own RC car which can drive itself around a track using classicial control theory, computer vision or in my case Machine Learning. After attending a DIYRobocars meetup, I could not wait to build my own car.</p>
-<p>I knew I wanted to do something different with <em>my</em> donkey car. So for my first build I chose an <a href="https://www.amazon.com/gp/product/B00FS83U42/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00FS83U42&linkCode=as2&tag=rahulrav30day-20&linkId=82561a94ffc14365fe9ba794e61d0156">Asus Tinkerboard S</a>, a <a href="http://jevois.org/">JeVois</a> camera and <a href="http://docs.donkeycar.com/guide/build_hardware/#parts-needed0">other</a> standard bill of materials.</p>
-<p>I went with a <a href="https://www.amazon.com/gp/product/B00FS83U42/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00FS83U42&linkCode=as2&tag=rahulrav30day-20&linkId=82561a94ffc14365fe9ba794e61d0156">Asus Tinkerboard S</a> despite knowing that most members of the Donkey community were using a Rasbperri Pi 3B+. My main motivations were:</p>
-<ul>
-<li>More RAM (2 GB vs. the 1 GB in the Raspberry Pi)</li>
-<li>16 GB of EMMC Flash (The Pi required the use of a Micro SD card which is not great for I/O)</li>
-</ul>
-<p>I chose the <a href="http://jevois.org/">JeVois</a> camera because I liked having the freedom of doing some computer vision as well. The <a href="http://jevois.org/">JeVois</a> is a full-fledged Linux computer which has an on-board GPU as well. I ended up taking advantage of the camera by implementing a <a href="https://journals.sagepub.com/doi/full/10.1177/1550147718793803">fast contrast stretching</a> algorithm to normalize for lighting conditions as a preprocessing step for the ML model.</p>
-<h4 id="learnings">Learnings</h4>
-<p>Choosing the <a href="https://www.amazon.com/gp/product/B00FS83U42/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00FS83U42&linkCode=as2&tag=rahulrav30day-20&linkId=82561a94ffc14365fe9ba794e61d0156">Asus Tinkerboard S</a> required me to understand a lot about the <code class="prettyprint">donkeycar</code> framework. This was because everything in the documentation assumed that you were using a Raspberry Pi and in my case I was not. To make matters more difficult I had also chosen a different camera so I to write my own module to make things work.</p>
-<p>I also realized that, while the <a href="https://www.amazon.com/gp/product/B00FS83U42/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00FS83U42&linkCode=as2&tag=rahulrav30day-20&linkId=82561a94ffc14365fe9ba794e61d0156">Asus Tinkerboard S</a> had advantages over the Raspberry Pi 3B+, I had just enough headroom to run the stock Nvidia <a href="https://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf">End to End Self Driving</a> model at a resolution of <code class="prettyprint">160 x 128 px</code>. </p>
-<h4 id="hello-jetson-nano">Hello, Jetson Nano</h4>
-<p>I wanted to experiment with more sophisticated models. As i was constrained by the CPU on the <a href="https://www.amazon.com/gp/product/B00FS83U42/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00FS83U42&linkCode=as2&tag=rahulrav30day-20&linkId=82561a94ffc14365fe9ba794e61d0156">Asus Tinkerboard S</a>, I decided to level-up using the <a href="https://developer.nvidia.com/embedded/jetson-nano-developer-kit">Nvidia Jetson Nano</a>.</p>
-<p>The <a href="https://developer.nvidia.com/embedded/jetson-nano-developer-kit">Nvidia Jetson Nano</a> is an <em>amazing</em> single board computer which has a real GPU with <code class="prettyprint">128</code> CUDA cores. Nvidia also has great software support including their Jetpack SDK, and they ship a customized version of Tensorflow <code class="prettyprint">1.13.1</code> for the Nano. </p>
-<p>For the last couple of weeks, I was busy building a new car with the Jetson Nano. </p>
-<p>
-  <img src="/assets/images/donkey_top_view.jpg" 
-       alt="Top View" title="Top View" width="640px" />
-  <br /> <br />
-  <img src="/assets/images/donkey_side_view.jpg" 
-       alt="Side View" title="Side View" width="640px" />
-</p>
-<p>The Jetson Nano has been an absolute joy to use. I am running both the fast contrast stretching algorithms, as well as the ML model on the GPU. I compiled Open CV 4.1 for the Jetson Nano and contributed a <a href="http://docs.donkeycar.com/guide/robot_sbc/setup_jetson_nano/#step-4-install-opencv">how-to guide</a> on doing that.</p>
-<p>A few more tweaks after, and I had Donkey <code class="prettyprint">3.0.2</code> running really well on a Jetson Nano. I also added some more components to the bill of materials including a <a href="https://www.amazon.com/gp/product/B07MM68H8M/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B07MM68H8M&linkCode=as2&tag=rahulrav30day-20&linkId=b79b276e51d99f4b1992fde28ca7f4a8">PiOLED Display</a> which I added to the car to display some stats. The source code for this additional module is <a href="https://github.com/tikurahul/donkey/blob/donkey-v3-dev/donkeycar/parts/oled.py">here</a>.</p>
-<h4 id="the-race">The Race</h4>
-<p>The race was a lot of run, and I managed to do my personal best which was a lap-time of <code class="prettyprint">13.1s</code> around the track. My 3-lap timing was <code class="prettyprint">37s</code>. My previous finish was <code class="prettyprint">27s</code> for 1 lap. (I have come a long way). </p>
-<p>Here is a video of the race. The first one was my best, and in the second video I tried to make it go faster.</p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/ZuLRl7sVpfU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-<p><br/></p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/zwWEDV8BoDY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-<h4 id="epilogue">Epilogue</h4>
-<p>If you are wondering why the car looks familiar, <a href="https://twitter.com/NVIDIAEmbedded">@NvidiaEmbedded</a> recently <a href="https://twitter.com/NVIDIAEmbedded/status/1143993091537481729">tweeted</a> a picture of my car. Thank you for the shout-out <a href="https://twitter.com/NVIDIAEmbedded">@NvidiaEmbedded</a>.</p>
-              </div>
-            </div>
-            <footer class="mdl-mini-footer">
-              <div class="mdl-mini-footer--left-section">
-              </div>
-            </footer>
-          </main>
-          <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-          <script src="/assets/highlight/highlight.pack.js"></script>
-          <script type="text/javascript">
-            document.addEventListener('DOMContentLoaded', (event) => {
-              document.querySelectorAll('pre code').forEach((block) => {
-                hljs.highlightBlock(block);
-              });
-            });
-          </script>
-        </div>
-      </body>
-    </html>
-  
+      </div>
+      <footer class="footer">
+        <p>
+          Rahul Ravikumar &nbsp;
+          <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+          <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+          <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+          <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+        </p>
+      </footer>
+    </main>
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="/assets/highlight/highlight.pack.js"></script>
+    <script type="text/javascript">
+      // Highlight code snippets
+      document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('pre code').forEach((block) => {
+          hljs.highlightBlock(block);
+        });
+      });
+    </script>
+  </div>
+</body>
+
+</html>
