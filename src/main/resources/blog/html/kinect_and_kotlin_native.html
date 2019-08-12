@@ -1,0 +1,210 @@
+
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <title>Kotlin Native and the Azure Kinect DK</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css">
+        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
+        <link rel="stylesheet" href="/assets/styles/blog.css">
+      </head>
+      <body class="mdl-layout mdl-js-layout">
+        <header class="mdl-layout__header mdl-layout__header--scroll">
+          <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">Kotlin Native and the Azure Kinect DK</span>
+            <div class="mdl-layout-spacer"></div>
+            <nav class="mdl-navigation">
+              <a class="mdl-navigation__link" href="/blog/toc.html">More</a>
+            </nav>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title">Rahul's Blog</span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/blog/toc.html">Other Articles</a>
+          </nav>
+        </div>
+        <div class="content">
+          <main class="mdl-layout__content">
+            <div class="mdl-grid content">
+              <div class="mdl-cell mdl-cell--8-col">
+                <p>Aug 11 2019, Sunday</p>
+<h3 id="kotlin-native-and-the-azure-kinect-dk">Kotlin Native and the Azure Kinect DK</h3>
+<p>I loved the K4Windows Developer kit and worked on some gesture based UI using the SDK a few years ago.<br />
+Therefore, when Microsoft announced the new Azure Kinect Developer Kit, I was very excited to try it out.</p>
+<p><a href="https://azure.microsoft.com/en-us/services/kinect-dk/">Azure Kinect DK</a> has an advanced ToF camera system, a microphone array and an RGB camera. I was excited to tinker with the hardware to see what it was capable of. The Azure Kinect SDK is C/C++ based, and supports .NET bindings. Microsoft also made the SDK available for Linux. </p>
+<h3 id="the-sdk--kotlin-native">The SDK + Kotlin Native</h3>
+<p>I have been meaning to experiment with Kotlin Native, and this was a perfect opportunity. The Azure Kinect SDK on Linux has C/C++ headers, and I could therefore use the <code class="prettyprint">cinterop</code> tool to build Kotlin Native bindings in theory. If I could get everything to work, I would not have to write C/C++ and could write pure Kotlin and get away with it.</p>
+<h4 id="setting-up-gradle">Setting up Gradle</h4>
+<p>The first step in using Kotlin Native and setting up the <code class="prettyprint">cinterop</code> tool is setting up Gradle, and the <code class="prettyprint">kotlin-multiplatform</code> plugin.</p>
+<pre class="prettyprint linenums"><code>plugins {
+    id 'org.jetbrains.kotlin.multiplatform' version '1.3.41'
+}
+repositories {
+    mavenCentral()
+}
+kotlin {
+    linuxX64("linux") {
+        binaries {
+            executable {
+               entryPoint = 'sample.main'
+               runTask?.args('')
+            }
+        }
+    }
+    sourceSets {
+        linuxMain {
+        }
+        linuxTest {
+        }
+    }
+}</code></pre>
+<p>The above gradle script essentially sets up the Kotlin Native toolchain, and some source folders. <code class="prettyprint">sample.main</code> is the entry-point of the application. </p>
+<h4 id="setting-up-cinterop">Setting up <code class="prettyprint">cinterop</code></h4>
+<p> <code class="prettyprint">cinterop</code> is a tool which generates Kotlin Native bindings from C header files. We therefore need to define which header files to look at in a <code class="prettyprint">def</code> file. Here is the one I defined.</p>
+<pre class="prettyprint linenums"><code>headers = k4a/k4a.h
+headerFilter = k4a/*.h
+package = kinect
+
+compilerOpts.linux = -I/usr/include -I/usr/include/x86_64-linux-gnu
+linkerOpts.linux = -L/usr/lib/x86_64-linux-gnu -lk4a</code></pre>
+<p>The <code class="prettyprint">headers</code> we are interested in to consume the Azure Kinect C SDK is <code class="prettyprint">k4a.h</code>. I also defined a <code class="prettyprint">package</code> name and some compiler and linker flags.</p>
+<p>Now that we have this <code class="prettyprint">def</code> file we now need to incorporate <code class="prettyprint">cinterop</code> as part of our compilation toolchain. For that I made the following changes to the <code class="prettyprint">gradle</code> file.</p>
+<pre class="prettyprint linenums"><code>kotlin {    
+    linuxX64("linux") {
+        compilations.main {
+            cinterops {
+                kinect {
+                    // The def file
+                    defFile project.file("src/nativeInterop/cinterop/kinect.def")
+                    // The package name to use
+                    packageName "kinect"
+                }
+            }
+        }
+        // .. 
+    }
+    // ...
+}</code></pre>
+<p>By adding this to <code class="prettyprint">build.gradle</code> the definitions from <code class="prettyprint">kotlin.def</code> now get included in the sourceset which gets compiled by the Kotlin Native toolchain.</p>
+<p>Now all we need to do is run <code class="prettyprint">./gradlew build</code>.</p>
+<h4 id="write-some-kotlin">Write some Kotlin</h4>
+<p>Now that we generated Kotlin Native bindings we are now ready to write some Kotlin code which consumes the Azure Kinect SDK.<br />
+Here is some code which I wrote to test things out.</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">package sample
+
+import kinect.*
+import kotlinx.cinterop.*
+
+@ExperimentalUnsignedTypes
+fun helloKinect() {
+    when (val deviceCount = k4a_device_get_installed_count()) {
+        0.toUInt() -&gt; println("No devices connected")
+        else -&gt; {
+            println("No of devices connected = ($deviceCount)")
+            memScoped {
+                val device = alloc&lt;k4a_device_tVar&gt;()
+                val imuSample = alloc&lt;k4a_imu_sample_t&gt;()
+                val config = alloc&lt;_k4a_device_configuration_t&gt;()
+                config.color_format = K4A_IMAGE_FORMAT_COLOR_MJPG
+                config.camera_fps = K4A_FRAMES_PER_SECOND_30
+                config.color_resolution = K4A_COLOR_RESOLUTION_720P
+                config.depth_mode = K4A_DEPTH_MODE_NFOV_UNBINNED
+                config.synchronized_images_only = true
+                config.wired_sync_mode = k4a_wired_sync_mode_t.K4A_WIRED_SYNC_MODE_STANDALONE
+
+                device.usePinned {
+                    var result = k4a_device_open(K4A_DEVICE_DEFAULT, device.ptr)
+                    if (result != K4A_RESULT_SUCCEEDED) {
+                        println("Unable to connect to Kinect.")
+                        return
+                    }
+
+                    result = k4a_device_start_cameras(device.value, config.ptr)
+                    if (result != K4A_RESULT_SUCCEEDED) {
+                        println("Unable to start cameras.")
+                        return
+                    }
+
+                    result = k4a_device_start_imu(device.value)
+                    if (result != K4A_RESULT_SUCCEEDED) {
+                        println("Unable to start IMU.")
+                        return
+                    }
+
+                    loop@ for (i in 0 until 10) {
+                        result = k4a_device_get_imu_sample(
+                            device.value,
+                            imu_sample = imuSample.ptr,
+                            timeout_in_ms = K4A_WAIT_INFINITE
+                        )
+                        when (result) {
+                            K4A_WAIT_RESULT_SUCCEEDED -&gt; {
+                                val acceleration = imuSample.acc_sample.xyz
+                                val accelerationTimeStamp = imuSample.acc_timestamp_usec
+                                val gyro = imuSample.gyro_sample.xyz
+                                val gyroTimestamp = imuSample.gyro_timestamp_usec
+                                val temperature = imuSample.temperature
+                                println("Acceleration (X - ${acceleration.x}), (Y - ${acceleration.y}), (Z - ${acceleration.z}) at $accelerationTimeStamp")
+                                println("Gyro (X - ${gyro.x}), (Y - ${gyro.y}), (Z - ${gyro.z}) at $gyroTimestamp")
+                                println("Temperature $temperature")
+                                println()
+                            }
+                            K4A_WAIT_RESULT_TIMEOUT -&gt; {
+                                println("Operation timed out")
+                                break@loop
+                            }
+                            K4A_WAIT_RESULT_TIMEOUT -&gt; {
+                                println("FFailed to collect IMU Samples")
+                                break@loop
+                            }
+                        }
+                    }
+                    println("Stopping Cameras and IMU.")
+                    k4a_device_stop_cameras(device.value)
+                    k4a_device_stop_imu(device.value)
+
+                    println("Closing Device.")
+                    k4a_device_close(device.value)
+                }
+            }
+        }
+    }
+}
+
+@ExperimentalUnsignedTypes
+fun main() = helloKinect()</code></pre>
+<p>For a complete project take a look at this <a href="https://github.com/tikurahul/kotlin-native">github repo</a>.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>Talking to native libraries from Kotlin Native is actually pretty straight-forward once you get used to the toolchain. <br />
+I spent the majority of the time setting up the <code class="prettyprint">gradle</code> project. Once I did that consuming the C SDK was easy.</p>
+              </div>
+            </div>
+            <footer class="footer">
+              <p>
+                Rahul Ravikumar &nbsp;
+                  <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+                  <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+                  <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+                  <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+              </p>
+            </footer>
+          </main>
+          <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+          <script src="/assets/highlight/highlight.pack.js"></script>
+          <script type="text/javascript">
+            // Highlight code snippets
+            document.addEventListener('DOMContentLoaded', (event) => {
+              document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+              });
+            });
+          </script>
+        </div>
+      </body>
+    </html>
+  

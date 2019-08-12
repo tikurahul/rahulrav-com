@@ -15,6 +15,10 @@
     {
       "title": "TensorRT and the Jetson Nano",
       "path": "tensorrt_nano.md"
+    },
+    {
+      "title": "Kotlin Native and the Azure Kinect DK",
+      "path": "kinect_and_kotlin_native.md"
     }
   ]
 }
