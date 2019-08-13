@@ -173,7 +173,7 @@ fun helloKinect() {
 fun main() = helloKinect()
 ```
 
-For a complete project take a look at this [github repo](https://github.com/tikurahul/kotlin-native).
+For a complete project take a look at this [github repo](https://github.com/tikurahul/kotlin-native-kinect).
 
 ### Conclusion
 
