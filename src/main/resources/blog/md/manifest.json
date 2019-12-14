@@ -19,6 +19,10 @@
     {
       "title": "Kotlin Native and the Azure Kinect DK",
       "path": "kinect_and_kotlin_native.md"
+    },
+    {
+      "title": "Ad Blocking and Pi-Hole",
+      "path": "ad_blocking.md"
     }
   ]
 }

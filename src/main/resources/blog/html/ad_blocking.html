@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-        <title>Table of Contents</title>
+        <title>Ad Blocking and Pi-Hole</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css">
@@ -15,7 +15,7 @@
       <body class="mdl-layout mdl-js-layout">
         <header class="mdl-layout__header mdl-layout__header--scroll">
           <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">Table of Contents</span>
+            <span class="mdl-layout-title">Ad Blocking and Pi-Hole</span>
             <div class="mdl-layout-spacer"></div>
             <nav class="mdl-navigation">
               <a class="mdl-navigation__link" href="/blog/toc.html">More</a>
@@ -32,15 +32,21 @@
           <main class="mdl-layout__content">
             <div class="mdl-grid content">
               <div class="mdl-cell mdl-cell--8-col">
-                <h4 id="table-of-contents">Table of Contents</h4>
-<p>Here is a list of all the blog posts.</p>
-<ul>
-<li><a href="/blog/first.html">First Entry</a></li>
-<li><a href="/blog/selfdriving.html">Self Driving RC Cars and the Jetson Nano</a></li>
-<li><a href="/blog/tensorrt_nano.html">TensorRT and the Jetson Nano</a></li>
-<li><a href="/blog/kinect_and_kotlin_native.html">Kotlin Native and the Azure Kinect DK</a></li>
-<li><a href="/blog/ad_blocking.html">Ad Blocking and Pi-Hole</a></li>
-</ul>
+                <p>Dec 14 2019, Saturday</p>
+<h4 id="ad-blocking">Ad Blocking</h4>
+<p>I have been using <a href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en">uBlock Origin</a> for a while, and can't imagine browsing the web without it. </p>
+<p>Everytime I am on a machine that does not have it or I see someone else browsing the internet without it, I cringe a little. I am constantly overwhelmed by the number of ads and and their poor quality. The situation is especially bad on mobile browsers.</p>
+<p>I know the irony in saying this, given I work for a <a href="https://google.com">company</a> that has one of the largest ad networks. <br />
+The ethics of ad blocking are debatable, but user security is not. I have seen too many ads out there that hoodwink users, and waste copious amounts of bandwidth.</p>
+<p>Given that most mobile browsers don't support an ad blocker, I setup <a href="https://pi-hole.net/">Pi-Hole</a> which is a DNS based sink hole for ads. Also unfortunately named, I might add.</p>
+<h4 id="pi-hole">Pi-Hole</h4>
+<p>I used an old <a href="https://www.asus.com/Single-Board-Computer/Tinker-Board-S/">Asus Tinkerboard S</a> that I was no longer using.<br />
+I flashed the latest version of <code class="prettyprint">Debian</code> and just ran the <code class="prettyprint">Pi-Hole</code> installer. Things just worked. </p>
+<p>I enabled the DNS server to bind to all Network interfaces on the <code class="prettyprint">Tinkerboard S</code> (via <code class="prettyprint">Settings -&gt; Network -&gt; DNS</code> on the admin panel). After this, I ensured that the <code class="prettyprint">Tinkerboard S</code> would get a reserved IP from the DHCP pool. I did this using the <code class="prettyprint">Google WiFi</code> app.</p>
+<p>Once i got those steps out of the way, I turned off all the other DNS servers and made my <code class="prettyprint">Tinkerboard S</code> the only DNS server, using the <code class="prettyprint">Google WiFi</code> app. </p>
+<p>Now that I had a network wide ad blocker, I disabled all conventional ad blocking software.</p>
+<h4 id="conclusion">Conclusion</h4>
+<p> <code class="prettyprint">Pi Hole</code> is an incredible project, which gives us back some much needed control. If you have an old single board computer lying around, give it a go and don't forget to donate to  <code class="prettyprint">Pi-Hole</code>. </p>
               </div>
             </div>
             <footer class="footer">
