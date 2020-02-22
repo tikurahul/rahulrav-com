@@ -23,6 +23,10 @@
     {
       "title": "Ad Blocking and Pi-Hole",
       "path": "ad_blocking.md"
+    },
+    {
+      "title": "Using AndroidX Snapshot Builds",
+      "path": "using_snapshot_builds.md"
     }
   ]
 }
