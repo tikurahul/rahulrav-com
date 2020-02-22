@@ -8,6 +8,10 @@
 .idea/**/tasks.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.classpath
+.idea/jarRepositories.xml
+.project
+.settings/
 
 # Gradle
 .idea/**/gradle.xml
@@ -15,6 +19,7 @@
 
 # IntelliJ
 out/
+bin/
 build/
 annotations/
 
