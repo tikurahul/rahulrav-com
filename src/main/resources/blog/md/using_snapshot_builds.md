@@ -15,7 +15,7 @@ To account for these use-cases recently we made `snapshot` builds available to d
 
 Everytime a change request is sent in the AndroidX source tree, pre-submit checks ensure that all existing tests pass. Once the change lands, our CI server picks up the change and builds all the relevant artifacts. 
 
-You can follow along all the changes being built, by looking at [https://ci.android.com/builds/branches/aosp-androidx-master-dev](https://ci.android.com/builds/branches/aosp-androidx-master-dev) (Note that I added the name of the branch that I am interested in `androidx-master-dev` which is where all AndroidX changes land). 
+You can follow along all the changes being built, by looking at [https://ci.android.com/builds/branches/aosp-androidx-master-dev/grid?](https://ci.android.com/builds/branches/aosp-androidx-master-dev/grid?) (Note that I added the name of the branch that I am interested in `androidx-master-dev` which is where all AndroidX changes land).
 
 Every `row` in the `grid` corresponds to a couple of changes that were made to the AndroidX source tree. You can click on the `View Changes` link to see the changes associated to a build.
 
