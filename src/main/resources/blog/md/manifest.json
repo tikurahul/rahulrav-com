@@ -27,6 +27,10 @@
     {
       "title": "Using AndroidX Snapshot Builds",
       "path": "using_snapshot_builds.md"
+    },
+    {
+      "title": "Bokehlicious Selfies",
+      "path": "bokehlicious.md"
     }
   ]
 }

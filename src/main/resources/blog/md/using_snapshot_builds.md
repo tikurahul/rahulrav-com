@@ -47,7 +47,7 @@ To use these artifacts, you should include the following snippet in your `build.
 repositories {
     google()
     // Note the build id in the URL. Substitute it with the build you want
-    maven { url 'https://ci.android.com/builds/submitted/6228642/androidx_snapshot/latest/repository/' }
+    maven { url 'https://ci.android.com/builds/submitted/6228642/androidx_snapshot/latest/raw/repository/' }
 }
 
 dependencies {

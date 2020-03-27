@@ -8,3 +8,4 @@ Here is a list of all the blog posts.
 * [Kotlin Native and the Azure Kinect DK](/blog/kinect_and_kotlin_native.html)
 * [Ad Blocking and Pi-Hole](/blog/ad_blocking.html)
 * [Using AndroidX Snapshot Builds](/blog/using_snapshot_builds.html)
+* [Bokehlicious Selfies](/blog/bokehlicious.html)
