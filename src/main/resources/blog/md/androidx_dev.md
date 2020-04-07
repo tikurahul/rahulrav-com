@@ -47,6 +47,7 @@ repositories {
     google()
     // Note the build id & `ui` in the URL. Substitute it with the build you want
     maven { url 'https://androidx.dev/snapshots/builds/[buildId]/artifacts/ui/repository' }
+}
 
 // To use this repository:
 
