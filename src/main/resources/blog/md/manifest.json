@@ -31,6 +31,10 @@
     {
       "title": "Bokehlicious Selfies",
       "path": "bokehlicious.md"
+    },
+    {
+      "title": "Introducing androidx.dev",
+      "path": "androidx_dev.md"
     }
   ]
 }
