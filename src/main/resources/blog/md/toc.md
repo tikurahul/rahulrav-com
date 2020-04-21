@@ -10,3 +10,4 @@ Here is a list of all the blog posts.
 * [Using AndroidX Snapshot Builds](/blog/using_snapshot_builds.html)
 * [Bokehlicious Selfies](/blog/bokehlicious.html)
 * [Introducing androidx.dev](/blog/androidx_dev.html)
+* [Style Transfer from first principles](/blog/style_transfer.html)

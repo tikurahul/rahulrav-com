@@ -35,6 +35,10 @@
     {
       "title": "Introducing androidx.dev",
       "path": "androidx_dev.md"
+    },
+    {
+      "title": "Style Transfer from first principles",
+      "path": "style_transfer.md"
     }
   ]
 }
