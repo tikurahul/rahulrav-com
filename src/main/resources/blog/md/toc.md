@@ -11,3 +11,4 @@ Here is a list of all the blog posts.
 * [Bokehlicious Selfies](/blog/bokehlicious.html)
 * [Introducing androidx.dev](/blog/androidx_dev.html)
 * [Style Transfer from first principles](/blog/style_transfer.html)
+* [Path Tracing with Jetpack Compose](/blog/path_tracing_compose.html)

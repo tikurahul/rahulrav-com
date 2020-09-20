@@ -12,8 +12,8 @@ fun Routing.main() {
     context.respond("Server up.")
   }
 
-  static(".well-known") {
-    resources("files/well-known")
+  static("files") {
+    resources("files")
   }
 
   static("blog") {

@@ -1,0 +1,200 @@
+
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <title>Path Tracing with Jetpack Compose</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css">
+        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
+        <link rel="stylesheet" href="/assets/styles/blog.css">
+      </head>
+      <body class="mdl-layout mdl-js-layout">
+        <header class="mdl-layout__header mdl-layout__header--scroll">
+          <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">Path Tracing with Jetpack Compose</span>
+            <div class="mdl-layout-spacer"></div>
+            <nav class="mdl-navigation">
+              <a class="mdl-navigation__link" href="/blog/toc.html">More</a>
+            </nav>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title">Rahul's Blog</span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/blog/toc.html">Other Articles</a>
+          </nav>
+        </div>
+        <div class="content">
+          <main class="mdl-layout__content">
+            <div class="mdl-grid content">
+              <div class="mdl-cell mdl-cell--8-col">
+                <p>Sept 29 2020, Saturday</p>
+<h3 id="path-tracing-with-jetpack-compose">Path Tracing with Jetpack Compose</h3>
+<p>Ever since <a href="https://developer.android.com/jetpack/compose">Jetpack Compose</a> went <code class="prettyprint">alpha</code> I have been excited to start experimenting with the new APIs. </p>
+<p>One of the first demo's that blew me away and forced me to learn and explore the old graphics APIs is a series of articles written by <a href="https://twitter.com/romainguy">Romain Guy</a>. One article in particular which I enjoyed reading was about <a href="https://web.archive.org/web/20140805033348/http://www.curious-creature.org/2013/12/21/android-recipe-4-path-tracing/">Path Tracing</a> (A novel use of <a href="https://developer.android.com/reference/android/graphics/PathEffect.html">PathEffect</a>). </p>
+<p>I have also been watching a lot of <a href="https://en.wikipedia.org/wiki/Frasier">Frasier</a> and the show has a really elegant path tracing animation. Here is what it looks like.</p>
+<iframe class="video" src="https://www.youtube.com/embed/C-SFhhnBwdA"></iframe>
+<p><br/></p>
+<p>I thought it might be fun to build this animation as a way to learn how to do custom drawing and animations using Compose. </p>
+<h3 id="building-the-demo">Building the demo</h3>
+<h5 id="svg">SVG</h5>
+<p>I searched for some vector artwork that represented the path coordinates in the animation. I found an <a href="/files/frasier.svg">SVG</a> that had what I needed. </p>
+<p>I did not want to parse SVG to get to the actual coordinates. I discovered a wonderful tool called <a href="https://spotify.github.io/coordinator/">Coordinator</a> which converts SVG to XY coordinates. It was perfect for my usecase. Coordinator converts SVG to a <code class="prettyprint">JSONArray</code> of XY coordinates.</p>
+<pre class="prettyprint linenums"><code class="json language-json">[[40.75,851.7940063476562],[45.798627853393555,851.3941040039062],[50.20281219482422,848.9244995117188],[52.9980583190918,844.7092895507812], ...]</code></pre>
+<h5 id="custom-drawing-in-compose">Custom Drawing in Compose</h5>
+<p>Now that we have the coordinates, we just need to draw <code class="prettyprint">Path</code>s on the <code class="prettyprint">Canvas</code>. To do custom drawing, we need to use the <code class="prettyprint">Canvas</code> <code class="prettyprint">@Composable</code>. Here is a <em>stub</em> for the composable. </p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">// `points` are the set of points being drawn.
+// `endOffset` represents the point until which the part has been animated. Starts off from the second point.
+@Composable
+fun PathTracer(points: List&lt;Offset&gt;, endOffset: Int = 2) {
+    var canvasSize by remember { mutableStateOf(Size.Zero) }
+    Canvas(modifier = Modifier
+        .padding(2.dp)
+        .background(Color.LightGray)
+        .fillMaxSize()
+    ) {
+        if (canvasSize == Size.Zero) {
+            canvasSize = size
+        } else {
+            // Now do the drawing.
+        }
+    }
+}</code></pre>
+<p>The first thing we need to do is to keep track of the <code class="prettyprint">size</code> of the <code class="prettyprint">Canvas</code>. We need the size of the <code class="prettyprint">Canvas</code> because we need to scale the path coordinates based on the canvas size. </p>
+<p>The <code class="prettyprint">Canvas</code> size can only be determined as the <code class="prettyprint">Canvas</code> is being drawn. Therefore we need to defined a <code class="prettyprint">mutableStateOf(Size)</code> to keep track of the <code class="prettyprint">size</code>. The next step is to scale points based on the size of the <code class="prettyprint">Canvas</code> and create a <code class="prettyprint">Path</code> that needs to be drawn. Here is the <em>full</em> source code for the actual composable.</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">@Composable
+fun PathTracer(points: List&lt;Offset&gt;, endIndex: Int = 2) {
+    if (points.isNotEmpty()) {
+        var canvasSize by remember { mutableStateOf(Size.Zero) }
+        // minX, max X coordinate
+        // This is useful to scale the screen coordinates of the points 
+        // in the animation to the size of the Canvas. 
+        val (minX, maxX) = remember(points) {
+            val coordinates = points.asSequence().map { it.x }
+            // use 0f for start because it's scales coordinates interestingly otherwise
+            0f to coordinates.maxOrNull()!!
+        }
+        val path = remember(canvasSize, points, endIndex) {
+            val path = Path()
+            // We have a `size`
+            if (canvasSize != Size.Zero) {
+                // Margin
+                val startX = 20.dp.value
+                val endX = canvasSize.width - startX
+                // Scale and draw points
+                val first = points.first()
+                val scaled = scaledOffset(first, minX, maxX, startX, endX)
+                path.moveTo(scaled.x, scaled.y)
+                for (i in 1 until endIndex) {
+                    val point = scaledOffset(points[i], minX, maxX, startX, endX)
+                    path.lineTo(point.x, point.y)
+                }
+            }
+            path
+        }
+        val style = Stroke(8f)
+        Canvas(
+                modifier = Modifier
+                        .padding(2.dp)
+                        .background(Color.LightGray)
+                        .fillMaxSize()
+        ) {
+            if (canvasSize == Size.Zero) {
+                canvasSize = size
+            } else {
+                // Draw the path
+                drawPath(path, Color.Black, style = style)
+            }
+        }
+    }
+}</code></pre>
+<p>Here is what the <code class="prettyprint">scaledOffset</code> method looks like:</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">fun scaledOffset(
+        offset: Offset,
+        minX: Float,
+        maxX: Float,
+        canvasStart: Float,
+        canvasEnd: Float
+): Offset {
+    val x = offset.x
+    val y = offset.y
+    // Keep track of the ratio's to maintain consistent aspect ratio
+    val ratio = y / x
+    val width = canvasEnd - canvasStart
+    val nx = (x - minX) / (maxX - minX)
+    val scaledX = width * nx
+    val scaledY = scaledX * ratio
+    return Offset(scaledX, scaledY)
+}</code></pre>
+<p>That's really it. We have a full implementation of a <code class="prettyprint">PathTracer</code> that can draw the path we want while keeping track of the <code class="prettyprint">endIndex</code> we want to stop at.</p>
+<h5 id="animations">Animations</h5>
+<p>All we really need to to in order to animate the <code class="prettyprint">PathTracer</code>, is to control <code class="prettyprint">endIndex</code>. For that we can define a <code class="prettyprint">transition</code>. </p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">// Transition Based Animation
+val OffsetKey = IntPropKey()
+
+fun pointsTransition(size: Int) = transitionDefinition&lt;Int&gt; {
+    state(0) {
+        // initial state of animation
+        // number of points = 2
+        this[OffsetKey] = 2
+    }
+    state(1) {
+        // end state
+        // all points being drawn
+        this[OffsetKey] = size
+    }
+    transition(0 to 1) {
+        OffsetKey using tween(
+                durationMillis = 4_000,
+                easing = LinearEasing
+        )
+    }
+}
+
+@Composable
+fun TransitionsPathTracer(points: List&lt;Offset&gt;) {
+    val definition = remember(points) {
+        pointsTransition(points.size)
+    }
+    val animationState = transition(definition = definition, initState = 0, toState = 1)
+    PathTracer(points = points, animationState[OffsetKey])
+}</code></pre>
+<p>First we build a <code class="prettyprint">transitionDefinition</code> with an initial state and a terminal state. Here we want the animation to start off by drawing <code class="prettyprint">2</code> points and end with all the points being drawn. </p>
+<p>Once we have the definition we use the <code class="prettyprint">transition</code> <code class="prettyprint">@Composable</code> to build the <code class="prettyprint">TransitionState</code>.<br />
+We can use the <code class="prettyprint">IntPropKey</code> defined in the <code class="prettyprint">transitionDefinition</code> to obtain the current <code class="prettyprint">endIndex</code> while the animation is running. </p>
+<p>All we need to do is to pass to the <code class="prettyprint">PathTracer</code> <code class="prettyprint">@Composable</code>. </p>
+<h3 id="result">Result</h3>
+<p>This is what it looks like. </p>
+<p>
+  <img src="/assets/images/frasier.gif" alt="Path Tracing" title="Path Tracing" width="400px" />
+</p>
+              </div>
+            </div>
+            <footer class="footer">
+              <p>
+                Rahul Ravikumar &nbsp;
+                  <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+                  <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+                  <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+                  <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+              </p>
+            </footer>
+          </main>
+          <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+          <script src="/assets/highlight/highlight.pack.js"></script>
+          <script type="text/javascript">
+            // Highlight code snippets
+            document.addEventListener('DOMContentLoaded', (event) => {
+              document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+              });
+            });
+          </script>
+        </div>
+      </body>
+    </html>
+  

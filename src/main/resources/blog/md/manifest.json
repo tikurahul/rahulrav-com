@@ -39,6 +39,10 @@
     {
       "title": "Style Transfer from first principles",
       "path": "style_transfer.md"
+    },
+    {
+      "title": "Path Tracing with Jetpack Compose",
+      "path": "path_tracing_compose.md"
     }
   ]
 }

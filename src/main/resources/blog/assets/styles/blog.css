@@ -8,15 +8,16 @@ main {
   width: 100%;
 }
 
+.content .video {
+  height: 30rem;
+  width: 60%;
+}
+
 .content {
   border-radius: 2px;
   padding: 1vw 2vw;
   margin-bottom: 5rem; 
-  overflow: auto;
-}
-
-.content::-webkit-scrollbar {
-  width: 0;
+  overflow-x: none;
 }
 
 .footer {
