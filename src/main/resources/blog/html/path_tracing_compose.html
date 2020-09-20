@@ -43,10 +43,10 @@
 <h3 id="building-the-demo">Building the demo</h3>
 <h5 id="svg">SVG</h5>
 <p>I searched for some vector artwork that represented the path coordinates in the animation. I found an <a href="/files/frasier.svg">SVG</a> that had what I needed. </p>
-<p>I did not want to parse SVG to get to the actual coordinates. I discovered a wonderful tool called <a href="https://spotify.github.io/coordinator/">Coordinator</a> which converts SVG to XY coordinates. It was perfect for my usecase. Coordinator converts SVG to a <code class="prettyprint">JSONArray</code> of XY coordinates.</p>
+<p>I did not want to parse SVG to get to the actual coordinates. I discovered a wonderful tool called <a href="https://spotify.github.io/coordinator/">Coordinator</a> which converts SVG to XY coordinates. It was perfect for my usecase. Here are what the output <code class="prettyprint">coordinates</code> looked like:</p>
 <pre class="prettyprint linenums"><code class="json language-json">[[40.75,851.7940063476562],[45.798627853393555,851.3941040039062],[50.20281219482422,848.9244995117188],[52.9980583190918,844.7092895507812], ...]</code></pre>
 <h5 id="custom-drawing-in-compose">Custom Drawing in Compose</h5>
-<p>Now that we have the coordinates, we just need to draw <code class="prettyprint">Path</code>s on the <code class="prettyprint">Canvas</code>. To do custom drawing, we need to use the <code class="prettyprint">Canvas</code> <code class="prettyprint">@Composable</code>. Here is a <em>stub</em> for the composable. </p>
+<p>Now that we have the <code class="prettyprint">coordinates</code>, we just need to draw <code class="prettyprint">Path</code>s on the <code class="prettyprint">Canvas</code>. To do custom drawing, we need to use the <code class="prettyprint">Canvas</code> <code class="prettyprint">@Composable</code>. Here is a <em>stub</em> for the composable. </p>
 <pre class="prettyprint linenums"><code class="kotlin language-kotlin">// `points` are the set of points being drawn.
 // `endOffset` represents the point until which the part has been animated. Starts off from the second point.
 @Composable
@@ -65,7 +65,7 @@ fun PathTracer(points: List&lt;Offset&gt;, endOffset: Int = 2) {
     }
 }</code></pre>
 <p>The first thing we need to do is to keep track of the <code class="prettyprint">size</code> of the <code class="prettyprint">Canvas</code>. We need the size of the <code class="prettyprint">Canvas</code> because we need to scale the path coordinates based on the canvas size. </p>
-<p>The <code class="prettyprint">Canvas</code> size can only be determined as the <code class="prettyprint">Canvas</code> is being drawn. Therefore we need to defined a <code class="prettyprint">mutableStateOf(Size)</code> to keep track of the <code class="prettyprint">size</code>. The next step is to scale points based on the size of the <code class="prettyprint">Canvas</code> and create a <code class="prettyprint">Path</code> that needs to be drawn. Here is the <em>full</em> source code for the actual composable.</p>
+<p>The <code class="prettyprint">Canvas</code> size can only be determined when <code class="prettyprint">Canvas</code> is being drawn. Therefore we need to defined a <code class="prettyprint">mutableStateOf(Size)</code> to keep track of the <code class="prettyprint">size</code>. Next, we scale points based on the size of the <code class="prettyprint">Canvas</code> and create a <code class="prettyprint">Path</code> that needs to be drawn. Here is the <em>full</em> source code for the actual composable.</p>
 <pre class="prettyprint linenums"><code class="kotlin language-kotlin">@Composable
 fun PathTracer(points: List&lt;Offset&gt;, endIndex: Int = 2) {
     if (points.isNotEmpty()) {
@@ -163,10 +163,43 @@ fun TransitionsPathTracer(points: List&lt;Offset&gt;) {
     val animationState = transition(definition = definition, initState = 0, toState = 1)
     PathTracer(points = points, animationState[OffsetKey])
 }</code></pre>
-<p>First we build a <code class="prettyprint">transitionDefinition</code> with an initial state and a terminal state. Here we want the animation to start off by drawing <code class="prettyprint">2</code> points and end with all the points being drawn. </p>
+<p>First we build a <code class="prettyprint">transitionDefinition</code> with an initial state and a terminal state. Here we want the animation to start off by drawing <code class="prettyprint">2</code> points and end with <em>all</em> the points being drawn. </p>
 <p>Once we have the definition we use the <code class="prettyprint">transition</code> <code class="prettyprint">@Composable</code> to build the <code class="prettyprint">TransitionState</code>.<br />
-We can use the <code class="prettyprint">IntPropKey</code> defined in the <code class="prettyprint">transitionDefinition</code> to obtain the current <code class="prettyprint">endIndex</code> while the animation is running. </p>
-<p>All we need to do is to pass to the <code class="prettyprint">PathTracer</code> <code class="prettyprint">@Composable</code>. </p>
+We can use the <code class="prettyprint">IntPropKey</code> to obtain the current <code class="prettyprint">endIndex</code> while the animation is running. </p>
+<p>All we need to do is to pass that to the <code class="prettyprint">PathTracer</code> <code class="prettyprint">@Composable</code> to start the animation. </p>
+<h5 id="parsing-coordinates">Parsing coordinates</h5>
+<p>We need to parse the <code class="prettyprint">JSONArray</code> of coordinates and pass that to the <code class="prettyprint">TransitionsPathTracer</code>. </p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">fun parse(): List&lt;Offset&gt; {
+    // Use a better JSON parser
+    val array = JSONArray(COORDINATES)
+    val points = mutableListOf&lt;Offset&gt;()
+    for (i in 0 until array.length()) {
+        val coordinate = array.optJSONArray(i)
+        val x = coordinate.optDouble(0).toFloat()
+        val y = coordinate.optDouble(1).toFloat()
+        points += Offset(x, y)
+    }
+    return points
+}
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            PathTracerTheme {
+                Surface(color = MaterialTheme.colors.background) {
+                    Tracing()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Tracing() {
+    val points = remember { parse() }
+    TransitionsPathTracer(points = points)
+}</code></pre>
 <h3 id="result">Result</h3>
 <p>This is what it looks like. </p>
 <p>

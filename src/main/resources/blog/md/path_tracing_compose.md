@@ -18,7 +18,7 @@ I thought it might be fun to build this animation as a way to learn how to do cu
 
 I searched for some vector artwork that represented the path coordinates in the animation. I found an [SVG](/files/frasier.svg) that had what I needed. 
 
-I did not want to parse SVG to get to the actual coordinates. I discovered a wonderful tool called [Coordinator](https://spotify.github.io/coordinator/) which converts SVG to XY coordinates. It was perfect for my usecase. Coordinator converts SVG to a `JSONArray` of XY coordinates.
+I did not want to parse SVG to get to the actual coordinates. I discovered a wonderful tool called [Coordinator](https://spotify.github.io/coordinator/) which converts SVG to XY coordinates. It was perfect for my usecase. Here are what the output `coordinates` looked like:
 
 ```json
 [[40.75,851.7940063476562],[45.798627853393555,851.3941040039062],[50.20281219482422,848.9244995117188],[52.9980583190918,844.7092895507812], ...]
@@ -26,7 +26,7 @@ I did not want to parse SVG to get to the actual coordinates. I discovered a won
 
 ##### Custom Drawing in Compose
 
-Now that we have the coordinates, we just need to draw `Path`s on the `Canvas`. To do custom drawing, we need to use the `Canvas` `@Composable`. Here is a _stub_ for the composable. 
+Now that we have the `coordinates`, we just need to draw `Path`s on the `Canvas`. To do custom drawing, we need to use the `Canvas` `@Composable`. Here is a _stub_ for the composable. 
 
 ```kotlin
 // `points` are the set of points being drawn.
@@ -50,7 +50,7 @@ fun PathTracer(points: List<Offset>, endOffset: Int = 2) {
 
 The first thing we need to do is to keep track of the `size` of the `Canvas`. We need the size of the `Canvas` because we need to scale the path coordinates based on the canvas size. 
 
-The `Canvas` size can only be determined as the `Canvas` is being drawn. Therefore we need to defined a `mutableStateOf(Size)` to keep track of the `size`. The next step is to scale points based on the size of the `Canvas` and create a `Path` that needs to be drawn. Here is the _full_ source code for the actual composable.
+The `Canvas` size can only be determined when `Canvas` is being drawn. Therefore we need to defined a `mutableStateOf(Size)` to keep track of the `size`. Next, we scale points based on the size of the `Canvas` and create a `Path` that needs to be drawn. Here is the _full_ source code for the actual composable.
 
 ```kotlin
 @Composable
@@ -162,12 +162,50 @@ fun TransitionsPathTracer(points: List<Offset>) {
 }
 ```
 
-First we build a `transitionDefinition` with an initial state and a terminal state. Here we want the animation to start off by drawing `2` points and end with all the points being drawn. 
+First we build a `transitionDefinition` with an initial state and a terminal state. Here we want the animation to start off by drawing `2` points and end with *all* the points being drawn. 
 
 Once we have the definition we use the `transition` `@Composable` to build the `TransitionState`.
-We can use the `IntPropKey` defined in the `transitionDefinition` to obtain the current `endIndex` while the animation is running. 
+We can use the `IntPropKey` to obtain the current `endIndex` while the animation is running. 
 
-All we need to do is to pass to the `PathTracer` `@Composable`. 
+All we need to do is to pass that to the `PathTracer` `@Composable` to start the animation. 
+
+##### Parsing coordinates
+
+We need to parse the `JSONArray` of coordinates and pass that to the `TransitionsPathTracer`. 
+
+```kotlin
+fun parse(): List<Offset> {
+    // Use a better JSON parser
+    val array = JSONArray(COORDINATES)
+    val points = mutableListOf<Offset>()
+    for (i in 0 until array.length()) {
+        val coordinate = array.optJSONArray(i)
+        val x = coordinate.optDouble(0).toFloat()
+        val y = coordinate.optDouble(1).toFloat()
+        points += Offset(x, y)
+    }
+    return points
+}
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            PathTracerTheme {
+                Surface(color = MaterialTheme.colors.background) {
+                    Tracing()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Tracing() {
+    val points = remember { parse() }
+    TransitionsPathTracer(points = points)
+}
+```
 
 ### Result
 
