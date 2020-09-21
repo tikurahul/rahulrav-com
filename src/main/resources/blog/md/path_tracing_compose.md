@@ -58,21 +58,20 @@ fun PathTracer(points: List<Offset>, endIndex: Int = 2) {
     if (points.isNotEmpty()) {
         var canvasSize by remember { mutableStateOf(Size.Zero) }
         // minX, max X coordinate
-        // This is useful to scale the screen coordinates of the points 
-        // in the animation to the size of the Canvas. 
         val (minX, maxX) = remember(points) {
             val coordinates = points.asSequence().map { it.x }
             // use 0f for start because it's scales coordinates interestingly otherwise
             0f to coordinates.maxOrNull()!!
         }
-        val path = remember(canvasSize, points, endIndex) {
-            val path = Path()
-            // We have a `size`
+        val path = remember(canvasSize, points) {
+            // recreate path only if the size of the Canvas changes
+            Path()
+        }
+        remember(canvasSize, points, endIndex) {
+            path.reset()
             if (canvasSize != Size.Zero) {
-                // Margin
                 val startX = 20.dp.value
                 val endX = canvasSize.width - startX
-                // Scale and draw points
                 val first = points.first()
                 val scaled = scaledOffset(first, minX, maxX, startX, endX)
                 path.moveTo(scaled.x, scaled.y)
@@ -81,7 +80,6 @@ fun PathTracer(points: List<Offset>, endIndex: Int = 2) {
                     path.lineTo(point.x, point.y)
                 }
             }
-            path
         }
         val style = Stroke(8f)
         Canvas(
@@ -93,7 +91,6 @@ fun PathTracer(points: List<Offset>, endIndex: Int = 2) {
             if (canvasSize == Size.Zero) {
                 canvasSize = size
             } else {
-                // Draw the path
                 drawPath(path, Color.Black, style = style)
             }
         }
