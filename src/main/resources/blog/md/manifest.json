@@ -43,6 +43,10 @@
     {
       "title": "Path Tracing with Jetpack Compose",
       "path": "path_tracing_compose.md"
+    },
+    {
+      "title": "Building a Dashboard with E-Ink Displays",
+      "path": "e_ink_dashboard.md"
     }
   ]
 }

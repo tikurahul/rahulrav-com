@@ -1,0 +1,116 @@
+
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <title>Building a Dashboard with E-Ink Displays</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css">
+        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
+        <link rel="stylesheet" href="/assets/styles/blog.css">
+      </head>
+      <body class="mdl-layout mdl-js-layout">
+        <header class="mdl-layout__header mdl-layout__header--scroll">
+          <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">Building a Dashboard with E-Ink Displays</span>
+            <div class="mdl-layout-spacer"></div>
+            <nav class="mdl-navigation">
+              <a class="mdl-navigation__link" href="/blog/toc.html">More</a>
+            </nav>
+          </div>
+        </header>
+        <div class="mdl-layout__drawer">
+          <span class="mdl-layout-title">Rahul's Blog</span>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="/blog/toc.html">Other Articles</a>
+          </nav>
+        </div>
+        <div class="content">
+          <main class="mdl-layout__content">
+            <div class="mdl-grid content">
+              <div class="mdl-cell mdl-cell--8-col">
+                <p>December 27 2020, Monday</p>
+<h3 id="building-a-ui-toolkit-for-an-e-ink-display-with-an-esp-32">Building a UI-Toolkit for an E-Ink Display with an ESP 32</h3>
+<p>Having worked from home for the better part of the year, I recently started to work on a new project. Building a E-Ink based dashboard which would keep track of my meetings among other things.</p>
+<p>Given the always-on nature of the E-Ink display, this would help me better manage by schedule during a typical work-day especially given I tend to miss Google Calendar notifications <em>a lot</em>. This is what the end result looks like:</p>
+<p>
+  <img src="/assets/images/e_ink_end_result.jpg" 
+       alt="Top View" title="E-Ink Dashboard" width="640px" />
+</p>
+<p>The app here is showing the next 5 Calendar events for <strong>a demo Google account</strong>.<br />
+Looks nice and simple, does it not ?</p>
+<h4 id="the-hardware">The Hardware</h4>
+<p>I took an off-the-shelf approach for the hardware. I purchased an <a href="https://inkplate.io/">InkPlate 6</a> which was originally crowd-funded on <a href="https://www.crowdsupply.com/e-radionica/inkplate-6">CrowdSupply</a>.</p>
+<p>The E-Ink display is from a recycled Kindle e-reader, which means its a pretty great display. It has 2 modes including a 2-bit per pixel gray-scale mode and supports partial updates in monochrome mode. The display is connected to a <code class="prettyprint">ESP 32</code>, with built-in WiFi. All we need to do is to hookup the display to a PC via a USB cable and power it on. The display also comes with a nice 3D printed enclosure. </p>
+<h4 id="the-software">The Software</h4>
+<p>The InkPlate 6 supports MicroPython, and recently the libraries powering the display were <a href="https://github.com/e-radionicacom/Inkplate-6-micropython">opensourced</a>. This gave me a decent foundation to build on top-of. I decided that I should start off by displaying events from Google Calendar. </p>
+<h5 id="oauth2-support">OAuth2 support</h5>
+<p>The first step to showing events from Google Calendar is to be able to complete an <code class="prettyprint">OAuth2</code> flow. I decided to use the <a href="https://developers.google.com/identity/protocols/oauth2/limited-input-device">device flow</a> given the limited input capabilities of the ESP 32. </p>
+<p>MicroPython does not have any libraries that work with <code class="prettyprint">OAuth2</code>, so I decided to write one. Here is the <a href="https://github.com/micropython/micropython-lib/pull/407">PR</a> that I eventually made to the <a href="https://github.com/micropython/micropython-lib">micropython-lib</a> GitHub repo which adds support for this specification. This ended up being pretty straightforward, given my familiarity with OAuth2 (having authored <a href="https://github.com/openid/AppAuth-JS">this</a> library before).</p>
+<h5 id="building-a-limited-ui-toolkit">Building a limited UI-Toolkit</h5>
+<p>The <code class="prettyprint">InkPlate</code> has a decent <a href="https://github.com/e-radionicacom/Inkplate-6-micropython/blob/master/gfx.py">Graphics</a> API, but rather than having to hard-code coordinates to render UI i decided to take minor detour and build a mini UI Toolkit from first principles based on the graphics primitives that were supported. I took a lot of inspiration from the <em>existing</em> Android UI View system and build a small subset of those APIs. This is what my progress looked like over time.</p>
+<h6 id="measuring-text">Measuring text</h6>
+<p>The first step was to be able to measure the text to be able to compute how much space <code class="prettyprint">text</code> with a given <code class="prettyprint">text size</code> would occupy on the screen. The <code class="prettyprint">InkPlate</code> uses bitmap fonts, so i ended up using a look-up-table for widths and heights for individual letters for a given size.</p>
+<p>
+  <img src="/assets/images/e_ink_step_1.jpg" 
+       alt="Top View" title="Step 1: Measuring text" width="640px" />
+</p>
+<h6 id="columns-alignment-and-padding">Columns, Alignment and Padding</h6>
+<p>Now that I had text measurements I could start drawing some text in <code class="prettyprint">Columns</code> and <code class="prettyprint">Rows</code> (these are the containers supported by the layout system). I managed to also implement <code class="prettyprint">padding</code> and text <code class="prettyprint">alignments</code>. Not perfect, but still pretty good progress. </p>
+<p>
+  <img src="/assets/images/e_ink_step_2.jpg" 
+       alt="Top View" title="Step 2: Columns, Padding & Alignments" width="640px" />
+</p>
+<h6 id="columnar-layouts-and-alignments">Columnar Layouts and alignments</h6>
+<p>Now that I had some basic building blocks, I decided to go further and implement more complex layouts. I implemented support for <code class="prettyprint">aligning</code> containers and fixed a lot of bugs when nesting containers. You can also see <code class="prettyprint">text alignments</code> within individual <code class="prettyprint">Column</code> containers working.</p>
+<p>
+  <img src="/assets/images/e_ink_step_3.jpg" 
+       alt="Top View" title="Step 3: Columnar Layouts & Nested Containers" width="640px" />
+</p>
+<h6 id="supporting-images">Supporting Images</h6>
+<p>I finally added support for <code class="prettyprint">Image</code> nodes to layouts. This is also when I started to add some much needed UI polish. </p>
+<p>
+  <img src="/assets/images/e_ink_step_4.jpg" 
+       alt="Top View" title="Step 4: Supporting Images & Initial UI" width="640px" />
+</p>
+<h6 id="miscellaneous-features">Miscellaneous Features</h6>
+<p>I also worked on other additional features along the way, including:</p>
+<ul>
+<li>Support &amp; configuration for time zones. The ESP 32 does <em>not</em> ship with a Time Zone database and the real time clocks only support UTC seconds after epoch. </li>
+<li>Support for token caching &amp; persistence. This was a big feature because this would mean that I could serialize the <code class="prettyprint">auth state</code> on the device. This meant that I did not have to do the full <code class="prettyprint">OAuth2</code> dance every single time I started the app.</li>
+<li>A small <code class="prettyprint">DateTime</code> library capable of formatting dates in a couple of different formats. </li>
+<li>Support for <code class="prettyprint">Deep Sleep</code>. This would allow the device to conserve power by not having to do anything. The device would only wake up once every <code class="prettyprint">N</code> minutes to refresh the events in the <code class="prettyprint">Calendar</code>. </li>
+</ul>
+<h4 id="summary">Summary</h4>
+<p>This project was a <strong>lot of fun</strong>. I learnt a lot, especially given that I did not intend to build a UI Toolkit when I started working on the project. MicroPython was incredible to prototype with (despite the lack of a graphical debugger). I would highly recommending picking up a board that supports MicroPython for your next hardware project. </p>
+<h4 id="epilogue">Epilogue</h4>
+<p>All the source code that I wrote for the project is on <a href="https://github.com/tikurahul/Inkplate-6-micropython">GitHub</a>. The entry point is a file called <a href="https://github.com/tikurahul/Inkplate-6-micropython/blob/master/app.py"> <code class="prettyprint">app.py</code></a>. Bear in mind, that all of this code was written in ~ a week long period. I also plan on making some more minor improvements to the UI. </p>
+              </div>
+            </div>
+            <footer class="footer">
+              <p>
+                Rahul Ravikumar &nbsp;
+                  <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+                  <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+                  <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+                  <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+              </p>
+            </footer>
+          </main>
+          <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+          <script src="/assets/highlight/highlight.pack.js"></script>
+          <script type="text/javascript">
+            // Highlight code snippets
+            document.addEventListener('DOMContentLoaded', (event) => {
+              document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+              });
+            });
+          </script>
+        </div>
+      </body>
+    </html>
+  

@@ -1,7 +1,7 @@
 buildscript {
-    ext.kotlin_version = "1.4.10"
-    ext.ktor_version = "1.4.0"
-    ext.appengine_version = "1.9.82"
+    ext.kotlin_version = "1.4.21"
+    ext.ktor_version = "1.5.0"
+    ext.appengine_version = "1.9.84"
     ext.appengine_plugin_version = "2.2.0"
 
     repositories {
