@@ -12,5 +12,4 @@ Here is a list of all the blog posts.
 * [Introducing androidx.dev](/blog/androidx_dev.html)
 * [Style Transfer from first principles](/blog/style_transfer.html)
 * [Path Tracing with Jetpack Compose](/blog/path_tracing_compose.html)
-* [Building a UI-Toolkit for an E-Ink Display with an ESP 32
-](/blog/e_ink_dashboard.html)
+* [Building an E-Ink Calendar, and a UI Toolkit along the way](/blog/e_ink_dashboard.html)
