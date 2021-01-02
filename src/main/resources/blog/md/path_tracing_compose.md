@@ -1,6 +1,6 @@
 Sept 29 2020, Saturday
 
-### Path Tracing with Jetpack Compose
+## Path Tracing with Jetpack Compose
 
 Ever since [Jetpack Compose](https://developer.android.com/jetpack/compose) went `alpha` I have been excited to start experimenting with the new APIs. 
 
@@ -12,9 +12,9 @@ I have also been watching a lot of [Frasier](https://en.wikipedia.org/wiki/Frasi
 
 I thought it might be fun to build this animation as a way to learn how to do custom drawing and animations using Compose. 
 
-### Building the demo
+## Building the demo
 
-##### SVG
+### SVG
 
 I searched for some vector artwork that represented the path coordinates in the animation. I found an [SVG](/files/frasier.svg) that had what I needed. 
 
@@ -24,7 +24,7 @@ I did not want to parse SVG to get to the actual coordinates. I discovered a won
 [[40.75,851.7940063476562],[45.798627853393555,851.3941040039062],[50.20281219482422,848.9244995117188],[52.9980583190918,844.7092895507812], ...]
 ```
 
-##### Custom Drawing in Compose
+### Custom Drawing in Compose
 
 Now that we have the `coordinates`, we just need to draw `Path`s on the `Canvas`. To do custom drawing, we need to use the `Canvas` `@Composable`. Here is a _stub_ for the composable. 
 
@@ -122,7 +122,7 @@ fun scaledOffset(
 
 That's really it. We have a full implementation of a `PathTracer` that can draw the path we want while keeping track of the `endIndex` we want to stop at.
 
-##### Animations
+### Animations
 
 All we really need to to in order to animate the `PathTracer`, is to control `endIndex`. For that we can define a `transition`. 
 
@@ -166,7 +166,7 @@ We can use the `IntPropKey` to obtain the current `endIndex` while the animation
 
 All we need to do is to pass that to the `PathTracer` `@Composable` to start the animation. 
 
-##### Parsing coordinates
+### Parsing coordinates
 
 We need to parse the `JSONArray` of coordinates and pass that to the `TransitionsPathTracer`. 
 
@@ -204,10 +204,8 @@ fun Tracing() {
 }
 ```
 
-### Result
+## Result
 
 This is what it looks like. 
 
-<p>
-  <img src="/assets/images/frasier.gif" alt="Path Tracing" title="Path Tracing" width="400px" />
-</p>
+<img src="/assets/images/frasier.gif" alt="Path Tracing" style="width: 20rem;" />

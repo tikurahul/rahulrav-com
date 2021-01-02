@@ -1,47 +1,55 @@
 
-    <!doctype html>
+  <!doctype html>
     <html lang="en">
       <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Bokehlicious Selfies</title>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css">
-        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
-        <link rel="stylesheet" href="/assets/styles/blog.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
       </head>
-      <body class="mdl-layout mdl-js-layout">
-        <header class="mdl-layout__header mdl-layout__header--scroll">
-          <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">Bokehlicious Selfies</span>
-            <div class="mdl-layout-spacer"></div>
-            <nav class="mdl-navigation">
-              <a class="mdl-navigation__link" href="/blog/toc.html">More</a>
-            </nav>
-          </div>
-        </header>
-        <div class="mdl-layout__drawer">
-          <span class="mdl-layout-title">Rahul's Blog</span>
-          <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/blog/toc.html">Other Articles</a>
-          </nav>
+      <body class="mdc-typography">
+        
+    <aside class="mdc-drawer mdc-drawer--dismissible">
+      <div class="mdc-drawer__header">
+        <h3 class="mdc-drawer__title">Rahul's Blog</h3>
+      </div>
+      <div class="mdc-drawer__content">
+        <div class="mdc-list">
+          <li class="mdc-list-item" tabindex="0">
+            <span class="mdc-list-item__ripple"></span>
+            <span class="mdc-list-item__text">Other articles</span>
+          </li>
         </div>
-        <div class="content">
-          <main class="mdl-layout__content">
-            <div class="mdl-grid content">
-              <div class="mdl-cell mdl-cell--8-col">
-                <p>Mar 27 2020, Friday</p>
-<h3 id="bokehlicious-selfies">Bokehlicious Selfies</h3>
+      </div>
+    </aside>
+
+    <div class="mdc-drawer-app-content">
+      <header class="mdc-top-app-bar app-bar" id="app-bar">
+        <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+            <span class="mdc-top-app-bar__title">Bokehlicious Selfies</span>
+          </section>
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+            <span>
+              <a href="/blog/toc.html">More</a>
+            </span>
+          </section>
+        </div>
+      </header>
+
+      <main class="main-content" id="main-content">
+        <div class="mdc-top-app-bar--fixed-adjust">
+          <section class="content">
+            <p>Mar 27 2020, Friday</p>
+<h2 id="bokehlicious-selfies">Bokehlicious Selfies</h2>
 <p>I signed up for the excellent <a href="https://course.fast.ai/">fastai MOOC</a> recently, and one of the project ideas I had was the idea of adding <a href="https://en.wikipedia.org/wiki/Bokeh"> <code class="prettyprint">bokehs</code></a> to selfies using Deep learning. Most phones have a not so great selfie (front-side) camera and therefore this idea has some merits.</p>
 <p>Google Photos does something like this and it's quite magical <em>when it works</em>. So i wanted to experiment with a simple pipeline which could be used to add a <code class="prettyprint">bokeh</code> to a selfie that did not have one. </p>
-<h3 id="breaking-down-the-problem">Breaking down the problem</h3>
+<h2 id="breaking-down-the-problem">Breaking down the problem</h2>
 <p>One idea I had was to be able to use image-segmentation to identify and build a segmentation <code class="prettyprint">mask</code> around the person in the image. For this I used the excellent <code class="prettyprint">torchvision.models.detection.maskrcnn_resnet50_fpn</code> pretrainted model.  This model has been trained with the <a href="http://cocodataset.org/#home">COCO dataset</a>, and therefore is pretty great out of the box for the given use-case.</p>
 <p>Once we have a segmentation <code class="prettyprint">mask</code> of the person in the image; we could then use that to split the image into a <code class="prettyprint">foreground</code> or a <code class="prettyprint">subject</code>, and the rest of it would be <code class="prettyprint">background</code>. I could then use image convolution to create a <code class="prettyprint">bokeh</code> effect on the <code class="prettyprint">background</code> image and merge it with the <code class="prettyprint">subject</code> to give it a nice pop.</p>
 <p>One key thing to remember is that the <code class="prettyprint">merged</code> image is <em>only</em> as good as the segmentation <code class="prettyprint">mask</code>, but given I am restricting the input image type to a portrait <code class="prettyprint">selfie</code> this works <em>most</em> of the time.</p>
-<h3 id="lets-write-some-code">Let's write some code</h3>
-<h4 id="the-bokeh-effect">The Bokeh Effect</h4>
+<h2 id="lets-write-some-code">Let's write some code</h2>
+<h3 id="the-bokeh-effect">The Bokeh Effect</h3>
 <p>I read this <a href="https://www.scratchapixel.com/lessons/digital-imaging/simple-image-manipulations/bookeh-effect">incredible article</a> on how to simulate a <code class="prettyprint">bokeh</code> effect.  I then adapted the idea and wrote a quick <code class="prettyprint">Python</code> implementation using some helpers from <code class="prettyprint">OpenCV</code>. </p>
 <p>Let's start with our imports.</p>
 <pre class="prettyprint linenums"><code class="python language-python">import cv2
@@ -88,9 +96,7 @@ print(kernel)</code></pre>
 image = cv2.imread('images/selfie-1.jpg')
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 plt.imshow(image)</code></pre>
-<p>
-  <img src="/assets/images/selfie_original.png" alt="Original" title="Original" width="640px" />
-</p>
+<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/selfie_original.png" alt="Original" /></p>
 <p>Now, let's define the actual <code class="prettyprint">bokeh</code> function that applies the kernel.</p>
 <pre class="prettyprint linenums"><code class="python language-python">def bokeh(image):
     r,g,b = cv2.split(image)
@@ -116,11 +122,9 @@ plt.imshow(image)</code></pre>
 
 result = bokeh(image)
 plt.imshow(result)</code></pre>
-<p>
-  <img src="/assets/images/selfie_bokeh_full.png" alt="Full Bokeh" title="Full Bokeh" width="640px" />
-</p>
+<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/selfie_bokeh_full.png" alt="Full Bokeh" /></p>
 <p>We now have a method that can generate a <code class="prettyprint">bokeh</code> effect for a given image.</p>
-<h4 id="image-segmentation">Image Segmentation</h4>
+<h3 id="image-segmentation">Image Segmentation</h3>
 <p>We now need to use the <code class="prettyprint">torchvision.models.detection.maskrcnn_resnet50_fpn</code> pretrained model to segment the above image to split into <code class="prettyprint">foreground</code> &amp; <code class="prettyprint">background</code>. Let's do that.</p>
 <pre class="prettyprint linenums"><code class="python language-python">import torch
 import torchvision
@@ -143,10 +147,8 @@ masks = prediction['masks'].detach().numpy()
 mask = masks[0][0]  
 plt.imshow(masks[0][0])</code></pre>
 <p>This produces a segmentation-mask which looks like:</p>
-<p>
-  <img src="/assets/images/selfie_segmentation_mask.png" alt="Segmentation Mask" title="Segmentation Mask" width="640px" />
-</p>
-<h4 id="splitting--merging">Splitting &amp; Merging</h4>
+<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/selfie_segmentation_mask.png" alt="Segmentation Mask" /></p>
+<h3 id="splitting--merging">Splitting &amp; Merging</h3>
 <p>Now that we have a segmentation-mask we can split the image into <code class="prettyprint">foreground</code> and <code class="prettyprint">background</code> like so:</p>
 <pre class="prettyprint linenums"><code class="python language-python">inverted = np.abs(1. - mask)
 
@@ -163,42 +165,44 @@ background = cv2.merge((ir, ig, ib))
 
 subject = np.asarray(subject * 255., dtype='uint8')
 plt.imshow(subject)</code></pre>
-<p>
-  <img src="/assets/images/selfie_foreground.png" alt="Foreground" title="Foreground" width="640px" />
-</p>
+<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/selfie_foreground.png" alt="Foreground" /></p>
 <p>Let's now apply the <code class="prettyprint">bokeh</code> effect on the <code class="prettyprint">background</code> image and them merge both images.</p>
 <pre class="prettyprint linenums"><code class="python language-python">background_bokeh = bokeh(np.asarray(background * 255, dtype='uint8'))
 background_bokeh = np.asarray(background_bokeh * 255, dtype='uint8')
 combined = cv2.addWeighted(subject, 1., background_bokeh, 1., 0)
 plt.imshow(combined)</code></pre>
-<p>
-  <img src="/assets/images/selfie_bokeh_pop.png" alt="Selfie with Bokeh" title="Selfie with Bokeh" width="640px" />
-</p>
-<h3 id="conclusion">Conclusion</h3>
+<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/selfie_bokeh_pop.png" alt="Selfie with Bokeh" /></p>
+<h2 id="conclusion">Conclusion</h2>
 <p>Deep learning is magical for applications like these. I hope you enjoyed reading the article.</p>
-              </div>
-            </div>
-            <footer class="footer">
+            <section class="footer">
               <p>
-                Rahul Ravikumar &nbsp;
-                  <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
-                  <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
-                  <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
-                  <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+              Rahul Ravikumar &nbsp;
+                <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+                <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+                <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+                <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
               </p>
-            </footer>
-          </main>
-          <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-          <script src="/assets/highlight/highlight.pack.js"></script>
-          <script type="text/javascript">
-            // Highlight code snippets
-            document.addEventListener('DOMContentLoaded', (event) => {
-              document.querySelectorAll('pre code').forEach((block) => {
-                hljs.highlightBlock(block);
-              });
-            });
-          </script>
+            </section>
+          </section>
         </div>
+      </main>
+    </div>
+  
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
+        <link rel="stylesheet" href="/assets/core/page.css">
+        <script type="text/javascript" src="/assets/core/page.js"></script>
+        <script type="text/javascript" src="/assets/highlight/highlight.pack.js"></script>
+        <script type="text/javascript">
+          // Highlight code snippets
+          document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightBlock(block);
+            });
+          });
+        </script>
       </body>
     </html>
   

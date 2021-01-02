@@ -19,20 +19,28 @@ gcloud config set project rahulrav-com
 ### Local Development, and Writing a Blog
 
 * Start the App Engine development server using `./gradlew run`.
-* In another terminal run `./gradlew -t build` which creates a watch on all the `src` folders, and sets up live reload.
-* From the `tools` directory run `npm run-script blog` to setup a watch on the `resources/blog/md` folder which is the input to
-  the generator responsible in generating the HTML. Also update `manifest.json` to add blog metadata.
+* In another terminal run `./gradlew -t build` which creates a watch on all the `src`
+  folders, and sets up live reload.
+* From the `tools` directory run `yarn watch` to setup a watch on the `resources/blog/md`
+  folder which is the input to the generator responsible in generating the HTML. Also update `manifest.json` to add blog metadata.
+
+### Other useful commands
+
+```bash
+# Build tooling
+yarn build-tools
+
+# Build Template
+yarn build-core
+
+# Local Development for template and tools
+yarn watch-core && yarn watch-tools
+```
 
 ### Other Admin Actions
 
-To clean existing indexes:
+To deploy the app:
 
 ```bash
-gcloud datastore cleanup-indexes src/main/webapp/WEB-INF/index.yaml
-```
-
-Deploy Indexes:
-
-```bash
-./gradlew appengineDeployIndex
+gcloud appengineDeploy
 ```

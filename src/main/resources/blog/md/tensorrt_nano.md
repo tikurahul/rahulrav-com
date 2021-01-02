@@ -1,10 +1,10 @@
-#### TensorRT and the Jetson Nano
+## TensorRT and the Jetson Nano
 
 This blog post is a continuation of my previous article on [Self Driving RC Cars](/blog/self_driving_radio_controlled_cars.html).
 
 After setting up my RC car with a Jetson Nano i figured that I should go beyond the standard ML models. I wanted to try some Transfer learning based on `Resnet 18`. 
 
-#### Preliminary Benchmarks
+## Preliminary Benchmarks
 
 The first step was going to be benchmarking the existing ML model to see how much headroom I had. `Resnet 18` was going to be a more complicated model and I needed to make sure that the Jetson Nano was capable enough.
 
@@ -12,7 +12,7 @@ The standard [Donkey Car](https://docs.donkeycar.com) model is based on the Nvid
 
 I was using a Camera resolution of `224px x 224px` and upon profiling my ML model I determined that the standard [Donkey Car](https://docs.donkeycar.com) model was doing inferences at the rate of **`25 Hz`** or about **`25` inferences per second**. It's important to remember that the RC car needs to do inferences at `20 Hz` at the very least for it to be capable of self-driving. I was currently `~5 Hz` faster than the required minimum. Not great.
 
-#### Performance Mode
+## Performance Mode
 
 The Jetson Nano is also capable of running in `performance` mode. To run a Nano in `performance` mode you need to run the following script. This script runs the Nano in maximum clock speed. I also set the fan to high given I had a [Noctua](https://www.newegg.com/noctua-nf-a4x20-5v-pwm-case-fan/p/1YF-000T-00094) fan installed. This would ensure that my Nano would not get thermal throttled.
 
@@ -27,11 +27,11 @@ sudo sh -c 'echo 255 > /sys/devices/pwm-fan/target_pwm'
 
 Once I set the Nvidia Jetson to run in performance mode, my inference rate went up to **`40-42 Hz`**. Much better !
 
-#### Hello TensorRT
+## Hello TensorRT
 
 `TensorRT` is a framework from Nvidia for high-performance inference. The Nvidia Jetson Nano supports `TensorRT` via the `Jetpack` SDK. To make inferences faster, I realized that I was going to have to convert my `Keras` model to a `TensorRT` model.
 
-##### Freezing the Keras Model
+### Freezing the Keras Model
 
 The first step in converting a `Keras` model to a `TensorRT` model is freezing the model.
 
@@ -103,7 +103,7 @@ The above script stores the frozen graph definition as a `protobuf`. I could now
 convert-to-uff ../../models/Linear.pb
 ```
 
-##### Inference
+### Inference
 
 Now that I had the UFF model, I needed to use the `tensorrt` python API and `pycuda` to run inferences. 
 
@@ -209,19 +209,38 @@ class TensorRTLinear(KerasPilot):
 
 [Here](https://github.com/tikurahul/donkey/blob/donkey-v3-dev/donkeycar/parts/tensorrt.py) is the full source code on GitHub.
 
-##### Benchmarks
+## Benchmarks
 
 When using the `TensorRT` based UFF model the Jetson Nano, I could do inferences at a frequency of **`100-105Hz`**. 
 This meant that I had the headroom to build a `Resnet 18` based model.
 
-#### Final Comparison
+## Final Comparison
 
 Here is the final comparison of all techniques used to speed up ML inference. Using `TensorRT`, I had improved the rate of inference by **`2.5x`** the previous result.
 
-| Model                               | Inference Frequency |
-| ----------------------------------- | --------------------|
-| Keras [TF-GPU]                      | `25 Hz`             |
-| Keras [TF-GPU + Performance Mode]   | `40-42 Hz`          |
-| TensorRT                            | `100-105 Hz`        |
-
-
+<div class="mdc-data-table">
+    <div class="mdc-data-table__table-container">
+        <table class="mdc-data-table__table" aria-label="Benchmarks">
+        <thead>
+            <tr class="mdc-data-table__header-row">
+                <th class="mdc-data-table__header-cell">Model</th>
+                <th class="mdc-data-table__header-cell">Inference Frequency</th>
+            </tr>
+        </thead>
+        <tbody class="mdc-data-table__content">
+            <tr class="mdc-data-table__row">
+                <td class="mdc-data-table__cell">Keras [TF-GPU]</td>
+                <td class="mdc-data-table__cell">25 Hz</td>
+            </tr>
+            <tr class="mdc-data-table__row">
+                <td class="mdc-data-table__cell">Keras [Performance Mode]</td>
+                <td class="mdc-data-table__cell">40-42 Hz</td>
+            </tr>
+            <tr class="mdc-data-table__row">
+                <td class="mdc-data-table__cell">TensorRT</td>
+                <td class="mdc-data-table__cell">100-105 Hz</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+</div>

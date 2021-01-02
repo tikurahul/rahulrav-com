@@ -1,12 +1,12 @@
 Mar 27 2020, Friday
 
-### Bokehlicious Selfies
+## Bokehlicious Selfies
 
 I signed up for the excellent [fastai MOOC](https://course.fast.ai/) recently, and one of the project ideas I had was the idea of adding [`bokehs`](https://en.wikipedia.org/wiki/Bokeh) to selfies using Deep learning. Most phones have a not so great selfie (front-side) camera and therefore this idea has some merits.
 
 Google Photos does something like this and it's quite magical _when it works_. So i wanted to experiment with a simple pipeline which could be used to add a `bokeh` to a selfie that did not have one. 
 
-### Breaking down the problem
+## Breaking down the problem
 
 One idea I had was to be able to use image-segmentation to identify and build a segmentation `mask` around the person in the image. For this I used the excellent `torchvision.models.detection.maskrcnn_resnet50_fpn` pretrainted model.  This model has been trained with the [COCO dataset](http://cocodataset.org/#home), and therefore is pretty great out of the box for the given use-case.
 
@@ -14,9 +14,9 @@ Once we have a segmentation `mask` of the person in the image; we could then use
 
 One key thing to remember is that the `merged` image is _only_ as good as the segmentation `mask`, but given I am restricting the input image type to a portrait `selfie` this works _most_ of the time.
 
-### Let's write some code
+## Let's write some code
 
-#### The Bokeh Effect
+### The Bokeh Effect
 
 I read this [incredible article](https://www.scratchapixel.com/lessons/digital-imaging/simple-image-manipulations/bookeh-effect) on how to simulate a `bokeh` effect.  I then adapted the idea and wrote a quick `Python` implementation using some helpers from `OpenCV`. 
 
@@ -81,9 +81,7 @@ image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 plt.imshow(image)
 ```
 
-<p>
-  <img src="/assets/images/selfie_original.png" alt="Original" title="Original" width="640px" />
-</p>
+![Original] (/assets/images/selfie_original.png)
 
 Now, let's define the actual `bokeh` function that applies the kernel.
 
@@ -114,13 +112,11 @@ result = bokeh(image)
 plt.imshow(result)
 ```
 
-<p>
-  <img src="/assets/images/selfie_bokeh_full.png" alt="Full Bokeh" title="Full Bokeh" width="640px" />
-</p>
+![Full Bokeh] (/assets/images/selfie_bokeh_full.png)
 
 We now have a method that can generate a `bokeh` effect for a given image.
 
-#### Image Segmentation
+### Image Segmentation
 
 We now need to use the `torchvision.models.detection.maskrcnn_resnet50_fpn` pretrained model to segment the above image to split into `foreground` & `background`. Let's do that.
 
@@ -149,11 +145,9 @@ plt.imshow(masks[0][0])
 
 This produces a segmentation-mask which looks like:
 
-<p>
-  <img src="/assets/images/selfie_segmentation_mask.png" alt="Segmentation Mask" title="Segmentation Mask" width="640px" />
-</p>
+![Segmentation Mask] (/assets/images/selfie_segmentation_mask.png)
 
-#### Splitting & Merging
+### Splitting & Merging
 
 Now that we have a segmentation-mask we can split the image into `foreground` and `background` like so:
 
@@ -175,9 +169,7 @@ subject = np.asarray(subject * 255., dtype='uint8')
 plt.imshow(subject)
 ```
 
-<p>
-  <img src="/assets/images/selfie_foreground.png" alt="Foreground" title="Foreground" width="640px" />
-</p>
+![Foreground] (/assets/images/selfie_foreground.png)
 
 Let's now apply the `bokeh` effect on the `background` image and them merge both images.
 
@@ -188,11 +180,8 @@ combined = cv2.addWeighted(subject, 1., background_bokeh, 1., 0)
 plt.imshow(combined)
 ```
 
-<p>
-  <img src="/assets/images/selfie_bokeh_pop.png" alt="Selfie with Bokeh" title="Selfie with Bokeh" width="640px" />
-</p>
+![Selfie with Bokeh] (/assets/images/selfie_bokeh_pop.png)
 
-
-### Conclusion
+## Conclusion
 
 Deep learning is magical for applications like these. I hope you enjoyed reading the article.

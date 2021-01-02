@@ -1,51 +1,59 @@
 
-    <!doctype html>
+  <!doctype html>
     <html lang="en">
       <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Path Tracing with Jetpack Compose</title>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css">
-        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
-        <link rel="stylesheet" href="/assets/styles/blog.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
       </head>
-      <body class="mdl-layout mdl-js-layout">
-        <header class="mdl-layout__header mdl-layout__header--scroll">
-          <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">Path Tracing with Jetpack Compose</span>
-            <div class="mdl-layout-spacer"></div>
-            <nav class="mdl-navigation">
-              <a class="mdl-navigation__link" href="/blog/toc.html">More</a>
-            </nav>
-          </div>
-        </header>
-        <div class="mdl-layout__drawer">
-          <span class="mdl-layout-title">Rahul's Blog</span>
-          <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/blog/toc.html">Other Articles</a>
-          </nav>
+      <body class="mdc-typography">
+        
+    <aside class="mdc-drawer mdc-drawer--dismissible">
+      <div class="mdc-drawer__header">
+        <h3 class="mdc-drawer__title">Rahul's Blog</h3>
+      </div>
+      <div class="mdc-drawer__content">
+        <div class="mdc-list">
+          <li class="mdc-list-item" tabindex="0">
+            <span class="mdc-list-item__ripple"></span>
+            <span class="mdc-list-item__text">Other articles</span>
+          </li>
         </div>
-        <div class="content">
-          <main class="mdl-layout__content">
-            <div class="mdl-grid content">
-              <div class="mdl-cell mdl-cell--8-col">
-                <p>Sept 29 2020, Saturday</p>
-<h3 id="path-tracing-with-jetpack-compose">Path Tracing with Jetpack Compose</h3>
+      </div>
+    </aside>
+
+    <div class="mdc-drawer-app-content">
+      <header class="mdc-top-app-bar app-bar" id="app-bar">
+        <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+            <span class="mdc-top-app-bar__title">Path Tracing with Jetpack Compose</span>
+          </section>
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+            <span>
+              <a href="/blog/toc.html">More</a>
+            </span>
+          </section>
+        </div>
+      </header>
+
+      <main class="main-content" id="main-content">
+        <div class="mdc-top-app-bar--fixed-adjust">
+          <section class="content">
+            <p>Sept 29 2020, Saturday</p>
+<h2 id="path-tracing-with-jetpack-compose">Path Tracing with Jetpack Compose</h2>
 <p>Ever since <a href="https://developer.android.com/jetpack/compose">Jetpack Compose</a> went <code class="prettyprint">alpha</code> I have been excited to start experimenting with the new APIs. </p>
 <p>One of the first demo's that blew me away and forced me to learn and explore the old graphics APIs is a series of articles written by <a href="https://twitter.com/romainguy">Romain Guy</a>. One article in particular which I enjoyed reading was about <a href="https://web.archive.org/web/20140805033348/http://www.curious-creature.org/2013/12/21/android-recipe-4-path-tracing/">Path Tracing</a> (A novel use of <a href="https://developer.android.com/reference/android/graphics/PathEffect.html">PathEffect</a>). </p>
 <p>I have also been watching a lot of <a href="https://en.wikipedia.org/wiki/Frasier">Frasier</a> and the show has a really elegant path tracing animation. Here is what it looks like.</p>
 <iframe class="video" src="https://www.youtube.com/embed/C-SFhhnBwdA"></iframe>
 <p><br/></p>
 <p>I thought it might be fun to build this animation as a way to learn how to do custom drawing and animations using Compose. </p>
-<h3 id="building-the-demo">Building the demo</h3>
-<h5 id="svg">SVG</h5>
+<h2 id="building-the-demo">Building the demo</h2>
+<h3 id="svg">SVG</h3>
 <p>I searched for some vector artwork that represented the path coordinates in the animation. I found an <a href="/files/frasier.svg">SVG</a> that had what I needed. </p>
 <p>I did not want to parse SVG to get to the actual coordinates. I discovered a wonderful tool called <a href="https://spotify.github.io/coordinator/">Coordinator</a> which converts SVG to XY coordinates. It was perfect for my usecase. Here are what the output <code class="prettyprint">coordinates</code> looked like:</p>
 <pre class="prettyprint linenums"><code class="json language-json">[[40.75,851.7940063476562],[45.798627853393555,851.3941040039062],[50.20281219482422,848.9244995117188],[52.9980583190918,844.7092895507812], ...]</code></pre>
-<h5 id="custom-drawing-in-compose">Custom Drawing in Compose</h5>
+<h3 id="custom-drawing-in-compose">Custom Drawing in Compose</h3>
 <p>Now that we have the <code class="prettyprint">coordinates</code>, we just need to draw <code class="prettyprint">Path</code>s on the <code class="prettyprint">Canvas</code>. To do custom drawing, we need to use the <code class="prettyprint">Canvas</code> <code class="prettyprint">@Composable</code>. Here is a <em>stub</em> for the composable. </p>
 <pre class="prettyprint linenums"><code class="kotlin language-kotlin">// `points` are the set of points being drawn.
 // `endOffset` represents the point until which the part has been animated. Starts off from the second point.
@@ -128,7 +136,7 @@ fun PathTracer(points: List&lt;Offset&gt;, endIndex: Int = 2) {
     return Offset(scaledX, scaledY)
 }</code></pre>
 <p>That's really it. We have a full implementation of a <code class="prettyprint">PathTracer</code> that can draw the path we want while keeping track of the <code class="prettyprint">endIndex</code> we want to stop at.</p>
-<h5 id="animations">Animations</h5>
+<h3 id="animations">Animations</h3>
 <p>All we really need to to in order to animate the <code class="prettyprint">PathTracer</code>, is to control <code class="prettyprint">endIndex</code>. For that we can define a <code class="prettyprint">transition</code>. </p>
 <pre class="prettyprint linenums"><code class="kotlin language-kotlin">// Transition Based Animation
 val OffsetKey = IntPropKey()
@@ -164,7 +172,7 @@ fun TransitionsPathTracer(points: List&lt;Offset&gt;) {
 <p>Once we have the definition we use the <code class="prettyprint">transition</code> <code class="prettyprint">@Composable</code> to build the <code class="prettyprint">TransitionState</code>.<br />
 We can use the <code class="prettyprint">IntPropKey</code> to obtain the current <code class="prettyprint">endIndex</code> while the animation is running. </p>
 <p>All we need to do is to pass that to the <code class="prettyprint">PathTracer</code> <code class="prettyprint">@Composable</code> to start the animation. </p>
-<h5 id="parsing-coordinates">Parsing coordinates</h5>
+<h3 id="parsing-coordinates">Parsing coordinates</h3>
 <p>We need to parse the <code class="prettyprint">JSONArray</code> of coordinates and pass that to the <code class="prettyprint">TransitionsPathTracer</code>. </p>
 <pre class="prettyprint linenums"><code class="kotlin language-kotlin">fun parse(): List&lt;Offset&gt; {
     // Use a better JSON parser
@@ -197,34 +205,38 @@ fun Tracing() {
     val points = remember { parse() }
     TransitionsPathTracer(points = points)
 }</code></pre>
-<h3 id="result">Result</h3>
+<h2 id="result">Result</h2>
 <p>This is what it looks like. </p>
-<p>
-  <img src="/assets/images/frasier.gif" alt="Path Tracing" title="Path Tracing" width="400px" />
-</p>
-              </div>
-            </div>
-            <footer class="footer">
+<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/frasier.gif" alt="Path Tracing" style="width: 20rem;" /></p>
+            <section class="footer">
               <p>
-                Rahul Ravikumar &nbsp;
-                  <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
-                  <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
-                  <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
-                  <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+              Rahul Ravikumar &nbsp;
+                <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+                <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+                <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+                <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
               </p>
-            </footer>
-          </main>
-          <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-          <script src="/assets/highlight/highlight.pack.js"></script>
-          <script type="text/javascript">
-            // Highlight code snippets
-            document.addEventListener('DOMContentLoaded', (event) => {
-              document.querySelectorAll('pre code').forEach((block) => {
-                hljs.highlightBlock(block);
-              });
-            });
-          </script>
+            </section>
+          </section>
         </div>
+      </main>
+    </div>
+  
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
+        <link rel="stylesheet" href="/assets/core/page.css">
+        <script type="text/javascript" src="/assets/core/page.js"></script>
+        <script type="text/javascript" src="/assets/highlight/highlight.pack.js"></script>
+        <script type="text/javascript">
+          // Highlight code snippets
+          document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightBlock(block);
+            });
+          });
+        </script>
       </body>
     </html>
   

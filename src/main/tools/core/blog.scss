@@ -1,0 +1,44 @@
+@use 'app-theme';
+
+body {
+  font-family: unquote(app-theme.$font-family);
+  max-width: 1600px;
+  width: 100%;
+  font-size: app-theme.$font-size;
+  margin: 0 auto;
+
+  .mdc-top-app-bar__section a {
+    color: white
+  }
+}
+
+body .content {
+  padding: 0 2rem;
+
+  .video {
+    width: 60%;
+    height: 30rem;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .card {
+    display: block;
+    width: 60%;
+    margin: 2rem auto;
+  }
+
+  code {
+    font-family: unquote(app-theme.$source-font-family);
+    font-size: 16px;
+  }
+
+  .mdc-data-table thead th {
+    // Align table headers to left.
+    text-align: left;
+  }
+
+  .footer {
+    border-top: 1px solid rgb(63,81,181);
+  }
+}

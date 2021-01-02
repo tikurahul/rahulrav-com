@@ -1,6 +1,6 @@
 Feb 22 2020, Saturday
 
-### Using AndroidX Snapshot Builds
+## Using AndroidX Snapshot Builds
 
 AndroidX libraries can release once every two weeks. All development is done in the open, and you can follow along changes to the `androidx-master-dev` branch using [Android Code Search](https://cs.android.com/androidx/platform/frameworks/support).
 
@@ -11,7 +11,7 @@ The 2 week release cycle can sometimes get in your way because:
 
 To account for these use-cases recently we made `snapshot` builds available to developers. 
 
-##### What are Snapshots ?
+### What are Snapshots ?
 
 Everytime a change request is sent in the AndroidX source tree, pre-submit checks ensure that all existing tests pass. Once the change lands, our CI server picks up the change and builds all the relevant artifacts. 
 
@@ -21,25 +21,19 @@ Every `row` in the `grid` corresponds to a couple of changes that were made to t
 
 Here is an example:
 
-<p>
-  <img src="/assets/images/androidx_ci_changes.png" alt="View Changes" title="View Changes" width="640px" />
-</p>
+![View Changes] (/assets/images/androidx_ci_changes.png)
 
 Each `row` identifies a build, and is also usually accompanied by `snapshots`. These are artifacts produced as a result of the build, with the changes that were submitted as part of the build. If you don't see `snapshots` for some builds, just pick a more recent build with snapshots. That should have all the changes rolled up. 
 
-<p>
-  <img src="/assets/images/androidx_snapshot.png" alt="Snapshot" title="Snapshot" width="640px" />
-</p>
+![Snapshot] (/assets/images/androidx_snapshot.png)
 
-##### Using Snapshot builds
+### Using Snapshot builds
 
 Click on the `View Artifacts` link which looks like a ⬇️icon. [Here](https://ci.android.com/builds/submitted/6228642/androidx_snapshot/latest) is an example link. 
 
 This page lists all the `artifacts` that were built, and you can actually see them organized as a `Maven` repository. Here is what the listing for `work-runtime` looks like for example:
 
-<p>
-  <img src="/assets/images/androidx_view_artifacts.png" alt="View Artifacts" title="View Artifacts" width="640px" />
-</p>
+![View Artifacts] (/assets/images/androidx_view_artifacts.png)
 
 To use these artifacts, you should include the following snippet in your `build.gradle` file. 
 
@@ -57,4 +51,3 @@ dependencies {
 ```
 
 That's really it. You can now test the changes you want to.
-

@@ -1,50 +1,56 @@
 
-    <!doctype html>
+  <!doctype html>
     <html lang="en">
       <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Introducing androidx.dev</title>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-deep_purple.min.css">
-        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
-        <link rel="stylesheet" href="/assets/styles/blog.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
       </head>
-      <body class="mdl-layout mdl-js-layout">
-        <header class="mdl-layout__header mdl-layout__header--scroll">
-          <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">Introducing androidx.dev</span>
-            <div class="mdl-layout-spacer"></div>
-            <nav class="mdl-navigation">
-              <a class="mdl-navigation__link" href="/blog/toc.html">More</a>
-            </nav>
-          </div>
-        </header>
-        <div class="mdl-layout__drawer">
-          <span class="mdl-layout-title">Rahul's Blog</span>
-          <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/blog/toc.html">Other Articles</a>
-          </nav>
+      <body class="mdc-typography">
+        
+    <aside class="mdc-drawer mdc-drawer--dismissible">
+      <div class="mdc-drawer__header">
+        <h3 class="mdc-drawer__title">Rahul's Blog</h3>
+      </div>
+      <div class="mdc-drawer__content">
+        <div class="mdc-list">
+          <li class="mdc-list-item" tabindex="0">
+            <span class="mdc-list-item__ripple"></span>
+            <span class="mdc-list-item__text">Other articles</span>
+          </li>
         </div>
-        <div class="content">
-          <main class="mdl-layout__content">
-            <div class="mdl-grid content">
-              <div class="mdl-cell mdl-cell--8-col">
-                <p>April 6 2020, Monday</p>
-<h3 id="introducing-androidxdev">Introducing androidx.dev</h3>
+      </div>
+    </aside>
+
+    <div class="mdc-drawer-app-content">
+      <header class="mdc-top-app-bar app-bar" id="app-bar">
+        <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+            <span class="mdc-top-app-bar__title">Introducing androidx.dev</span>
+          </section>
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+            <span>
+              <a href="/blog/toc.html">More</a>
+            </span>
+          </section>
+        </div>
+      </header>
+
+      <main class="main-content" id="main-content">
+        <div class="mdc-top-app-bar--fixed-adjust">
+          <section class="content">
+            <p>April 6 2020, Monday</p>
+<h2 id="introducing-androidxdev">Introducing androidx.dev</h2>
 <p>A few weeks ago, I wrote a blog about using <a href="/blog/using_snapshot_builds.html">AndroidX Snapshot</a> builds. However, discovering the <code class="prettyprint">repository</code> URL's and keeping up with the changes in AndroidX build infrastructure can be daunting. We also wanted to make it a <em>lot</em> easier to consume AndroidX &amp; Jetpack Compose snapshot builds.</p>
 <p>To help with this problem, we wrote a new web-service to help you discover snapshots and artifacts in builds.</p>
 <p>Introducing <a href="https://androidx.dev">androidx.dev</a>.</p>
-<p>
-  <img src="/assets/images/androidx_dev.png" alt="https://androidx.dev" title="androidx.dev" width="1024px" />
-</p>
+<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/androidx_dev.png" alt="androidx.dev" style="width: 80%;" /></p>
 <p><br/></p>
 <p><a href="https://androidx.dev">androidx.dev</a> can serve as a Maven repository for serving snapshot builds. Click on the <a href="https://androidx.dev/snapshots/builds">Snapshots</a> link, to explore which builds are available. You can also get to the latest build using <a href="https://androidx.dev/snapshots/latest/artifacts">this</a> URL.</p>
-<h3 id="consuming-artifacts">Consuming Artifacts</h3>
+<h2 id="consuming-artifacts">Consuming Artifacts</h2>
 <p>Once you know the <code class="prettyprint">buildId</code>, add the following snippet to your <code class="prettyprint">build.gradle</code> file to consume artifacts from that build.</p>
-<h4 id="androidx-artifacts">AndroidX Artifacts</h4>
+<h3 id="androidx-artifacts">AndroidX Artifacts</h3>
 <pre class="prettyprint linenums"><code>repositories {
     google()
     // Note the build id in the URL. Substitute it with the build you want
@@ -57,7 +63,7 @@ dependencies {
   // Note the use of the -SNAPSHOT in the name of the artifact
   implementation "androidx.work:work-runtime:2.4.0-SNAPSHOT"
 }</code></pre>
-<h4 id="jetpack-compose-artifacts">Jetpack Compose Artifacts</h4>
+<h3 id="jetpack-compose-artifacts">Jetpack Compose Artifacts</h3>
 <p>To use the latest <a href="https://developer.android.com/jetpack/compose">Jetpack Compose</a> builds, use the snippet below:</p>
 <pre class="prettyprint linenums"><code>repositories {
     google()
@@ -72,29 +78,35 @@ dependencies {
   implementation "androidx.ui:ui-tooling:0.1.0-SNAPSHOT"
 }</code></pre>
 <p>That's really it. Hope you enjoy using this new service.</p>
-              </div>
-            </div>
-            <footer class="footer">
+            <section class="footer">
               <p>
-                Rahul Ravikumar &nbsp;
-                  <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
-                  <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
-                  <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
-                  <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+              Rahul Ravikumar &nbsp;
+                <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+                <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+                <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+                <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
               </p>
-            </footer>
-          </main>
-          <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-          <script src="/assets/highlight/highlight.pack.js"></script>
-          <script type="text/javascript">
-            // Highlight code snippets
-            document.addEventListener('DOMContentLoaded', (event) => {
-              document.querySelectorAll('pre code').forEach((block) => {
-                hljs.highlightBlock(block);
-              });
-            });
-          </script>
+            </section>
+          </section>
         </div>
+      </main>
+    </div>
+  
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
+        <link rel="stylesheet" href="/assets/core/page.css">
+        <script type="text/javascript" src="/assets/core/page.js"></script>
+        <script type="text/javascript" src="/assets/highlight/highlight.pack.js"></script>
+        <script type="text/javascript">
+          // Highlight code snippets
+          document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightBlock(block);
+            });
+          });
+        </script>
       </body>
     </html>
   

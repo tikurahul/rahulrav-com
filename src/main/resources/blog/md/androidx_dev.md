@@ -1,6 +1,6 @@
 April 6 2020, Monday
 
-### Introducing androidx.dev
+## Introducing androidx.dev
 
 A few weeks ago, I wrote a blog about using [AndroidX Snapshot](/blog/using_snapshot_builds.html) builds. However, discovering the `repository` URL's and keeping up with the changes in AndroidX build infrastructure can be daunting. We also wanted to make it a _lot_ easier to consume AndroidX & Jetpack Compose snapshot builds.
 
@@ -8,20 +8,18 @@ To help with this problem, we wrote a new web-service to help you discover snaps
 
 Introducing [androidx.dev](https://androidx.dev).
 
-<p>
-  <img src="/assets/images/androidx_dev.png" alt="https://androidx.dev" title="androidx.dev" width="1024px" />
-</p>
+<img src="/assets/images/androidx_dev.png" alt="androidx.dev" style="width: 80%;" />
 
 <br/>
 
 [androidx.dev](https://androidx.dev) can serve as a Maven repository for serving snapshot builds. Click on the [Snapshots](https://androidx.dev/snapshots/builds) link, to explore which builds are available. You can also get to the latest build using [this](https://androidx.dev/snapshots/latest/artifacts) URL.
 
 
-### Consuming Artifacts
+## Consuming Artifacts
 
 Once you know the `buildId`, add the following snippet to your `build.gradle` file to consume artifacts from that build.
 
-#### AndroidX Artifacts
+### AndroidX Artifacts
 
 ```
 repositories {
@@ -38,7 +36,7 @@ dependencies {
 }
 ```
 
-#### Jetpack Compose Artifacts
+### Jetpack Compose Artifacts
 
 To use the latest [Jetpack Compose](https://developer.android.com/jetpack/compose) builds, use the snippet below:
 

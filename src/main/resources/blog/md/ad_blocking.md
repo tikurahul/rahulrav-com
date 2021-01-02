@@ -1,6 +1,6 @@
 Dec 14 2019, Saturday
 
-#### Ad Blocking
+## Ad Blocking
 
 I have been using [uBlock Origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en) for a while, and can't imagine browsing the web without it. 
 
@@ -11,7 +11,7 @@ The ethics of ad blocking are debatable, but user security is not. I have seen t
 
 Given that most mobile browsers don't support an ad blocker, I setup [Pi-Hole](https://pi-hole.net/) which is a DNS based sink hole for ads. Also unfortunately named, I might add.
 
-#### Pi-Hole
+## Pi-Hole
 
 I used an old [Asus Tinkerboard S](https://www.asus.com/Single-Board-Computer/Tinker-Board-S/) that I was no longer using.
 I flashed the latest version of `Debian` and just ran the `Pi-Hole` installer. Things just worked. 
@@ -22,6 +22,6 @@ Once i got those steps out of the way, I turned off all the other DNS servers an
 
 Now that I had a network wide ad blocker, I disabled all conventional ad blocking software.
 
-#### Conclusion
+## Conclusion
 
 `Pi Hole` is an incredible project, which gives us back some much needed control. If you have an old single board computer lying around, give it a go and don't forget to donate to  `Pi-Hole`. 

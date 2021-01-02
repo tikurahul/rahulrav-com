@@ -1,17 +1,17 @@
 Aug 11 2019, Sunday
 
-### Kotlin Native and the Azure Kinect DK
+## Kotlin Native and the Azure Kinect DK
 
 I loved the K4Windows Developer kit and worked on some gesture based UI using the SDK a few years ago.
 Therefore, when Microsoft announced the new Azure Kinect Developer Kit, I was very excited to try it out.
 
 [Azure Kinect DK](https://azure.microsoft.com/en-us/services/kinect-dk/) has an advanced ToF camera system, a microphone array and an RGB camera. I was excited to tinker with the hardware to see what it was capable of. The Azure Kinect SDK is C/C++ based, and supports .NET bindings. Microsoft also made the SDK available for Linux. 
 
-### The SDK + Kotlin Native
+## The SDK + Kotlin Native
 
 I have been meaning to experiment with Kotlin Native, and this was a perfect opportunity. The Azure Kinect SDK on Linux has C/C++ headers, and I could therefore use the `cinterop` tool to build Kotlin Native bindings in theory. If I could get everything to work, I would not have to write C/C++ and could write pure Kotlin and get away with it.
 
-#### Setting up Gradle
+### Setting up Gradle
 
 The first step in using Kotlin Native and setting up the `cinterop` tool is setting up Gradle, and the `kotlin-multiplatform` plugin.
 
@@ -42,7 +42,7 @@ kotlin {
 
 The above gradle script essentially sets up the Kotlin Native toolchain, and some source folders. `sample.main` is the entry-point of the application. 
 
-#### Setting up `cinterop`
+### Setting up `cinterop`
 
 `cinterop` is a tool which generates Kotlin Native bindings from C header files. We therefore need to define which header files to look at in a `def` file. Here is the one I defined.
 
@@ -175,7 +175,7 @@ fun main() = helloKinect()
 
 For a complete project take a look at this [github repo](https://github.com/tikurahul/kotlin-native-kinect).
 
-### Conclusion
+## Conclusion
 
 Talking to native libraries from Kotlin Native is actually pretty straight-forward once you get used to the toolchain. 
 I spent the majority of the time setting up the `gradle` project. Once I did that consuming the C SDK was easy.

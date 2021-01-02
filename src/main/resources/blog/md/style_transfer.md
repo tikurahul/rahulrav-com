@@ -1,13 +1,13 @@
 Apr 22 2020, Tue
 
-### Style Transfer from first principles
+## Style Transfer from first principles
 
 
-#### Preface
+### Preface
 
 Ever since I started dabbling with Deep Learning, one of the papers I have wanted to implement from scratch is [A Neural Algorithm for Artistic Style](https://arxiv.org/abs/1508.06576). This paper completely transformed my perception about Deep Learning. This is because, you could see the model do something very magical; taking an ordinary photograph and adding a masters' touch to it.
 
-#### Introduction
+### Introduction
 
 For `Style Transfer` you need 2 images. The image you want to add some style to is called a `content` image. The style comes from a `style` image. 
 
@@ -15,9 +15,9 @@ The idea behind `Style Transfer` is that you have models like `VGG19` which have
 
 So if we took the activations of these deep layers for both the `content` and `style` images, and transformed the activations of the `content` image such that it started to look more like the `style` image, while still maintaining resemblance to the original `content` image; we would successfully `inject` style into the `content` image.
 
-#### Implementation
+### Implementation
 
-##### A Quick Note
+#### A Quick Note
 
 I am going to use [`PyTorch`](https://pytorch.org/) to implement this paper. There is an excellent `PyTorch` [tutorial](https://pytorch.org/tutorials/advanced/neural_style_tutorial.html) on this topic as well which serves as an excellent reference. 
 
@@ -25,7 +25,7 @@ I errored on the side of keeping the code snippets easy to read. If I were to im
 
 The full source code in this article is [here](https://colab.research.google.com/drive/1WK3wimT4ijpBv8c5U4fKcSrvpQlgqr3x).
 
-##### Layer Activations
+#### Layer Activations
 
 To get started with `Style Tranfer` it is clear that we need the layer activations from the deeper layers in a model like `VGG19`. So lets write a class that can extract the layer activations for a given image. For this we can use the pretrainined models that `PyTorch` has. 
 
@@ -117,7 +117,7 @@ The layers that we are interested in are defined in the sets `content_modules` a
 
 We attach a forward `hook` to every sub-module in the `vgg19` model so we can intercept the forward passes and store the layer activations.
 
-##### Loss Functions
+#### Loss Functions
 
 We now have a way to extract the layer activations we care about from `vgg19`. We also define 2 sets of layers that we are interested in. `content_layer_outputs` are going to useful to ensure that the output image has resemblance to the original input image. `style_layer_outputs` will be useful to determine if the artistic styles of the output image match the style in the `style` image. 
 
@@ -209,7 +209,7 @@ def loss_fn(b_content_features, s_style_features, input_tensor):
   return total_loss
 ```
 
-##### The Optimization Loop
+#### The Optimization Loop
 
 Now that we have the loss functions, we just need to put everything together. Let's load the `content` image first.
 
@@ -218,10 +218,7 @@ base_image = Image.open('/gdrive/My Drive/colab/style_transfer/labrador.jpg')
 plt.imshow(base_image)
 ```
 
-<p>
-  <img src="/assets/images/labrador.png" alt="Content Image" title="Content Image" width="640px" />
-</p>
-
+![Content Image] (/assets/images/labrador.png)
 
 Now, lets load the `style` image. I am using Kandinsky's 7th composition for the style image. 
 
@@ -230,9 +227,7 @@ style_image = Image.open('/gdrive/My Drive/colab/style_transfer/7th_composition.
 plt.imshow(style_image)
 ```
 
-<p>
-  <img src="/assets/images/kandinskys_7th.png" alt="Style Image" title="Style Image" width="640px" />
-</p>
+![Style Image] (/assets/images/kandinskys_7th.png)
 
 Let's resize both the images so they have the same shape.
 
@@ -334,7 +329,7 @@ optimization_loop()
 
 The `optimizer` adjusts the `output_tensor_` at every `step` to minimize the cumulative `loss`. 
 
-##### Results
+#### Results
 
 Finally, it's time to look at the results.
 
@@ -350,7 +345,4 @@ result_image = transforms.ToPILImage()(results)
 # Show image
 plt.imshow(result_image)
 ```
-
-<p>
-  <img src="/assets/images/labrador_kandiskys_7th.png" alt="Output Image" title="Output Image" width="640px" />
-</p>
+![Output Image] (/assets/images/labrador_kandiskys_7th.png)

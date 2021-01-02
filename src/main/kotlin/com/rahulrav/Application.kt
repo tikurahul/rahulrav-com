@@ -35,6 +35,10 @@ object AppContext {
 }
 
 fun Application.main() {
+  install(Compression) {
+    gzip()
+    deflate()
+  }
   install(StatusPages) {
     exception<Throwable> { cause ->
       call.application.log.error("Something bad happened", cause)

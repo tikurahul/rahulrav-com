@@ -1,4 +1,4 @@
-#### Table of Contents
+## Table of Contents
 
 Here is a list of all the blog posts.
 

@@ -1,69 +1,91 @@
-import { MATERIAL_STYLES_URL, MATERIAL_JAVASCRIPT_URL, BLOG_STYLES_URL, BLOG_TABLE_OF_CONTENTS_URL, HIGHLIGHT_JS, HIGHLIGHT_STYLES } from './flags';
+import { HIGHLIGHT_JS, HIGHLIGHT_STYLES } from './flags';
+
 
 /**
- * Wraps the content inside a template.
+ * Wraps the content in the MarkDown into this HTML file.
  */
-export function templated(title: string, content: string): string {
-  const templated = `
-    <!doctype html>
+export function buildPage(title: string, content: string): string {
+  const html = `
+  <!doctype html>
     <html lang="en">
       <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>${title}</title>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="${MATERIAL_STYLES_URL}">
-        <link rel="stylesheet" href="${HIGHLIGHT_STYLES}">
-        <link rel="stylesheet" href="${BLOG_STYLES_URL}">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
       </head>
-      <body class="mdl-layout mdl-js-layout">
-        <header class="mdl-layout__header mdl-layout__header--scroll">
-          <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">${title}</span>
-            <div class="mdl-layout-spacer"></div>
-            <nav class="mdl-navigation">
-              <a class="mdl-navigation__link" href="${BLOG_TABLE_OF_CONTENTS_URL}">More</a>
-            </nav>
-          </div>
-        </header>
-        <div class="mdl-layout__drawer">
-          <span class="mdl-layout-title">Rahul's Blog</span>
-          <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="${BLOG_TABLE_OF_CONTENTS_URL}">Other Articles</a>
-          </nav>
-        </div>
-        <div class="content">
-          <main class="mdl-layout__content">
-            <div class="mdl-grid content">
-              <div class="mdl-cell mdl-cell--8-col">
-                ${content}
-              </div>
-            </div>
-            <footer class="footer">
-              <p>
-                Rahul Ravikumar &nbsp;
-                  <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
-                  <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
-                  <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
-                  <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
-              </p>
-            </footer>
-          </main>
-          <script src="${MATERIAL_JAVASCRIPT_URL}"></script>
-          <script src="${HIGHLIGHT_JS}"></script>
-          <script type="text/javascript">
-            // Highlight code snippets
-            document.addEventListener('DOMContentLoaded', (event) => {
-              document.querySelectorAll('pre code').forEach((block) => {
-                hljs.highlightBlock(block);
-              });
+      <body class="mdc-typography">
+        ${buildContent(title, content)}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="${HIGHLIGHT_STYLES}">
+        <link rel="stylesheet" href="/assets/core/page.css">
+        <script type="text/javascript" src="/assets/core/page.js"></script>
+        <script type="text/javascript" src="${HIGHLIGHT_JS}"></script>
+        <script type="text/javascript">
+          // Highlight code snippets
+          document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightBlock(block);
             });
-          </script>
-        </div>
+          });
+        </script>
       </body>
     </html>
   `;
-  return templated;
+
+  return html;
+}
+
+function buildContent(title: string, content: string) {
+  const host = `
+    <aside class="mdc-drawer mdc-drawer--dismissible">
+      <div class="mdc-drawer__header">
+        <h3 class="mdc-drawer__title">Rahul's Blog</h3>
+      </div>
+      <div class="mdc-drawer__content">
+        <div class="mdc-list">
+          <li class="mdc-list-item" tabindex="0">
+            <span class="mdc-list-item__ripple"></span>
+            <span class="mdc-list-item__text">Other articles</span>
+          </li>
+        </div>
+      </div>
+    </aside>
+
+    <div class="mdc-drawer-app-content">
+      <header class="mdc-top-app-bar app-bar" id="app-bar">
+        <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+            <span class="mdc-top-app-bar__title">${title}</span>
+          </section>
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+            <span>
+              <a href="/blog/toc.html">More</a>
+            </span>
+          </section>
+        </div>
+      </header>
+
+      <main class="main-content" id="main-content">
+        <div class="mdc-top-app-bar--fixed-adjust">
+          <section class="content">
+            ${content}
+            <section class="footer">
+              <p>
+              Rahul Ravikumar &nbsp;
+                <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+                <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+                <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+                <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+              </p>
+            </section>
+          </section>
+        </div>
+      </main>
+    </div>
+  `;
+
+  return host;
 }

@@ -1,11 +1,11 @@
 import fs = require('fs');
 import { log } from './logger';
 import { Converter } from 'showdown';
-import { templated } from './template';
+import { buildPage } from './template';
 import { promisify } from 'util';
 
 const classes = {
-  'table': 'mdl-data-table mdl-js-data-table',
+  'img': 'card mdc-card mdc-card__media mdc-card__media--16-9'
 }
 
 type Keys = keyof typeof classes;
@@ -61,7 +61,7 @@ export async function convert(title: string, source: string, destination: string
   converter.setFlavor('github');
   const markdown = await fileReader(source, { encoding: 'utf-8' });
   const contents = converter.makeHtml(markdown);
-  const result = templated(title, contents);
+  const result = buildPage(title, contents);
   await fileWriter(destination, result, {
     encoding: 'utf-8'
   });

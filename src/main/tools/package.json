@@ -1,25 +1,40 @@
 {
   "name": "blogging-tools",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "description": "A set of tools to make writing blogs easy.",
   "main": "out/index.js",
   "dependencies": {
+    "@material/auto-init": "^9.0.0",
+    "@material/card": "^9.0.0",
+    "@material/data-table": "^9.0.0",
+    "@material/drawer": "^9.0.0",
+    "@material/icon-button": "^9.0.0",
+    "@material/list": "^9.0.0",
+    "@material/ripple": "^9.0.0",
+    "@material/theme": "^9.0.0",
+    "@material/top-app-bar": "^9.0.0",
+    "@material/typography": "^9.0.0",
     "showdown": "^1.9.1",
-    "showdown-prettify": "^1.3.0",
-    "chokidar": "3.4.2"
+    "showdown-prettify": "^1.3.0"
   },
   "devDependencies": {
-    "@types/material-design-lite": "^1.1.16",
     "@types/node": "^14.14.16",
     "@types/showdown": "^1.9.3",
     "http-server": "^0.12.3",
-    "typescript": "^4.1.3"
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.32.0",
+    "typescript": "^4.1.3",
+    "watch": "^1.0.2"
   },
   "scripts": {
     "blog": "node out/index.js",
-    "compile": "node_modules/.bin/tsc",
+    "build-core": "node_modules/.bin/parcel build core/* --out-dir ../resources/blog/assets/core",
+    "build-tools": "node_modules/.bin/tsc",
+    "build": "yarn build-core && yarn build-tools",
     "serve": "http-server -p 8000 ./out",
-    "watch": "node_modules/.bin/tsc --watch &"
+    "watch-core": "node_modules/.bin/parcel watch core/* --out-dir ../resources/blog/assets/core",
+    "watch-tools": "node_modules/.bin/tsc --watch",
+    "watch": "node_modules/.bin/watch 'yarn blog' ./out ../resources/blog/assets/core ../resources/blog/md"
   },
   "author": "tikurahul@gmail.com",
   "license": "MIT"
