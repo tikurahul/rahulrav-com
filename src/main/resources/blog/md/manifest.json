@@ -47,6 +47,10 @@
     {
       "title": "Building a Dashboard with E-Ink Displays",
       "path": "e_ink_dashboard.md"
+    },
+    {
+      "title": "Computational Cameras and Depth AI",
+      "path": "depthai_camera.md"
     }
   ]
 }

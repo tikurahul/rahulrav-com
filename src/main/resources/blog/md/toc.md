@@ -13,3 +13,4 @@ Here is a list of all the blog posts.
 * [Style Transfer from first principles](/blog/style_transfer.html)
 * [Path Tracing with Jetpack Compose](/blog/path_tracing_compose.html)
 * [Building an E-Ink Calendar, and a UI Toolkit along the way](/blog/e_ink_dashboard.html)
+* [Computational Cameras and DepthAI](/blog/depthai_camera.html)
