@@ -44,10 +44,10 @@ function buildContent(title: string, content: string) {
         <h3 class="mdc-drawer__title">Rahul's Blog</h3>
       </div>
       <div class="mdc-drawer__content">
-        <div class="mdc-list">
-          <li class="mdc-list-item" tabindex="0">
-            <span class="mdc-list-item__ripple"></span>
-            <span class="mdc-list-item__text">Other articles</span>
+        <div class="mdc-deprecated-list">
+          <li class="mdc-deprecated-list-item" tabindex="0">
+            <span class="mdc-deprecated-list-item__ripple"></span>
+            <span class="mdc-deprecated-list-item__text">Other articles</span>
           </li>
         </div>
       </div>

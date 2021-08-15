@@ -1,0 +1,124 @@
+
+  <!doctype html>
+    <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>OAK-D-IOT and MicroPython</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+      </head>
+      <body class="mdc-typography">
+        
+    <aside class="mdc-drawer mdc-drawer--dismissible">
+      <div class="mdc-drawer__header">
+        <h3 class="mdc-drawer__title">Rahul's Blog</h3>
+      </div>
+      <div class="mdc-drawer__content">
+        <div class="mdc-deprecated-list">
+          <li class="mdc-deprecated-list-item" tabindex="0">
+            <span class="mdc-deprecated-list-item__ripple"></span>
+            <span class="mdc-deprecated-list-item__text">Other articles</span>
+          </li>
+        </div>
+      </div>
+    </aside>
+
+    <div class="mdc-drawer-app-content">
+      <header class="mdc-top-app-bar app-bar" id="app-bar">
+        <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+            <span class="mdc-top-app-bar__title">OAK-D-IOT and MicroPython</span>
+          </section>
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+            <span>
+              <a href="/blog/toc.html">More</a>
+            </span>
+          </section>
+        </div>
+      </header>
+
+      <main class="main-content" id="main-content">
+        <div class="mdc-top-app-bar--fixed-adjust">
+          <section class="content">
+            <p>Aug 14 2021, Saturday</p>
+<h2 id="micropython-support-for-the-oak-d-iot-platform">MicroPython support for the OAK-D-IOT platform</h2>
+<p>I have talked about <a href="/blog/depthai_camera.html">computational cameras</a> in the past.</p>
+<p>Recently I came across <a href="https://shop.luxonis.com/products/bw1092">this</a> device, which supports an on-board <code class="prettyprint">ESP32</code> which provides WiFi, Bluetooth (including BLE) among other things. I had a project in mind, which would take advantage of both the camera hardware and the BLE to do something <em>interesting</em>. </p>
+<h3 id="communicating-with-the-esp32">Communicating with the ESP32</h3>
+<p>To communicate with the on-board ESP32, the camera uses the <code class="prettyprint">SPI</code> protocol. Depth AI provides <a href="https://github.com/luxonis/depthai-spi-api/">this</a> C++ library. <br />
+To take advantage of this, a developer has to use the <a href="https://github.com/espressif/esp-idf">ESP-IDF SDK</a> and the provided C++ library. The library provides an abstraction for well known packet types, and also groups packets into logical streams.</p>
+<p>I rarely write C/C++ these days, and had <em>naively</em> made the assumption that I could just flash MicroPython on the ESP32 and write Python instead.</p>
+<p>The custom SPI library however, meant that I could not use MicroPython without re-implementing the C++ library. That was going to be a lot of work. </p>
+<h3 id="user-c-modules-in-micropython">User-C modules in MicroPython</h3>
+<p>MicroPython provides a way to compile <a href="https://docs.micropython.org/en/latest/develop/cmodules.html">additional</a> C / C++ modules when building from source. These types of modules are typically used to get access to certain hardware resources or overcome Python speed limitations. </p>
+<p>This meant that in theory, I could use the Depth AI C++ library and add a Python shim. That way the rest of the application can be written in Python, and did not have to involve any C / C++ whatsoever. </p>
+<p>I am all for writing as few lines of C / C++ if possible; This also seemed like a fun project, given I had never done something like this before. </p>
+<h3 id="the-build-system">The Build System</h3>
+<p>When building MicroPython from source, one typically uses <code class="prettyprint">make</code> and <code class="prettyprint">cmake</code>. I found <a href="https://github.com/micropython/micropython/tree/master/examples/usercmodule">this</a> example module extremely helpful. I used this as a reference to author my <a href="https://github.com/tikurahul/micropython/tree/depth-ai/examples/depthai"> <code class="prettyprint">micropython.cmake</code></a> file.</p>
+<p>MicroPython defines additional utilities in <code class="prettyprint">py/runtime.h</code>, <code class="prettyprint">py/obj.h</code> to help with Python interop. The example C module only scratches the surface of those APIs.</p>
+<p>Another thing to keep in mind was that Depth AI libraries were authored using C++. MicroPython on the other hand, expected the core headers of the user module to be defined in C. This meant that I needed to use <code class="prettyprint">extern</code>, to prevent the C++ compiler from obfuscating the symbols such that they could still be linked to the C headers. </p>
+<p><em>Have I mentioned, that I have not written a lot of C++ recently ? This is information that I had completely paged out.</em></p>
+<h3 id="implementing-the-c-module">Implementing the C Module</h3>
+<p>Part of this was figuring out which utilities were going to be helpful. The module is open-source, and you can take a look at what I did <a href="https://github.com/tikurahul/micropython/tree/depth-ai/examples/depthai">here</a>. <a href="https://github.com/tikurahul/micropython/blob/depth-ai/examples/depthai/spi/spi.h">This</a> is the core module definition. </p>
+<p>Here are some notes that will help you follow along:</p>
+<ul>
+<li><p> <code class="prettyprint">mp_obj_t</code> represents the core Python type. There are utilities defined in <code class="prettyprint">py/runtime.h</code> which can help convert between the base <code class="prettyprint">mp_obj_t</code> type to the corresponding C types. For e.g. <code class="prettyprint">mp_mp_obj_str_get_str(...)</code> converts a <code class="prettyprint">mp_obj_t</code> to a <code class="prettyprint">const char*</code>. </p></li>
+<li><p> <code class="prettyprint">mp_call_function_x</code> can help invoke Python functions. For e.g. <code class="prettyprint">mp_call_function_0</code> invokes a Python function with zero arguments. Note: the <code class="prettyprint">args</code> here need to be instances of the <code class="prettyprint">mp_obj_t</code> type.</p></li>
+<li><p>A couple of other useful helpers were:</p></li>
+</ul>
+<pre class="prettyprint linenums"><code class="c language-c">// Converts a Python buffer type (anything which is a memoryview(...)) to a corresponding mp_buffer_info_t type.
+// This was an easy way to copy a buffer to a void* of data.
+void mp_get_buffer_raise(mp_obj_t obj, mp_buffer_info_t *bufinfo, mp_uint_t flags);
+
+// The mp_obj_new_bytearray converts a (size_t, void*) to a Python buffer type.
+mp_obj_t mp_obj_new_bytearray(size_t n, void *items);</code></pre>
+<p>Once you figure out these APIs, things that seemed magical before, start to make much more sense. A lot of my findings came from reading existing modules in the MicroPython source tree and asking questions on the Adafruit Discord for CircuitPython (which is a MicroPython fork maintained by Adafruit). Special shout-out to <code class="prettyprint">Jeff E.</code> from the Discord group; you sir are awesome. Thanks for helping me out.</p>
+<h3 id="demo">Demo</h3>
+<p>After spending a couple of days, I finally had a fully working module. Now, all I needed to do was to test things out. Here is a screencast of the module working end-to-end.</p>
+<p><br/></p>
+<iframe class="video" src="https://www.youtube.com/embed/neWpzXRJViE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<h3 id="appendix">Appendix</h3>
+<p>The <code class="prettyprint">ESP32</code> on the <code class="prettyprint">OAK-D-IOT</code> supports 4 MB of Flash. It's easy to run out of space in the <code class="prettyprint">application</code> partition in the default MicroPython build. This is easily fixed by defining custom partition tables <a href="https://github.com/tikurahul/micropython/blob/depth-ai/ports/esp32/boards/DEPTH_AI/sdkconfig.board">1</a>, <a href="https://github.com/tikurahul/micropython/blob/depth-ai/ports/esp32/partitions-depthai.csv">2</a>. This is relatively straightforward, and required only a little bit of trial and error. </p>
+<p>To build MicroPython with a custom board configuration, you need to do something like:</p>
+<pre class="prettyprint linenums"><code class="bash language-bash"># Setup ESP-IDF
+
+# Invokes $IDF_HOME/export.{bash|fish}
+idf-setup
+
+# Requires setting up mypy-cross (the cross compiler)
+cd $MICROPYTHON_SRC/ports/esp32
+make USER_C_MODULES=$MICROPYTHON_SRC/examples/depthai/micropython.cmake BOARD=DEPTH_AI
+
+# Then flash the binary using esptool.py</code></pre>
+            <section class="footer">
+              <p>
+              Rahul Ravikumar &nbsp;
+                <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+                <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+                <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+                <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+              </p>
+            </section>
+          </section>
+        </div>
+      </main>
+    </div>
+  
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
+        <link rel="stylesheet" href="/assets/core/page.css">
+        <script type="text/javascript" src="/assets/core/page.js"></script>
+        <script type="text/javascript" src="/assets/highlight/highlight.pack.js"></script>
+        <script type="text/javascript">
+          // Highlight code snippets
+          document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightBlock(block);
+            });
+          });
+        </script>
+      </body>
+    </html>
+  

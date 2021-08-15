@@ -1,7 +1,7 @@
 {
   "posts": [
     {
-      "title": "Table of Contents",
+      "title": "Rahul's Blog",
       "path": "toc.md"
     },
     {
@@ -51,6 +51,10 @@
     {
       "title": "Computational Cameras and Depth AI",
       "path": "depthai_camera.md"
+    },
+    {
+      "title": "OAK-D-IOT and MicroPython",
+      "path": "depthai_micropython.md"
     }
   ]
 }

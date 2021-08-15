@@ -10,7 +10,7 @@ import {MDCDataTable} from '@material/data-table';
 
 document.addEventListener('DOMContentLoaded', function () {
   // List
-  const listElements = document.querySelectorAll('.mdc-list');
+  const listElements = document.querySelectorAll('.mdc-deprecated-list');
   for (var i = 0; i < listElements.length; i += 1) {
     const list = MDCList.attachTo(listElements[i]);
     list.listen('MDCList:action', (event) => {
