@@ -89,7 +89,8 @@ idf-setup
 cd $MICROPYTHON_SRC/ports/esp32
 make USER_C_MODULES=$MICROPYTHON_SRC/examples/depthai/micropython.cmake BOARD=DEPTH_AI
 
-# Then flash the binary using esptool.py</code></pre>
+# Then flash the binary using idf.py
+idf.py -p /dev/ttyUSB0 flash</code></pre>
             <section class="footer">
               <p>
               Rahul Ravikumar &nbsp;
