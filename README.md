@@ -42,5 +42,5 @@ npm run-script watch-core && npm run-script watch-tools
 To deploy the app:
 
 ```bash
-gcloud appengineDeploy
+./gradlew appengineDeploy
 ```
