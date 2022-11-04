@@ -28,13 +28,13 @@ gcloud config set project rahulrav-com
 
 ```bash
 # Build tooling
-yarn build-tools
+npm run-script build-tools
 
 # Build Template
-yarn build-core
+npm run-script build-core
 
 # Local Development for template and tools
-yarn watch-core && yarn watch-tools
+npm run-script watch-core && npm run-script watch-tools
 ```
 
 ### Other Admin Actions
