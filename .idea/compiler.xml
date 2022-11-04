@@ -11,7 +11,7 @@
       <entry name="!?*.kt" />
       <entry name="!?*.clj" />
     </wildcardResourcePatterns>
-    <bytecodeTargetLevel target="1.8">
+    <bytecodeTargetLevel target="11">
       <module name="com.rahulrav.alexa-read-it-later-api.main" target="1.8" />
       <module name="com.rahulrav.alexa-read-it-later-api.test" target="1.8" />
     </bytecodeTargetLevel>

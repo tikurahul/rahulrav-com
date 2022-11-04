@@ -1,11 +1,8 @@
 package com.rahulrav
 
-import io.ktor.http.content.defaultResource
-import io.ktor.http.content.resources
-import io.ktor.http.content.static
-import io.ktor.response.respond
-import io.ktor.routing.Routing
-import io.ktor.routing.get
+import io.ktor.server.http.content.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 
 fun Routing.main() {
   get("/") {
