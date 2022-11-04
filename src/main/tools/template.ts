@@ -75,10 +75,11 @@ function buildContent(title: string, content: string) {
             <section class="footer">
               <p>
               Rahul Ravikumar &nbsp;
-                <a href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
-                <a href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
-                <a href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
-                <a href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a>
+                <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+                <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+                <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+                <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+                <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
               </p>
             </section>
           </section>
