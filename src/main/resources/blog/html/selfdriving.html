@@ -6,41 +6,20 @@
         <title>Self Driving Radio Controlled Cars</title>
         <link rel="preconnect" href="https://fonts.gstatic.com">
       </head>
-      <body class="mdc-typography">
+      <body>
         
-    <aside class="mdc-drawer mdc-drawer--dismissible">
-      <div class="mdc-drawer__header">
-        <h3 class="mdc-drawer__title">Rahul's Blog</h3>
-      </div>
-      <div class="mdc-drawer__content">
-        <div class="mdc-deprecated-list">
-          <li class="mdc-deprecated-list-item" tabindex="0">
-            <span class="mdc-deprecated-list-item__ripple"></span>
-            <span class="mdc-deprecated-list-item__text">Other articles</span>
-          </li>
-        </div>
-      </div>
-    </aside>
-
-    <div class="mdc-drawer-app-content">
-      <header class="mdc-top-app-bar app-bar" id="app-bar">
-        <div class="mdc-top-app-bar__row">
-          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
-            <span class="mdc-top-app-bar__title">Self Driving Radio Controlled Cars</span>
-          </section>
-          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
-            <span>
-              <a href="/blog/toc.html">More</a>
-            </span>
-          </section>
-        </div>
+      <header class="container-fluid">
+        <nav>
+          <ul>
+            <li><strong>Rahul Ravikumar's Blog</strong></li>
+          </ul>
+          <ul>
+            <li><a href="/blog/toc.html" class="contrast">More Articles</a></li>
+          </ul>
+        </nav>
       </header>
-
-      <main class="main-content" id="main-content">
-        <div class="mdc-top-app-bar--fixed-adjust">
-          <section class="content">
-            <p>June 30 2019, Sunday</p>
+      <main class="container">
+        <p>June 30 2019, Sunday</p>
 <h2 id="adventures-building-a-self-driving-rc-car">Adventures building a Self Driving RC Car</h2>
 <p>Having read some amazing books on Machine Learning, I had been looking for opportunities to apply ML from first principles in the real world. That was what got me curious about the wonderful <a href="https://docs.donkeycar.com">Donkey Car</a> project. The project is essentially a how-to guide to building your own RC car which can drive itself around a track using classicial control theory, computer vision or in my case Machine Learning. After attending a DIYRobocars meetup, I could not wait to build my own car.</p>
 <p>I knew I wanted to do something different with <em>my</em> donkey car. So for my first build I chose an <a href="https://www.amazon.com/gp/product/B00FS83U42/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=B00FS83U42&linkCode=as2&tag=rahulrav30day-20&linkId=82561a94ffc14365fe9ba794e61d0156">Asus Tinkerboard S</a>, a <a href="http://jevois.org/">JeVois</a> camera and <a href="http://docs.donkeycar.com/guide/build_hardware/#parts-needed0">other</a> standard bill of materials.</p>
@@ -69,24 +48,21 @@
 <iframe class="video" src="https://www.youtube.com/embed/zwWEDV8BoDY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 <h2 id="epilogue">Epilogue</h2>
 <p>If you are wondering why the car looks familiar, <a href="https://twitter.com/NVIDIAEmbedded">@NvidiaEmbedded</a> recently <a href="https://twitter.com/NVIDIAEmbedded/status/1143993091537481729">tweeted</a> a picture of my car. Thank you for the shout-out <a href="https://twitter.com/NVIDIAEmbedded">@NvidiaEmbedded</a>.</p>
-            <section class="footer">
-              <p>
-              Rahul Ravikumar &nbsp;
-                <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
-              </p>
-            </section>
-          </section>
-        </div>
+        <section class="footer">
+          <p>
+          Rahul Ravikumar &nbsp;
+            <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
+          </p>
+        </section>
       </main>
     </div>
   
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
         <link rel="stylesheet" href="/assets/core/page.css">
         <script type="text/javascript" src="/assets/core/page.js"></script>

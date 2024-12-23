@@ -6,41 +6,20 @@
         <title>Ad Blocking and Pi-Hole</title>
         <link rel="preconnect" href="https://fonts.gstatic.com">
       </head>
-      <body class="mdc-typography">
+      <body>
         
-    <aside class="mdc-drawer mdc-drawer--dismissible">
-      <div class="mdc-drawer__header">
-        <h3 class="mdc-drawer__title">Rahul's Blog</h3>
-      </div>
-      <div class="mdc-drawer__content">
-        <div class="mdc-deprecated-list">
-          <li class="mdc-deprecated-list-item" tabindex="0">
-            <span class="mdc-deprecated-list-item__ripple"></span>
-            <span class="mdc-deprecated-list-item__text">Other articles</span>
-          </li>
-        </div>
-      </div>
-    </aside>
-
-    <div class="mdc-drawer-app-content">
-      <header class="mdc-top-app-bar app-bar" id="app-bar">
-        <div class="mdc-top-app-bar__row">
-          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
-            <span class="mdc-top-app-bar__title">Ad Blocking and Pi-Hole</span>
-          </section>
-          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
-            <span>
-              <a href="/blog/toc.html">More</a>
-            </span>
-          </section>
-        </div>
+      <header class="container-fluid">
+        <nav>
+          <ul>
+            <li><strong>Rahul Ravikumar's Blog</strong></li>
+          </ul>
+          <ul>
+            <li><a href="/blog/toc.html" class="contrast">More Articles</a></li>
+          </ul>
+        </nav>
       </header>
-
-      <main class="main-content" id="main-content">
-        <div class="mdc-top-app-bar--fixed-adjust">
-          <section class="content">
-            <p>Dec 14 2019, Saturday</p>
+      <main class="container">
+        <p>Dec 14 2019, Saturday</p>
 <h2 id="ad-blocking">Ad Blocking</h2>
 <p>I have been using <a href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?hl=en">uBlock Origin</a> for a while, and can't imagine browsing the web without it. </p>
 <p>Everytime I am on a machine that does not have it or I see someone else browsing the internet without it, I cringe a little. I am constantly overwhelmed by the number of ads and and their poor quality. The situation is especially bad on mobile browsers.</p>
@@ -55,24 +34,21 @@ I flashed the latest version of <code class="prettyprint">Debian</code> and just
 <p>Now that I had a network wide ad blocker, I disabled all conventional ad blocking software.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p> <code class="prettyprint">Pi Hole</code> is an incredible project, which gives us back some much needed control. If you have an old single board computer lying around, give it a go and don't forget to donate to  <code class="prettyprint">Pi-Hole</code>. </p>
-            <section class="footer">
-              <p>
-              Rahul Ravikumar &nbsp;
-                <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
-              </p>
-            </section>
-          </section>
-        </div>
+        <section class="footer">
+          <p>
+          Rahul Ravikumar &nbsp;
+            <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
+          </p>
+        </section>
       </main>
     </div>
   
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
         <link rel="stylesheet" href="/assets/core/page.css">
         <script type="text/javascript" src="/assets/core/page.js"></script>

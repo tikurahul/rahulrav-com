@@ -1,28 +1,15 @@
-@use 'app-theme';
-@use "@material/theme" with (
-    $primary: app-theme.$primary,
-    $secondary: app-theme.$secondary,
-    $on-primary: app-theme.$on-primary,
-    $on-secondary: app-theme.$on-secondary
-);
-@use "@material/typography" with (
-    $font-family: unquote(app-theme.$font-family),
-    $styles-body1: (
-        font-size: app-theme.$font-size
-    )
-);
-@use "@material/card";
-@use "@material/drawer/mdc-drawer";
-@use "@material/list/mdc-list";
-@use "@material/icon-button/styles";
-@use "@material/top-app-bar/mdc-top-app-bar";
-@use "@material/drawer";
-@use "@material/list";
 @use 'blog';
 
-@include card.core-styles;
-@include drawer.core-styles;
-@include drawer.dismissible-core-styles;
-@include drawer.modal-core-styles;
-@include list.deprecated-core-styles;
 
+@use '@picocss/pico/scss/pico' with (
+  $theme-color: "jade"
+);
+
+// Zilla Slab + Jetbrains Mono
+
+:root {
+  --pico-font-family-emoji: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --pico-font-family-sans-serif: 'Zilla Slab', system-ui, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, Helvetica, Arial, "Helvetica Neue", sans-serif, var(--pico-font-family-emoji);
+  --pico-font-family-monospace: 'JetBrains Mono', ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace, var(--pico-font-family-emoji);
+  --pico-font-family: var(--pico-font-family-sans-serif);
+}

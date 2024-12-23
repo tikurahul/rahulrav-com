@@ -6,41 +6,20 @@
         <title>Bokehlicious Selfies</title>
         <link rel="preconnect" href="https://fonts.gstatic.com">
       </head>
-      <body class="mdc-typography">
+      <body>
         
-    <aside class="mdc-drawer mdc-drawer--dismissible">
-      <div class="mdc-drawer__header">
-        <h3 class="mdc-drawer__title">Rahul's Blog</h3>
-      </div>
-      <div class="mdc-drawer__content">
-        <div class="mdc-deprecated-list">
-          <li class="mdc-deprecated-list-item" tabindex="0">
-            <span class="mdc-deprecated-list-item__ripple"></span>
-            <span class="mdc-deprecated-list-item__text">Other articles</span>
-          </li>
-        </div>
-      </div>
-    </aside>
-
-    <div class="mdc-drawer-app-content">
-      <header class="mdc-top-app-bar app-bar" id="app-bar">
-        <div class="mdc-top-app-bar__row">
-          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
-            <span class="mdc-top-app-bar__title">Bokehlicious Selfies</span>
-          </section>
-          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
-            <span>
-              <a href="/blog/toc.html">More</a>
-            </span>
-          </section>
-        </div>
+      <header class="container-fluid">
+        <nav>
+          <ul>
+            <li><strong>Rahul Ravikumar's Blog</strong></li>
+          </ul>
+          <ul>
+            <li><a href="/blog/toc.html" class="contrast">More Articles</a></li>
+          </ul>
+        </nav>
       </header>
-
-      <main class="main-content" id="main-content">
-        <div class="mdc-top-app-bar--fixed-adjust">
-          <section class="content">
-            <p>Mar 27 2020, Friday</p>
+      <main class="container">
+        <p>Mar 27 2020, Friday</p>
 <h2 id="bokehlicious-selfies">Bokehlicious Selfies</h2>
 <p>I signed up for the excellent <a href="https://course.fast.ai/">fastai MOOC</a> recently, and one of the project ideas I had was the idea of adding <a href="https://en.wikipedia.org/wiki/Bokeh"> <code class="prettyprint">bokehs</code></a> to selfies using Deep learning. Most phones have a not so great selfie (front-side) camera and therefore this idea has some merits.</p>
 <p>Google Photos does something like this and it's quite magical <em>when it works</em>. So i wanted to experiment with a simple pipeline which could be used to add a <code class="prettyprint">bokeh</code> to a selfie that did not have one. </p>
@@ -174,24 +153,21 @@ plt.imshow(combined)</code></pre>
 <p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/selfie_bokeh_pop.png" alt="Selfie with Bokeh" /></p>
 <h2 id="conclusion">Conclusion</h2>
 <p>Deep learning is magical for applications like these. I hope you enjoyed reading the article.</p>
-            <section class="footer">
-              <p>
-              Rahul Ravikumar &nbsp;
-                <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
-              </p>
-            </section>
-          </section>
-        </div>
+        <section class="footer">
+          <p>
+          Rahul Ravikumar &nbsp;
+            <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
+          </p>
+        </section>
       </main>
     </div>
   
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
         <link rel="stylesheet" href="/assets/core/page.css">
         <script type="text/javascript" src="/assets/core/page.js"></script>

@@ -1,6 +1,8 @@
 .gradle
 *.jar
 !gradle/wrapper/gradle-wrapper.jar
+.parcel-cache/
+src/main/tools/.parcel-cache/
 
 # User-specific stuff
 .idea/**/workspace.xml

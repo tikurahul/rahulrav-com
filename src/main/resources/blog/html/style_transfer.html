@@ -6,41 +6,20 @@
         <title>Style Transfer from first principles</title>
         <link rel="preconnect" href="https://fonts.gstatic.com">
       </head>
-      <body class="mdc-typography">
+      <body>
         
-    <aside class="mdc-drawer mdc-drawer--dismissible">
-      <div class="mdc-drawer__header">
-        <h3 class="mdc-drawer__title">Rahul's Blog</h3>
-      </div>
-      <div class="mdc-drawer__content">
-        <div class="mdc-deprecated-list">
-          <li class="mdc-deprecated-list-item" tabindex="0">
-            <span class="mdc-deprecated-list-item__ripple"></span>
-            <span class="mdc-deprecated-list-item__text">Other articles</span>
-          </li>
-        </div>
-      </div>
-    </aside>
-
-    <div class="mdc-drawer-app-content">
-      <header class="mdc-top-app-bar app-bar" id="app-bar">
-        <div class="mdc-top-app-bar__row">
-          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
-            <span class="mdc-top-app-bar__title">Style Transfer from first principles</span>
-          </section>
-          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
-            <span>
-              <a href="/blog/toc.html">More</a>
-            </span>
-          </section>
-        </div>
+      <header class="container-fluid">
+        <nav>
+          <ul>
+            <li><strong>Rahul Ravikumar's Blog</strong></li>
+          </ul>
+          <ul>
+            <li><a href="/blog/toc.html" class="contrast">More Articles</a></li>
+          </ul>
+        </nav>
       </header>
-
-      <main class="main-content" id="main-content">
-        <div class="mdc-top-app-bar--fixed-adjust">
-          <section class="content">
-            <p>Apr 22 2020, Tue</p>
+      <main class="container">
+        <p>Apr 22 2020, Tue</p>
 <h2 id="style-transfer-from-first-principles">Style Transfer from first principles</h2>
 <h3 id="preface">Preface</h3>
 <p>Ever since I started dabbling with Deep Learning, one of the papers I have wanted to implement from scratch is <a href="https://arxiv.org/abs/1508.06576">A Neural Algorithm for Artistic Style</a>. This paper completely transformed my perception about Deep Learning. This is because, you could see the model do something very magical; taking an ordinary photograph and adding a masters' touch to it.</p>
@@ -300,24 +279,21 @@ result_image = transforms.ToPILImage()(results)
 # Show image
 plt.imshow(result_image)</code></pre>
 <p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/labrador_kandiskys_7th.png" alt="Output Image" /></p>
-            <section class="footer">
-              <p>
-              Rahul Ravikumar &nbsp;
-                <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
-              </p>
-            </section>
-          </section>
-        </div>
+        <section class="footer">
+          <p>
+          Rahul Ravikumar &nbsp;
+            <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
+          </p>
+        </section>
       </main>
     </div>
   
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
         <link rel="stylesheet" href="/assets/core/page.css">
         <script type="text/javascript" src="/assets/core/page.js"></script>

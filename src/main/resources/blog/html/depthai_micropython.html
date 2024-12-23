@@ -6,41 +6,20 @@
         <title>OAK-D-IOT and MicroPython</title>
         <link rel="preconnect" href="https://fonts.gstatic.com">
       </head>
-      <body class="mdc-typography">
+      <body>
         
-    <aside class="mdc-drawer mdc-drawer--dismissible">
-      <div class="mdc-drawer__header">
-        <h3 class="mdc-drawer__title">Rahul's Blog</h3>
-      </div>
-      <div class="mdc-drawer__content">
-        <div class="mdc-deprecated-list">
-          <li class="mdc-deprecated-list-item" tabindex="0">
-            <span class="mdc-deprecated-list-item__ripple"></span>
-            <span class="mdc-deprecated-list-item__text">Other articles</span>
-          </li>
-        </div>
-      </div>
-    </aside>
-
-    <div class="mdc-drawer-app-content">
-      <header class="mdc-top-app-bar app-bar" id="app-bar">
-        <div class="mdc-top-app-bar__row">
-          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
-            <span class="mdc-top-app-bar__title">OAK-D-IOT and MicroPython</span>
-          </section>
-          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
-            <span>
-              <a href="/blog/toc.html">More</a>
-            </span>
-          </section>
-        </div>
+      <header class="container-fluid">
+        <nav>
+          <ul>
+            <li><strong>Rahul Ravikumar's Blog</strong></li>
+          </ul>
+          <ul>
+            <li><a href="/blog/toc.html" class="contrast">More Articles</a></li>
+          </ul>
+        </nav>
       </header>
-
-      <main class="main-content" id="main-content">
-        <div class="mdc-top-app-bar--fixed-adjust">
-          <section class="content">
-            <p>Aug 14 2021, Saturday</p>
+      <main class="container">
+        <p>Aug 14 2021, Saturday</p>
 <h2 id="micropython-support-for-the-oak-d-iot-platform">MicroPython support for the OAK-D-IOT platform</h2>
 <p>I have talked about <a href="/blog/depthai_camera.html">computational cameras</a> in the past.</p>
 <p>Recently I came across <a href="https://shop.luxonis.com/products/bw1092">this</a> device, which supports an on-board <code class="prettyprint">ESP32</code> which provides WiFi, Bluetooth (including BLE) among other things. I had a project in mind, which would take advantage of both the camera hardware and the BLE to do something <em>interesting</em>. </p>
@@ -91,24 +70,21 @@ make USER_C_MODULES=$MICROPYTHON_SRC/examples/depthai/micropython.cmake BOARD=DE
 
 # Then flash the binary using idf.py
 idf.py -p /dev/ttyUSB0 flash</code></pre>
-            <section class="footer">
-              <p>
-              Rahul Ravikumar &nbsp;
-                <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
-                <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
-              </p>
-            </section>
-          </section>
-        </div>
+        <section class="footer">
+          <p>
+          Rahul Ravikumar &nbsp;
+            <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
+          </p>
+        </section>
       </main>
     </div>
   
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="/assets/highlight/styles/dracula.css">
         <link rel="stylesheet" href="/assets/core/page.css">
         <script type="text/javascript" src="/assets/core/page.js"></script>

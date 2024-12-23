@@ -6,7 +6,8 @@ import io.ktor.server.routing.*
 
 fun Routing.main() {
     get("/") {
-        call.respond("Server up.")
+        // Redirect to the blog.
+        call.respondRedirect("/blog")
     }
 
     staticResources("/files", "base")
