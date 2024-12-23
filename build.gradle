@@ -1,14 +1,17 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 buildscript {
-    ext.ktor_version = "2.1.3"
+    ext.ktor_version = "3.0.2"
     ext.appengine_version = '1.9.97'
-    ext.appengine_gradle_plugin_version = "2.4.1"
+    ext.appengine_gradle_plugin_version = "2.5.0"
 
     repositories {
         mavenCentral()
     }
 
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.20"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0"
         classpath "com.google.cloud.tools:appengine-gradle-plugin:$appengine_gradle_plugin_version"
     }
 }
@@ -49,7 +52,7 @@ dependencies {
 
     implementation "com.google.appengine:appengine-api-1.0-sdk:2.0.9"
     implementation 'org.slf4j:slf4j-jdk14:2.0.3'
-    implementation 'ch.qos.logback:logback-classic:1.4.4'
+    implementation 'ch.qos.logback:logback-classic:1.4.12'
     implementation 'io.ktor:ktor-server-cors-jvm:2.1.3'
     implementation 'io.ktor:ktor-server-auto-head-response-jvm:2.1.3'
     providedCompile "javax.servlet:javax.servlet-api:4.0.1"
@@ -57,12 +60,11 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = 17
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = 17
+tasks.withType(KotlinJvmCompile).configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_17)
+        freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+    }
 }
 
 appengine {

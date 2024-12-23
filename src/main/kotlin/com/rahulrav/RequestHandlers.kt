@@ -5,21 +5,11 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Routing.main() {
-  get("/") {
-    context.respond("Server up.")
-  }
+    get("/") {
+        call.respond("Server up.")
+    }
 
-  static("files") {
-    resources("files")
-  }
-
-  static("blog") {
-    resources("blog/html")
-    defaultResource("blog/html/toc.html")
-  }
-
-  static("assets") {
-    resources("blog/assets")
-  }
-
+    staticResources("/files", "base")
+    staticResources("/blog", "blog/html", index = "toc.html")
+    staticResources("/assets", "blog/assets")
 }
