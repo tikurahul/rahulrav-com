@@ -75,7 +75,7 @@ print(kernel)</code></pre>
 image = cv2.imread('images/selfie-1.jpg')
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 plt.imshow(image)</code></pre>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/selfie_original.png" alt="Original" /></p>
+<p><img class="card"  src="/assets/images/selfie_original.png" alt="Original" /></p>
 <p>Now, let's define the actual <code class="prettyprint">bokeh</code> function that applies the kernel.</p>
 <pre class="prettyprint linenums"><code class="python language-python">def bokeh(image):
     r,g,b = cv2.split(image)
@@ -101,7 +101,7 @@ plt.imshow(image)</code></pre>
 
 result = bokeh(image)
 plt.imshow(result)</code></pre>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/selfie_bokeh_full.png" alt="Full Bokeh" /></p>
+<p><img class="card"  src="/assets/images/selfie_bokeh_full.png" alt="Full Bokeh" /></p>
 <p>We now have a method that can generate a <code class="prettyprint">bokeh</code> effect for a given image.</p>
 <h3 id="image-segmentation">Image Segmentation</h3>
 <p>We now need to use the <code class="prettyprint">torchvision.models.detection.maskrcnn_resnet50_fpn</code> pretrained model to segment the above image to split into <code class="prettyprint">foreground</code> &amp; <code class="prettyprint">background</code>. Let's do that.</p>
@@ -126,7 +126,7 @@ masks = prediction['masks'].detach().numpy()
 mask = masks[0][0]  
 plt.imshow(masks[0][0])</code></pre>
 <p>This produces a segmentation-mask which looks like:</p>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/selfie_segmentation_mask.png" alt="Segmentation Mask" /></p>
+<p><img class="card"  src="/assets/images/selfie_segmentation_mask.png" alt="Segmentation Mask" /></p>
 <h3 id="splitting--merging">Splitting &amp; Merging</h3>
 <p>Now that we have a segmentation-mask we can split the image into <code class="prettyprint">foreground</code> and <code class="prettyprint">background</code> like so:</p>
 <pre class="prettyprint linenums"><code class="python language-python">inverted = np.abs(1. - mask)
@@ -144,13 +144,13 @@ background = cv2.merge((ir, ig, ib))
 
 subject = np.asarray(subject * 255., dtype='uint8')
 plt.imshow(subject)</code></pre>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/selfie_foreground.png" alt="Foreground" /></p>
+<p><img class="card"  src="/assets/images/selfie_foreground.png" alt="Foreground" /></p>
 <p>Let's now apply the <code class="prettyprint">bokeh</code> effect on the <code class="prettyprint">background</code> image and them merge both images.</p>
 <pre class="prettyprint linenums"><code class="python language-python">background_bokeh = bokeh(np.asarray(background * 255, dtype='uint8'))
 background_bokeh = np.asarray(background_bokeh * 255, dtype='uint8')
 combined = cv2.addWeighted(subject, 1., background_bokeh, 1., 0)
 plt.imshow(combined)</code></pre>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/selfie_bokeh_pop.png" alt="Selfie with Bokeh" /></p>
+<p><img class="card"  src="/assets/images/selfie_bokeh_pop.png" alt="Selfie with Bokeh" /></p>
 <h2 id="conclusion">Conclusion</h2>
 <p>Deep learning is magical for applications like these. I hope you enjoyed reading the article.</p>
         <section class="footer">
@@ -160,6 +160,7 @@ plt.imshow(combined)</code></pre>
             <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
             <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
             <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://bsky.app/profile/rahulrav.com">Bluesky</a> &nbsp; | &nbsp;
             <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
           </p>
         </section>

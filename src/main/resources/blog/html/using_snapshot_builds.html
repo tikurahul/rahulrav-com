@@ -34,13 +34,13 @@
 <p>You can follow along all the changes being built, by looking at <a href="https://ci.android.com/builds/branches/aosp-androidx-master-dev/grid?">https://ci.android.com/builds/branches/aosp-androidx-master-dev/grid?</a> (Note that I added the name of the branch that I am interested in <code class="prettyprint">androidx-master-dev</code> which is where all AndroidX changes land).</p>
 <p>Every <code class="prettyprint">row</code> in the <code class="prettyprint">grid</code> corresponds to a couple of changes that were made to the AndroidX source tree. You can click on the <code class="prettyprint">View Changes</code> link to see the changes associated to a build.</p>
 <p>Here is an example:</p>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/androidx_ci_changes.png" alt="View Changes" /></p>
+<p><img class="card"  src="/assets/images/androidx_ci_changes.png" alt="View Changes" /></p>
 <p>Each <code class="prettyprint">row</code> identifies a build, and is also usually accompanied by <code class="prettyprint">snapshots</code>. These are artifacts produced as a result of the build, with the changes that were submitted as part of the build. If you don't see <code class="prettyprint">snapshots</code> for some builds, just pick a more recent build with snapshots. That should have all the changes rolled up. </p>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/androidx_snapshot.png" alt="Snapshot" /></p>
+<p><img class="card"  src="/assets/images/androidx_snapshot.png" alt="Snapshot" /></p>
 <h3 id="using-snapshot-builds">Using Snapshot builds</h3>
 <p>Click on the <code class="prettyprint">View Artifacts</code> link which looks like a ⬇️icon. <a href="https://ci.android.com/builds/submitted/6228642/androidx_snapshot/latest">Here</a> is an example link. </p>
 <p>This page lists all the <code class="prettyprint">artifacts</code> that were built, and you can actually see them organized as a <code class="prettyprint">Maven</code> repository. Here is what the listing for <code class="prettyprint">work-runtime</code> looks like for example:</p>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/androidx_view_artifacts.png" alt="View Artifacts" /></p>
+<p><img class="card"  src="/assets/images/androidx_view_artifacts.png" alt="View Artifacts" /></p>
 <p>To use these artifacts, you should include the following snippet in your <code class="prettyprint">build.gradle</code> file. </p>
 <pre class="prettyprint linenums"><code>repositories {
     google()
@@ -60,6 +60,7 @@ dependencies {
             <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
             <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
             <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://bsky.app/profile/rahulrav.com">Bluesky</a> &nbsp; | &nbsp;
             <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
           </p>
         </section>

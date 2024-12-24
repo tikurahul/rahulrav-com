@@ -5,7 +5,7 @@ import { buildPage } from './template';
 import { promisify } from 'util';
 
 const classes = {
-  'img': 'card mdc-card mdc-card__media mdc-card__media--16-9'
+  'img': 'card'
 }
 
 type Keys = keyof typeof classes;

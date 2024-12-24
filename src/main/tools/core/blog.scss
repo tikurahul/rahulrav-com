@@ -5,7 +5,7 @@ body {
   margin: 0 auto;
 }
 
-main .container-fluid {
+main[class="container"] {
   padding: 0.5rem;
 
   .video {
@@ -13,12 +13,14 @@ main .container-fluid {
     height: 30rem;
     display: block;
     margin: 0 auto;
+    border-radius: 20px;
   }
 
   .card {
     display: block;
     width: 60%;
     margin: 2rem auto;
+    border-radius: 10% 5%;
   }
 
   .footer {

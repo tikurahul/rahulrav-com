@@ -57,6 +57,7 @@ function buildContent(title: string, content: string) {
             <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
             <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
             <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://bsky.app/profile/rahulrav.com">Bluesky</a> &nbsp; | &nbsp;
             <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
           </p>
         </section>

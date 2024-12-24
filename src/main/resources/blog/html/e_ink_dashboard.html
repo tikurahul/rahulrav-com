@@ -23,7 +23,7 @@
 <h2 id="building-an-e-ink-calendar-and-a-ui-toolkit-along-the-way">Building an E-Ink Calendar, and a UI Toolkit along the way</h2>
 <p>Having worked from home for the better part of the year, I recently started to work on a new project. Building a E-Ink based dashboard which would keep track of my meetings among other things. Given the always-on nature of the E-Ink display, this would help me better manage by schedule during a typical work-day especially given I tend to miss Google Calendar notifications <em>a lot</em>. </p>
 <p>This is what the end result looks like:</p>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/e_ink_end_result.jpg" alt="E-Ink Dashboard" /></p>
+<p><img class="card"  src="/assets/images/e_ink_end_result.jpg" alt="E-Ink Dashboard" /></p>
 <p>The app here is showing the next 5 Calendar events for <strong>a demo Google account</strong>.<br />
 Looks nice and simple, does it not ?</p>
 <h3 id="the-hardware">The Hardware</h3>
@@ -38,17 +38,17 @@ Looks nice and simple, does it not ?</p>
 <p>The <code class="prettyprint">InkPlate</code> has a decent <a href="https://github.com/e-radionicacom/Inkplate-6-micropython/blob/master/gfx.py">Graphics</a> API, but rather than having to hard-code coordinates to render UI i decided to take minor detour and build a mini UI Toolkit from first principles based on the graphics primitives that were supported. I took a lot of inspiration from the <em>existing</em> Android UI View system and build a small subset of those APIs.</p>
 <h5 id="measuring-text">Measuring text</h5>
 <p>The first step was to be able to measure the text to be able to compute how much space <code class="prettyprint">text</code> with a given <code class="prettyprint">text size</code> would occupy on the screen. The <code class="prettyprint">InkPlate</code> uses bitmap fonts, so i ended up using a look-up-table for widths and heights for individual letters for a given size. It's an approximation, but it worked well enough for me to proceed to the next step.</p>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/e_ink_step_1.jpg" alt="Step 1: Measuring text" /></p>
+<p><img class="card"  src="/assets/images/e_ink_step_1.jpg" alt="Step 1: Measuring text" /></p>
 <h5 id="columns-alignment-and-padding">Columns, Alignment and Padding</h5>
 <p>Now that I had text measurements I could start drawing some text in <code class="prettyprint">Columns</code> and <code class="prettyprint">Rows</code> (these are the containers supported by the  custom layout system). I managed to also implement <code class="prettyprint">padding</code> and text <code class="prettyprint">alignments</code>. Not perfect, but still pretty good progress. </p>
 <p>The image below consists of a single <code class="prettyprint">Column</code> with a nested <code class="prettyprint">Row</code> and a bunch of <code class="prettyprint">Text</code> nodes in various alignments and sizes. The <code class="prettyprint">10px</code> box on top is a component called <code class="prettyprint">Spacer</code> which just occupies empty space on the screen.</p>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/e_ink_step_2.jpg" alt="Step 2: Columns, Padding & Alignments" /></p>
+<p><img class="card"  src="/assets/images/e_ink_step_2.jpg" alt="Step 2: Columns, Padding & Alignments" /></p>
 <h5 id="columnar-layouts-and-alignments">Columnar Layouts and alignments</h5>
 <p>Now that I had some basic building blocks, I decided to go further and implement more complex layouts. I implemented support for <code class="prettyprint">aligning</code> containers and fixed a lot of bugs when nesting containers. You can also see <code class="prettyprint">text alignments</code> within individual <code class="prettyprint">Column</code> containers working.</p>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/e_ink_step_3.jpg" alt="Step 3: Columnar Layouts & Nested Containers" /></p>
+<p><img class="card"  src="/assets/images/e_ink_step_3.jpg" alt="Step 3: Columnar Layouts & Nested Containers" /></p>
 <h5 id="supporting-images">Supporting Images</h5>
 <p>I finally added support for <code class="prettyprint">Image</code> nodes to layouts. This is also when I started to add some much needed UI polish. </p>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/e_ink_step_4.jpg" alt="Step 4: Supporting Images & Initial UI" /></p>
+<p><img class="card"  src="/assets/images/e_ink_step_4.jpg" alt="Step 4: Supporting Images & Initial UI" /></p>
 <h5 id="miscellaneous-features">Miscellaneous Features</h5>
 <p>I also worked on other additional features along the way, including:</p>
 <ul>
@@ -69,6 +69,7 @@ Looks nice and simple, does it not ?</p>
             <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
             <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
             <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://bsky.app/profile/rahulrav.com">Bluesky</a> &nbsp; | &nbsp;
             <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
           </p>
         </section>

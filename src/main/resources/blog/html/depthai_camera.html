@@ -148,7 +148,7 @@ if __name__ == "__main__":
         if cv2.waitKey(1) == ord('q'):
             break</code></pre>
 <p>This produces something like:</p>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/depth_ai_end_to_end.png" alt="DepthAI Demo" /></p>
+<p><img class="card"  src="/assets/images/depth_ai_end_to_end.png" alt="DepthAI Demo" /></p>
 <p>You are looking at a <code class="prettyprint">gray scaled</code> version of my office. Even though this seems like a lot of work to get a gray scaled image, we can easily swap the model to something a lot <em>more</em> complicated, and still use rest of the pipeline.</p>
 <h3 id="conclusion">Conclusion</h3>
 <p>We successfully ran vectorized math on the VPU by taking advantage of the existing ML pipeline. This means, that we don't have to write any <code class="prettyprint">OpenCL</code>, and given the model is a traditional <code class="prettyprint">PyTorch</code> model, we have access to a real debugger. This makes for a much more pleasant developer experience. </p>
@@ -167,6 +167,7 @@ scripts default to a virtual environment. </li>
             <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
             <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
             <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://bsky.app/profile/rahulrav.com">Bluesky</a> &nbsp; | &nbsp;
             <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
           </p>
         </section>

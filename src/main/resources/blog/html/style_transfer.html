@@ -182,11 +182,11 @@ The significance of the Gram Matrix is that it gives a set of linearly indipende
 <p>Now that we have the loss functions, we just need to put everything together. Let's load the <code class="prettyprint">content</code> image first.</p>
 <pre class="prettyprint linenums"><code class="python language-python">base_image = Image.open('/gdrive/My Drive/colab/style_transfer/labrador.jpg')
 plt.imshow(base_image)</code></pre>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/labrador.png" alt="Content Image" /></p>
+<p><img class="card"  src="/assets/images/labrador.png" alt="Content Image" /></p>
 <p>Now, lets load the <code class="prettyprint">style</code> image. I am using Kandinsky's 7th composition for the style image. </p>
 <pre class="prettyprint linenums"><code class="python language-python">style_image = Image.open('/gdrive/My Drive/colab/style_transfer/7th_composition.jpg')
 plt.imshow(style_image)</code></pre>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/kandinskys_7th.png" alt="Style Image" /></p>
+<p><img class="card"  src="/assets/images/kandinskys_7th.png" alt="Style Image" /></p>
 <p>Let's resize both the images so they have the same shape.</p>
 <pre class="prettyprint linenums"><code class="python language-python">style_image = style_image.resize((base_image.width, base_image.height))
 plt.imshow(style_image)
@@ -278,7 +278,7 @@ result_image = transforms.ToPILImage()(results)
 
 # Show image
 plt.imshow(result_image)</code></pre>
-<p><img class="card mdc-card mdc-card__media mdc-card__media--16-9"  src="/assets/images/labrador_kandiskys_7th.png" alt="Output Image" /></p>
+<p><img class="card"  src="/assets/images/labrador_kandiskys_7th.png" alt="Output Image" /></p>
         <section class="footer">
           <p>
           Rahul Ravikumar &nbsp;
@@ -286,6 +286,7 @@ plt.imshow(result_image)</code></pre>
             <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
             <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp; | &nbsp;
             <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://bsky.app/profile/rahulrav.com">Bluesky</a> &nbsp; | &nbsp;
             <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a>
           </p>
         </section>
