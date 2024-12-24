@@ -1,6 +1,6 @@
 {
   "name": "blogging-tools",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A set of tools to make writing blogs easy.",
   "dependencies": {
     "@picocss/pico": "^2.0.6",
@@ -18,7 +18,7 @@
     "watch": "^1.0.2"
   },
   "scripts": {
-    "blog": "node out/index.js",
+    "blog": "node out/src/index.js",
     "build-core": "node_modules/.bin/parcel build core/* --dist-dir ../resources/blog/assets/core",
     "build-tools": "node_modules/.bin/tsc",
     "build": "npm run-script --silent build-core && npm run-script --silent build-tools",

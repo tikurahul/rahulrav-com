@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "rootDirs": [
+      "src",
+    ],
     "allowJs": true,
     "target": "es5",
     "lib": [
