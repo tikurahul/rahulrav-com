@@ -1,2 +1,28 @@
-body{width:100%;margin:0 auto}main[class=container]{padding:.5rem}main[class=container] .video{border-radius:20px;width:60%;height:30rem;margin:0 auto;display:block}main[class=container] .card{border-radius:10% 5%;width:60%;margin:2rem auto;display:block}main[class=container] .footer{border-top:1px solid #3f51b5}
+body {
+  width: 100%;
+  margin: 0 auto;
+}
+
+main[class="container"] {
+  padding: .5rem;
+}
+
+main[class="container"] .video {
+  border-radius: 20px;
+  width: 60%;
+  height: 30rem;
+  margin: 0 auto;
+  display: block;
+}
+
+main[class="container"] .card {
+  border-radius: 10% 5%;
+  width: 60%;
+  margin: 2rem auto;
+  display: block;
+}
+
+main[class="container"] .footer {
+  border-top: 1px solid #3f51b5;
+}
 /*# sourceMappingURL=blog.css.map */

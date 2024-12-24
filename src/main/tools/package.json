@@ -22,10 +22,11 @@
     "build-core": "node_modules/.bin/parcel build core/* --dist-dir ../resources/blog/assets/core",
     "build-tools": "node_modules/.bin/tsc",
     "build": "npm run-script --silent build-core && npm run-script --silent build-tools",
-    "serve": "http-server -p 8000 ./out",
+    "serve": "http-server -p 8000 ../resources/blog/html",
     "watch-core": "node_modules/.bin/parcel watch core/* --dist-dir ../resources/blog/assets/core",
     "watch-tools": "node_modules/.bin/tsc --watch",
-    "watch": "node_modules/.bin/watch 'npm run-script blog' ./out ../resources/blog/assets/core ../resources/blog/md"
+    "watch-blog": "node_modules/.bin/watch 'npm run-script --silent blog' ./out ../resources/blog/assets/core ../resources/blog/md",
+    "watch": "npm run-script --silent watch-core & npm run-script --silent watch-tools & npm run-script --silent watch-blog"
   },
   "author": "tikurahul@gmail.com",
   "license": "MIT"
