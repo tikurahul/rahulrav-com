@@ -10,7 +10,7 @@ fun Routing.main() {
         call.respondRedirect("/blog")
     }
 
-    staticResources("/files", "base")
+    staticResources("/files", "files")
     staticResources("/blog", "blog/html", index = "toc.html")
     staticResources("/assets", "blog/assets")
 }
