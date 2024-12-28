@@ -55,6 +55,10 @@
     {
       "title": "OAK-D-IOT and MicroPython",
       "path": "depthai_micropython.md"
+    },
+    {
+      "title": "Mutable Types in Wire",
+      "path": "mutable_types_in_wire.md"
     }
   ]
 }

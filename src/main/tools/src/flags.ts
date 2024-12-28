@@ -5,8 +5,8 @@ export const IS_LOG = true;
 export const IS_PROFILE = false;
 
 /* Highlight.js */
-export const HIGHLIGHT_STYLES = '/assets/highlight/styles/dracula.css';
-export const HIGHLIGHT_JS = '/assets/highlight/highlight.pack.js';
+export const HIGHLIGHT_STYLES = '/assets/highlight/styles/atom-one-dark.min.css';
+export const HIGHLIGHT_JS = '/assets/highlight/highlight.min.js';
 
 /** Paths */
 const RESOURCES = '../../../resources';

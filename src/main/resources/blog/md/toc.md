@@ -15,3 +15,4 @@ Here is a list of all the blog posts.
 * [Building an E-Ink Calendar, and a UI Toolkit along the way](/blog/e_ink_dashboard.html)
 * [Computational Cameras and DepthAI](/blog/depthai_camera.html)
 * [OAK-D-IOT and MicroPython](/blog/depthai_micropython.html)
+* [Mutable Types in Wire](/blog/mutable_types_in_wire.html)

@@ -1,0 +1,269 @@
+
+  <!doctype html>
+    <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Mutable Types in Wire</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+      </head>
+      <body>
+        
+      <header class="container-fluid">
+        <nav>
+          <ul>
+            <li><strong>Rahul Ravikumar's Blog</strong></li>
+          </ul>
+          <ul>
+            <li><a href="/blog/toc.html" class="contrast">More Articles</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main class="container">
+        <p>Dec 27 2024, Friday</p>
+<h2 id="mutable-types-in-wire">Mutable Types in Wire</h2>
+<p>Block's <a href="https://github.com/square/wire">Wire</a> is a protocol buffer compiler and implementation that is Kotlin Multiplatform ready.<br />
+To understand the motivations around why Block (Square at the time) built Wire, their <a href="https://developer.squareup.com/blog/introducing-wire-protocol-buffers/">blog post</a> announcing the release of Wire <code class="prettyprint">1.0</code> is a great read.</p>
+<p>One of the reasons Wire has been successful is because they paid a lot of attention to the ergonomics of generated code. Here is an excerpt from their <a href="https://developer.squareup.com/blog/introducing-wire-protocol-buffers/#wire-features">blog post</a> (emphasis mine).</p>
+<blockquote>
+  <ul>
+  <li>Messages should be clean, developer-friendly data objects:</li>
+  <li>They should be highly readable</li>
+  <li>They should be <strong>deeply immutable</strong></li>
+  </ul>
+</blockquote>
+<h3 id="on-immutability">On Immutability</h3>
+<p>Immutability is an excellent trait to have for Messages. Here is a wonderful <a href="https://elizarov.medium.com/immutability-we-can-afford-10c0dcb8351d">blog post by Roman Elizarov</a> (was Kotlin's language lead) on designing immutable abstractions that we can afford.</p>
+<h4 id="immutabilitys-trade-offs">Immutability's trade-offs</h4>
+<p>One of the main trade-offs Immutability makes is the following:</p>
+<ul>
+<li><p>Potential Memory Overhead<br />
+Immutable types are by definition not-modifiable. Therefore, anytime you want to make a change; you end up having to re-create objects given the inability to modify existing ones. This adds to GC pressure. For performance sensitive code, this is not ideal.</p></li>
+<li><p>Performance Impact for frequent Updates<br />
+If your application involves very frequent updates to large data structures, the overhead of creating new objects can quickly become noticeable.</p></li>
+</ul>
+<h3 id="mutable-types">Mutable Types</h3>
+<p>I <a href="https://github.com/square/wire/commit/54e032b1dd520fefdfce4799fda8470c4a97f1c3">recently</a> contributed a change to Wire to allow marking a <code class="prettyprint">Message</code> as mutable. <br />
+For extremely performance sensitive code, you too might find this option useful. </p>
+<p>I highly recommend using these types with care. These types should <strong>always be behind an abstraction</strong> that hides the fact that the underlying type is mutable. This is because you lose all the nice properties of immutable <code class="prettyprint">Message</code> types.</p>
+<h4 id="learnings">Learnings</h4>
+<p>I really enjoyed the discussion with Wire's maintainer's <a href="https://publicobject.com">Jesse Wilson</a>, <a href="https://jakewharton.com">Jake Wharton</a> and <a href="https://quenaudon.com">Benoît Quenaudon</a>. One interesting potential solution that we explored for the codegen was something Jesse called a <code class="prettyprint">decomposed</code> <code class="prettyprint">encode(...)</code>.</p>
+<p>Let's look at an example:</p>
+<pre class="prettyprint linenums"><code class="protobuf language-protobuf">syntax = "proto2";
+
+package squareup.wire.mutable;
+
+message Header {
+  optional uint64 id = 1;
+  optional string name = 2;
+}
+
+message Payload {
+  optional bytes content = 1;
+}
+
+message Packet {
+  optional Header header = 1;
+  optional Payload payload = 2;
+}</code></pre>
+<p>The generated code for the message <code class="prettyprint">Packet</code> looks something like (prior to my changes):</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">public class Packet(
+  @field:WireField(
+    tag = 1,
+    adapter = "squareup.wire.mutable.Header#ADAPTER",
+    declaredName = "header",
+    schemaIndex = 0,
+  )
+  public val header_: Header? = null,
+  @field:WireField(
+    tag = 2,
+    adapter = "squareup.wire.mutable.Payload#ADAPTER",
+    schemaIndex = 1,
+  )
+  public val payload: Payload? = null,
+  override val unknownFields: ByteString = ByteString.EMPTY,
+) : Message&lt;Packet, Nothing&gt;(ADAPTER, unknownFields) {
+  public companion object {
+    @JvmField
+    public val ADAPTER: ProtoAdapter&lt;Packet&gt; = object : ProtoAdapter&lt;Packet&gt;(
+      FieldEncoding.LENGTH_DELIMITED, 
+      Packet::class, 
+      "type.googleapis.com/squareup.wire.mutable.Packet", 
+      PROTO_2, 
+      null, 
+      "squareup/wire/mutable_types.proto"
+    ) {
+      // ...
+      override fun encode(writer: ProtoWriter, `value`: Packet) {
+        Header.ADAPTER.encodeWithTag(writer, 1, value.header_)
+        Payload.ADAPTER.encodeWithTag(writer, 2, value.payload)
+        writer.writeBytes(value.unknownFields)
+      }
+      override fun encode(writer: ReverseProtoWriter, `value`: Packet) {
+        // ...
+      }
+      override fun decode(reader: ProtoReader): Packet {
+        // ...
+      }
+      override fun redact(`value`: Packet): Packet = {
+        // ...
+      }
+    }
+    private const val serialVersionUID: Long = 0L
+  }
+}</code></pre>
+<p>In particular, pay special attention to the the implementation of <code class="prettyprint">encode(...)</code> in <code class="prettyprint">Packet.ADAPTER</code>.</p>
+<p>If all we needed was a more efficient way of encoding a <code class="prettyprint">Packet</code> without needing to create instances of the underlying type; then we could generate an overloaded <code class="prettyprint">encode(...)</code> which had the following type signature:</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">public companion object {
+  @JvmField
+  public val ADAPTER: ProtoAdapter&lt;Packet&gt; = object : ProtoAdapter&lt;Packet&gt;(
+    FieldEncoding.LENGTH_DELIMITED, 
+    Packet::class, 
+    "type.googleapis.com/squareup.wire.mutable.Packet", 
+    PROTO_2, 
+    null, 
+    "squareup/wire/mutable_types.proto"
+  ) {
+    // ...
+
+    /*
+     * Notice that the `Packet` type got decomposed to its constituent
+     * `Header` and `Payload` nested messages, which finally got
+     * decomposed to their respective types.
+     * 
+     * We could essentially decompose every single `Message` type
+     * until they only referred to the base types supported by Protocol Buffers.
+     */
+    override fun encode(
+      writer: ProtoWriter,
+      header_id: Long, // id from `Header
+      header_name: String, // name from `Header`
+      payload_content: ByteString, // content from `Payload`
+    ) {
+      // ...
+    }
+  }
+}</code></pre>
+<p>In the above example, we essentially decomposed the <code class="prettyprint">Packet</code> message to its constituent components <code class="prettyprint">Header</code> and <code class="prettyprint">Payload</code> which we then recursively decomposed to <code class="prettyprint">id</code>, <code class="prettyprint">name</code> and <code class="prettyprint">content</code> respectively.</p>
+<p>We would essentially decompose every single <code class="prettyprint">Message</code> type until they only referred to the base types supported by Protocol Buffers. This would mean that the underlying type could <strong>still be immutable !</strong>.</p>
+<p>The reason why we did not end up doing this was because, the numbers of parameters in the generated <code class="prettyprint">encode</code> method would be excessively large for complex <code class="prettyprint">Message</code> types. The API would also get confusing when you had overlapping types; For e.g.</p>
+<pre class="prettyprint linenums"><code class="protobuf language-protobuf">message Packet {
+  optional Header header_1 = 1;
+  optional Header header_2 = 2;
+  optional Payload payload = 3;
+}</code></pre>
+<p>would generate an encode that would have</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">public companion object {
+  @JvmField
+  public val ADAPTER: ProtoAdapter&lt;Packet&gt; = object : ProtoAdapter&lt;Packet&gt;(
+    FieldEncoding.LENGTH_DELIMITED, 
+    Packet::class, 
+    "type.googleapis.com/squareup.wire.mutable.Packet", 
+    PROTO_2, 
+    null, 
+    "squareup/wire/mutable_types.proto"
+  ) {
+    // ...
+    override fun encode(
+      writer: ProtoWriter,
+      header_1_id: Long, // id from `Header`
+      header_1_name: String, // name from `Header`
+      header_2_id: Long, // id from `Header
+      header_2_name: String, // name from `Header`
+      payload_content: ByteString, // content from `Payload`
+    ) {
+      // ...
+    }
+  }
+}</code></pre>
+<p>The parameter names <code class="prettyprint">header_1_id</code>, and <code class="prettyprint">header_2_id</code> etc. start to get overwhelming and it makes it easy to make mistakes. </p>
+<p>Instead, we picked:</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">// Code generated by Wire protocol buffer compiler, do not edit.
+// Source: squareup.wire.mutable.Packet in squareup/wire/mutable_types.proto
+public class MutablePacket(
+  @field:WireField(
+    tag = 1,
+    adapter = "squareup.wire.mutable.MutableHeader#ADAPTER",
+    declaredName = "header",
+    schemaIndex = 0,
+  )
+  public var header_: MutableHeader? = null,
+  @field:WireField(
+    tag = 2,
+    adapter = "squareup.wire.mutable.MutablePayload#ADAPTER",
+    schemaIndex = 1,
+  )
+  public var payload: MutablePayload? = null,
+  override var unknownFields: ByteString = ByteString.EMPTY,
+) : Message&lt;MutablePacket, Nothing&gt;(ADAPTER, unknownFields) {
+  // ...
+  public companion object {
+    @JvmField
+    public val ADAPTER: ProtoAdapter&lt;MutablePacket&gt; = object : ProtoAdapter&lt;MutablePacket&gt;(
+      FieldEncoding.LENGTH_DELIMITED, 
+      MutablePacket::class, 
+      "type.googleapis.com/squareup.wire.mutable.Packet", 
+      PROTO_2, 
+      null, 
+      "squareup/wire/mutable_types.proto"
+    ) {
+      // ...
+      override fun encode(writer: ProtoWriter, `value`: MutablePacket) {
+        MutableHeader.ADAPTER.encodeWithTag(writer, 1, value.header_)
+        MutablePayload.ADAPTER.encodeWithTag(writer, 2, value.payload)
+        writer.writeBytes(value.unknownFields)
+      }
+      override fun decode(reader: ProtoReader): MutablePacket {
+        var header_: MutableHeader? = null
+        var payload: MutablePayload? = null
+        val unknownFields = reader.forEachTag { tag -&gt;
+          when (tag) {
+            1 -&gt; header_ = MutableHeader.ADAPTER.decode(reader)
+            2 -&gt; payload = MutablePayload.ADAPTER.decode(reader)
+            else -&gt; reader.readUnknownField(tag)
+          }
+        }
+        return MutablePacket(
+          header_ = header_,
+          payload = payload,
+          unknownFields = unknownFields
+        )
+      }
+      // ...
+    }
+    private const val serialVersionUID: Long = 0L
+  }
+}</code></pre>
+<p>We generate types prefixed with the word <code class="prettyprint">Mutable</code>, and all the corresponding fields are declared as <code class="prettyprint">public var</code>. This allows us to express our intent a lot more naturally with the caveat that the type is <strong>fully mutable</strong> and <strong>unsafe by default</strong>.</p>
+<h3 id="epilogue">Epilogue</h3>
+<p>I really had a lot of fun implementing this feature. This was my first real foray into code generation and working with the Wire code base was a joy. Special thanks to <a href="https://publicobject.com">Jesse Wilson</a>, <a href="https://jakewharton.com">Jake Wharton</a> and <a href="https://quenaudon.com">Benoît Quenaudon</a> for their patience, help and support.</p>
+        <section class="footer">
+          <p>
+          Rahul Ravikumar &nbsp;
+            <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://bsky.app/profile/rahulrav.com">Bluesky</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp;
+          </p>
+        </section>
+      </main>
+    </div>
+  
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
+        <link rel="stylesheet" href="/assets/highlight/styles/atom-one-dark.min.css">
+        <link rel="stylesheet" href="/assets/core/page.css">
+        <script type="text/javascript" src="/assets/core/page.js"></script>
+        <script type="text/javascript" src="/assets/highlight/highlight.min.js"></script>
+        <script type="text/javascript">
+          // Highlight code snippets
+          document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightElement(block);
+            });
+          });
+        </script>
+      </body>
+    </html>
+  
