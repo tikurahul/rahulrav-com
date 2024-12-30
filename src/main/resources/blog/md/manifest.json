@@ -59,6 +59,10 @@
     {
       "title": "Mutable Types in Wire",
       "path": "mutable_types_in_wire.md"
+    },
+    {
+      "title": "My Talks",
+      "path": "talks.md"
     }
   ]
 }

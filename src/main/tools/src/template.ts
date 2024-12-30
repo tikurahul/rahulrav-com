@@ -41,10 +41,11 @@ function buildContent(title: string, content: string) {
       <header class="container-fluid">
         <nav>
           <ul>
-            <li><strong>Rahul Ravikumar's Blog</strong></li>
+            <li><strong><a href="/blog/toc.html">Rahul Ravikumar's Blog</a></strong></li>
           </ul>
           <ul>
             <li><a href="/blog/toc.html" class="contrast">More Articles</a></li>
+            <li><a href="/blog/talks.html" class="contrast">Talks</a></li>
           </ul>
         </nav>
       </header>

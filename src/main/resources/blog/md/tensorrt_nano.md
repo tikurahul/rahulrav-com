@@ -218,27 +218,27 @@ This meant that I had the headroom to build a `Resnet 18` based model.
 
 Here is the final comparison of all techniques used to speed up ML inference. Using `TensorRT`, I had improved the rate of inference by **`2.5x`** the previous result.
 
-<div class="mdc-data-table">
-    <div class="mdc-data-table__table-container">
-        <table class="mdc-data-table__table" aria-label="Benchmarks">
+<div>
+    <div>
+        <table aria-label="Benchmarks">
         <thead>
-            <tr class="mdc-data-table__header-row">
-                <th class="mdc-data-table__header-cell">Model</th>
-                <th class="mdc-data-table__header-cell">Inference Frequency</th>
+            <tr>
+                <th>Model</th>
+                <th>Inference Frequency</th>
             </tr>
         </thead>
-        <tbody class="mdc-data-table__content">
-            <tr class="mdc-data-table__row">
-                <td class="mdc-data-table__cell">Keras [TF-GPU]</td>
-                <td class="mdc-data-table__cell">25 Hz</td>
+        <tbody>
+            <tr>
+                <td>Keras [TF-GPU]</td>
+                <td>25 Hz</td>
             </tr>
-            <tr class="mdc-data-table__row">
-                <td class="mdc-data-table__cell">Keras [Performance Mode]</td>
-                <td class="mdc-data-table__cell">40-42 Hz</td>
+            <tr>
+                <td>Keras [Performance Mode]</td>
+                <td>40-42 Hz</td>
             </tr>
-            <tr class="mdc-data-table__row">
-                <td class="mdc-data-table__cell">TensorRT</td>
-                <td class="mdc-data-table__cell">100-105 Hz</td>
+            <tr>
+                <td>TensorRT</td>
+                <td>100-105 Hz</td>
             </tr>
         </tbody>
         </table>
