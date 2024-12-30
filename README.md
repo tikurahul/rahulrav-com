@@ -21,20 +21,20 @@ gcloud config set project rahulrav-com
 * Start the App Engine development server using `./gradlew run`.
 * In another terminal run `./gradlew -t build` which creates a watch on all the `src`
   folders, and sets up live reload.
-* From the `tools` directory run `yarn watch` to setup a watch on the `resources/blog/md`
+* From the `tools` directory run `npm run-script watch` to setup a watch on the `resources/blog/md`
   folder which is the input to the generator responsible in generating the HTML. Also update `manifest.json` to add blog metadata.
 
 ### Other useful commands
 
 ```bash
-# Build tooling
+# Build tooling that can convert Markdown to formatted HTML
 npm run-script build-tools
 
-# Build Template
+# Build Template & Styles
 npm run-script build-core
 
-# Local Development for template and tools
-npm run-script watch-core && npm run-script watch-tools
+# Local Development
+npm run-script watch
 ```
 
 ### Other Admin Actions
