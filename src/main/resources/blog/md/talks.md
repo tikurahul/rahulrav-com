@@ -7,13 +7,12 @@
     flex-direction: column;
   }
 
-  .talk {
-    display: flex;
-    margin: 1rem;
-    flex-direction: row;
+  .talks-container>div[class="grid"] {
+    margin-top: 2rem;
   }
 
-  .talk>iframe {
+  .grid>iframe {
+    width: 20rem;
     height: 15rem;
     display: block;
     border-radius: 20% 6%;
@@ -30,7 +29,7 @@
 
 <div class="talks-container">
 
-  <div class="talk">
+  <div class="grid">
     <iframe src="https://www.youtube.com/embed/nE3_HzxNL9Q?si=9ebG9fvtK6mwEY2A" frameborder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
     </iframe>
@@ -44,7 +43,7 @@
     </div>
   </div>
 
-  <div class="talk">
+  <div class="grid">
     <iframe src="https://www.youtube.com/embed/YEX26m89fco?si=x88K4mMp9sZIiQN5" frameborder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
     </iframe>
@@ -57,7 +56,7 @@
     </div>
   </div>
 
-  <div class="talk">
+  <div class="grid">
     <iframe src="https://www.youtube.com/embed/tjYK7sPB5CA?si=62Tq7cAXmXkdiIx5" frameborder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
     </iframe>
@@ -71,7 +70,7 @@
     </div>
   </div>
 
-  <div class="talk">
+  <div class="grid">
     <iframe src="https://www.youtube.com/embed/m7oRRdud-mY?si=_BxX63Ag01hrFGSW" frameborder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
     </iframe>
@@ -83,7 +82,7 @@
     </div>
   </div>
 
-  <div class="talk">
+  <div class="grid">
     <iframe src="https://www.youtube.com/embed/yJm5On5Gp4c?si=E_KgohUt_yXQggyQ" frameborder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
     </iframe>
@@ -98,7 +97,7 @@
     </div>
   </div>
 
-  <div class="talk">
+  <div class="grid">
     <iframe
       src="https://player.vimeo.com/video/754504249?autopause=0&autoplay=0&color=00adef&portrait=0&byline=0&title=0"
       frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
@@ -115,7 +114,7 @@
     </div>
   </div>
 
-  <div class="talk">
+  <div class="grid">
     <iframe
       src="https://player.vimeo.com/video/646404563?autopause=0&autoplay=0&color=00adef&portrait=0&byline=0&title=0"
       frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
@@ -129,7 +128,7 @@
     </div>
   </div>
 
-  <div class="talk">
+  <div class="grid">
     <iframe src="https://www.youtube.com/embed/Bz0z694SrEE?si=BZLY4heFJfXI5jV4" frameborder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
     </iframe>
@@ -142,7 +141,7 @@
     </div>
   </div>
 
-  <div class="talk">
+  <div class="grid">
     <iframe src="https://www.youtube.com/embed/jCmJWOkjbM0?si=J6x_mUodf43DTPDt" frameborder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
     </iframe>
@@ -159,7 +158,7 @@
     </div>
   </div>
 
-  <div class="talk">
+  <div class="grid">
     <iframe src="https://www.youtube.com/embed/83a4rYXsDs0" frameborder="0"
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
     </iframe>
