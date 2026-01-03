@@ -3,18 +3,18 @@
   "version": "0.6.0",
   "description": "A set of tools to make writing blogs easy.",
   "dependencies": {
-    "@picocss/pico": "^2.0.6",
+    "@picocss/pico": "^2.1.1",
     "showdown": "^2.1.0",
     "showdown-prettify": "^1.3.0"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.13.3",
-    "@types/node": "^22.10.2",
+    "@parcel/transformer-sass": "^2.16.3",
+    "@types/node": "^25.0.3",
     "@types/showdown": "^2.0.6",
     "http-server": "^14.1.1",
-    "parcel": "^2.13.3",
-    "sass": "^1.83.0",
-    "typescript": "^5.7.2",
+    "parcel": "^2.16.3",
+    "sass": "^1.97.1",
+    "typescript": "^5.9.3",
     "watch": "^1.0.2"
   },
   "scripts": {
