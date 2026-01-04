@@ -42,5 +42,8 @@ npm run-script watch
 To deploy the app:
 
 ```bash
-./gradlew appengineDeploy
+# Use this because `./gradlew appengineDeploy` just seems to hang forever.
+./gradlew appengineStage
+# Navigate to the staging directory
+cd build/staged-app && gcloud app deploy && cd ..
 ```
