@@ -61,6 +61,10 @@
       "path": "mutable_types_in_wire.md"
     },
     {
+      "title": "10 Years at Google",
+      "path": "10_years_at_google.md"
+    },
+    {
       "title": "My Talks",
       "path": "talks.md"
     }

@@ -1,0 +1,137 @@
+
+  <!doctype html>
+    <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>10 Years at Google</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+      </head>
+      <body>
+        
+      <header class="container-fluid">
+        <nav>
+          <ul>
+            <li><strong><a href="/blog/toc.html">Rahul Ravikumar's Blog</a></strong></li>
+          </ul>
+          <ul>
+            <li><a href="/blog/toc.html" class="contrast">More Articles</a></li>
+            <li><a href="/blog/talks.html" class="contrast">Talks</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main class="container">
+        <p>Jan 20 2026, Tuesday</p>
+<h2 id="10-years-at-google">10 Years at Google</h2>
+<p>I completed my 10 year anniversary at Google in <code class="prettyprint">August 2025</code>. I am usually the person who ends up getting antsy, and eventually looks for a new opportunity around the 4-5 year mark (your typical Bay Area SWE). Google has been different. At this point, I have spent almost 25% of my lifetime in one company. Below is a brief rundown of all the things I worked on during my tenure and some of the things I learned along the way.</p>
+<blockquote>
+  <p><strong>Warning:</strong> This is a longer-than-usual post. Grab a coffee.</p>
+</blockquote>
+<blockquote>
+  <p>If you are wondering about the timing of the blog post (given its been many months since I hit my 10 year mark) - I was debating if it was even worth writing this at all. Hence, the delay.</p>
+</blockquote>
+<h3 id="pre-google-career">Pre-Google Career</h3>
+<p>I joined Google in <code class="prettyprint">2015</code>, after a brief stint at Apple working on Indoor Maps (an incredibly fun project).</p>
+<p>Prior to that, I had worked on Android (as both an application and a platform developer) at Amazon building the In-App purchasing SDK for the first Android based Kindle (Fire). I subsequently worked on the fabled <code class="prettyprint">4C</code> (Fire) Phone for a couple of weeks, before being asked to switch over to Fire TV as part of the team who was tasked with re-imagining what the TV experience for the App Store should be. Before that, I did more mapping at ESRI.</p>
+<blockquote>
+  <p>When interviewing for a job, my goal is to try and challenge myself to try doing that I have not done before. I try not to chase technologies; instead I try to find interesting problems.</p>
+</blockquote>
+<p>At Amazon &amp; Apple, I got a chance to build both backends as well as ship developer facing SDKs; so I thought building / learning bring-up of <strong>core</strong> cloud infrastructure might be a cool thing to have on one's resume. I interviewed (and subsequently got an offer) from Microsoft with the Azure Fabric team (one of the most intense programming interviews I had if memory serves). The other option was to try and challenge myself to write some C++ / unmanaged code (which I last wrote in my University days) while also trying to make the web a better place. The dream was to contribute to a project like Google Chrome. I was so inspired by the incredible cadence at which the Chrome team shipped new features; especially Chrome DevTools which I was a huge user of.</p>
+<h3 id="the-google-interview">The Google Interview</h3>
+<p>I got to skip my phone interviews at Google thanks to the recommendations of my former colleages (from Amazon) who were working on the Android team. This was going to be my second attempt at the Google on-site. I remember the questions being challenging and fun. Interestingly, minutes after the final round as I was walking towards my rental car - I was trying to make a mental note of all the questions that I had been asked; but I could only vaguely remember the questions. I attribute this to the stress and nervous energy. I think I was just relieved that the interview was finally over; and the matter was no longer in my hands. Of the 5 interviews on that day, at least 4 of them had gone really well and I had a disconnect with at least one interviewer (who kept interrupting / trying to help me perhaps?).</p>
+<h3 id="team-matching">Team Matching</h3>
+<p>Google Chrome (the core browser team) was not hiring given they were amidst a hiring freeze at the time. However Federated Identity team was hiring and I thought that might be a fun thing to do (given they build on top of Chrome Sync). I had never done anything Identity before; and only had a vague idea of how OAuth / OpenID worked. So I signed up.</p>
+<h3 id="2015---2018-federated-identity-at-google">2015 - 2018 (Federated Identity at Google)</h3>
+<p>I finally learned how <a href="https://github.com/openid/AppAuth-JS">OAuth2</a> works under the hood. It turns out that one of the spec writers literally sat next to me. It is truly amazing how much one can learn just by osmosis. Here are some of the projects we ended up shipping:</p>
+<ul>
+<li>YOLO (You Only Login Once) on Android (A Google Play Services API for one tap sign in &amp; automatic credential management)</li>
+<li>Smart Lock for Passwords on the Web (also now known as One Tap Sign in for the Web)</li>
+<li>Firebase Auth SDK for Android, while Google Play Services was undergoing a massive refactor (focus on quality). Fellow Googlers remember this period as <code class="prettyprint">GMS Winter</code>.</li>
+</ul>
+<p>Despite my efforts to do something different (not work on Android SDKs, given I wanted to try to do something new) I kept getting pulled into Android. The team had realized that I actually knew a lot about the the platform and had also managed to figure out how some of the other core infra in Google Play Services worked under the hood. So I was the perfect person to work on these sorts of projects.</p>
+<blockquote>
+  <p>I realized that <strong>resistance was futile</strong>, and I might as well try to work on more foundational APIs on Android.</p>
+</blockquote>
+<h3 id="2018---present">2018 - Present</h3>
+<p>I joined the Android Architecture Components team in August 2018. My first project was going to be to build an SDK that overhauled persistent background processing on Android (<a href="https://d.android.com/work">WorkManager</a>).</p>
+<h4 id="workmanager">WorkManager</h4>
+<p>Android Lollipop ( <code class="prettyprint">API 21</code>) came with some new foundational background processing APIs on Android (a.k.a. <code class="prettyprint">JobScheduler</code>). On iOS the equivalent is the <code class="prettyprint">BGTaskScheduler</code> API.</p>
+<p>Android always had <em>support libraries</em> that backported features to prior versions of the platform to the best of their ability, but years after the <code class="prettyprint">JobScheduler</code> APIs were released, no compat libraries came about. I always wondered why such a library never existed?</p>
+<p>Years later, having joined Google and subsequently the team that worked on these sorts of libraries; I realized, I was <strong>going to be</strong> building the API!</p>
+<p>Also, we were going to have to reconcile <code class="prettyprint">ListenableFuture</code>s, <code class="prettyprint">RxJava</code>-isms and the world of Kotlin Coroutines; all ways of doing work off main thread and ensuring our approach was compatible with these separate (albeit similar) APIs. We were also going to try and unify / sherlock other popular Android Libraries such as Evernote's <code class="prettyprint">JobDispatcher</code> (IIRC), <code class="prettyprint">GCMNetworkManager</code>, and <code class="prettyprint">FirebaseJobDispatcher</code> that were trying to address this gap.</p>
+<p><strong>2 Google I/Os</strong> later; we finally shipped a stable release! Our team had accomplished an implementation of <code class="prettyprint">WorkManager</code> by a combination of a complex state machine and <code class="prettyprint">AlarmManager</code> (for API &lt; 23) and used <code class="prettyprint">JobScheduler</code> on newer platform versions. We built a much more ergonomic API. Most Google Apps started using the library (including Search, Gmail, Messages etc.), and started to report impressive battery savings &amp; throughput metrics. We had managed to pull this off!</p>
+<p>Before the project had started, I thought I had a pretty good grasp of Java concurrency primitives. By the end of this project I realized that concurrency at scale is a different kind of challenge.</p>
+<blockquote>
+  <p>Simple abstractions tend to scale. The goal is to <strong>not try and be too clever</strong>.</p>
+</blockquote>
+<h4 id="early-android-performance-work">Early Android Performance Work</h4>
+<p>I had started working on some performance adjacent APIs while I was working on <code class="prettyprint">WorkManager</code>.</p>
+<p>One such library was the <code class="prettyprint">androidx.startup</code> library - which creatively used the Android build systems' manifest-merger to discover all components that needed to be initialized during application startup. These components were light weight, and could define other components as dependencies; <code class="prettyprint">androidx.startup</code> would discover and initialize them in the right order. Classic topological sort-ish.</p>
+<p>The library tried to do this as efficiently as possible.</p>
+<blockquote>
+  <p>When building the library, I realized how difficult it is to benchmark on Android. So many things get in the way when you try and measure what the cost of code execution is. Shader caches, GC, JIT and profile guided optimization ( <code class="prettyprint">PGO</code>) to name a few. Android did not have an official recommendation for how one should write benchmarks to optimize code.</p>
+</blockquote>
+<h4 id="androidx-macro-benchmarks">AndroidX (Macro) Benchmarks</h4>
+<p>Android engineers had the ability to measure how long isolated small pieces of code took to run ( <code class="prettyprint">micro</code>benchmarks). Think data structures, or algorithms that are designed specially for the Android Runtime ( <code class="prettyprint">ART</code>). Developers never had the ability to measure things at a <code class="prettyprint">macro</code> level. Think application startup, frame durations for jank, anything that involved process bring-up. The Android Platform had an internal library but it made all sorts of assumptions (like the device being rooted for e.g.) and a lot of the supporting infra (regression detection, dashboarding et. al.) was closed source.</p>
+<p>Our team set out to build an implementation of this library that we could share externally; so other developers could write these sorts of benchmarks. This was a tremendous learning experience given I also spent some time getting to know about all the clever things <code class="prettyprint">ART</code> and the <code class="prettyprint">Android Platform</code> did to speed up app startup. I also spent a lot of time reading traces and getting familiar with the capabilities of system tracing in general (<a href="https://perfetto.dev">Perfetto</a>).</p>
+<h4 id="jetpack-compose-and-baseline-profiles">Jetpack Compose and Baseline Profiles</h4>
+<p>I did not really contribute too much in the building of the new UI toolkit. I just got to watch the team very closely, and learn from all the amazing design documents that this project ended up producing. It consumed the majority of the Android UI Toolkit's team time at the time. I simply cheered from the sidelines.</p>
+<blockquote>
+  <p>Secretly, I was hoping that I would never have to learn how to write a custom <code class="prettyprint">ViewGroup</code>. (Please don't tell my boss).</p>
+</blockquote>
+<p>After a couple of years in, we realized we were getting closer and closer to a ship date, that had been set in stone. We had to make sure that this toolkit was ready. The team wanted to make sure that we were at least as good as the old UI toolkit (based on <code class="prettyprint">View</code>s). As things turned out - the new toolkit faced a <strong>significant</strong> hurdle.</p>
+<p>The <code class="prettyprint">View</code> based UI Toolkit is distributed as part of the operating system. This code therefore benefits from profile guided optimizations (and is fully AOT-compiled on many versions of the platform). These classes are ready to use <strong>immediately after app startup</strong>, because the Zygote, pre-fork, has the toolkit loaded and ready to go.</p>
+<p>Jetpack Compose is an unbundled UI toolkit. This code shipped as part of the app and <em>not</em> the platform. This meant:</p>
+<ul>
+<li>This code won't automatically benefit from profile guided optimizations ( <code class="prettyprint">ART</code> would have had to figure out hot code paths, which could take a <strong>long</strong> time).</li>
+<li>Apps would <strong>have to pay</strong> the cost of classloading the toolkit.</li>
+</ul>
+<blockquote>
+  <p>Throughout my professional career, I have always tried my best to be a generalist. While I enjoy diving deep into how UI Toolkits (like React, Compose etc.) work &amp; perform, I also enjoy working on distributed systems. Even at Google, I had managed to do both (prior to joining to the UI Toolkit team). The only reason why I was chosen to work on this project was because I had backend experience at Google, and we needed to ship this in ~ 6 months. If we did not do this, Jetpack Compose could not go stable.</p>
+</blockquote>
+<p>While I won't dive into every technical detail here, (see <a href="https://www.youtube.com/watch?v=yJm5On5Gp4c">1</a> and <a href="https://developer.android.com/topic/performance/baselineprofiles/overview">2</a>), but suffice it to say we advanced the state of the <strong><em>ART</em></strong> (pun intended) when it came to leveraging profile guided optimizations on Android. This code gave me the opportunity to work on Flume pipelines, build developer tooling in Android Studio, and work on more libraries &amp; benchmarking tools. I also got the opportunity to build a completely new backend for <code class="prettyprint">ART Cloud</code> and integrated it into the app publishing pipeline.</p>
+<blockquote>
+  <p>We originally estimated 6 months to its first version (good enough to unblock Compose launch); and a couple more months of polish. This project took <code class="prettyprint">~2.5 years</code>, because it was the gift that kept giving. We found more and more places where we could take advantage of PGO as part of the app build / publish pipeline. This work also paved the path for <a href="https://developer.android.com/topic/performance/startupprofiles/overview">dex layout optimizations</a> on Android.</p>
+</blockquote>
+<h4 id="tracing-20">Tracing 2.0</h4>
+<p>A little over a year ago, we were lamenting the state of app tracing on Android. We set out to build a new library, to overhaul how tracing worked, with support from <a href="https://perfetto.dev">Perfetto</a>. We built the library as part of a hackathon, to prove that the idea could work.</p>
+<blockquote>
+  <p>I thought it would take me another couple of months to wrap this up. A year later, we are finally approaching the <code class="prettyprint">alpha01</code> release for this library. Thanks to my colleagues who are a lot smarter than I am, we significantly improved the overhead of tracing. We had a few teams experimentally use the library and give us a lot of useful feedback. Also, other internal Google teams have helped us refine the API to make it more extensible and frankly more capable.</p>
+</blockquote>
+<h3 id="learnings">Learnings</h3>
+<ul>
+<li>Being a generalist, and generally curious about how things work under the hood <strong>really helps find problems</strong> that would have otherwise gone unnoticed.</li>
+<li>Surrounding yourself with people who are a <strong>lot</strong> smarter than you are really helps level up quickly. I have had the opportunity to talk to, and work with so many incredibly smart engineers at Google. I am forever grateful for the opportunity.</li>
+<li>Being open to learning new things helps a <strong>lot</strong>. I worked on some applied <code class="prettyprint">ML</code> projects in Google as part of my <code class="prettyprint">20%</code> work after completing some coursework on Deep Learning and NLP. Finding solutions to real-world problems was very satisfying.</li>
+<li>Being at the right place, at the right time with the right set of skills helps quite a lot.</li>
+</ul>
+        <section class="footer">
+          <p>
+          Rahul Ravikumar &nbsp;
+            <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://bsky.app/profile/rahulrav.com">Bluesky</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp;
+          </p>
+        </section>
+      </main>
+    </div>
+  
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
+        <link rel="stylesheet" href="/assets/highlight/styles/atom-one-dark.min.css">
+        <link rel="stylesheet" href="/assets/core/page.css">
+        <script type="text/javascript" src="/assets/core/page.js"></script>
+        <script type="text/javascript" src="/assets/highlight/highlight.min.js"></script>
+        <script type="text/javascript">
+          // Highlight code snippets
+          document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightElement(block);
+            });
+          });
+        </script>
+      </body>
+    </html>
+  
