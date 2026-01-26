@@ -1,4 +1,4 @@
-/*! `typescript` grammar compiled for Highlight.js 11.10.0 */
+/*! `typescript` grammar compiled for Highlight.js 11.11.1 */
 var hljsGrammar = (function () {
   'use strict';
 
@@ -44,7 +44,9 @@ var hljsGrammar = (function () {
     "import",
     "from",
     "export",
-    "extends"
+    "extends",
+    // It's reached stage 3, which is "recommended for implementation":
+    "using"
   ];
   const LITERALS = [
     "true",
@@ -426,7 +428,7 @@ var hljsGrammar = (function () {
     const PARAMS = {
       className: 'params',
       // convert this to negative lookbehind in v12
-      begin: /(\s*)\(/, // to match the parms with 
+      begin: /(\s*)\(/, // to match the parms with
       end: /\)/,
       excludeBegin: true,
       excludeEnd: true,
@@ -637,8 +639,8 @@ var hljsGrammar = (function () {
         NUMBER,
         CLASS_REFERENCE,
         {
-          className: 'attr',
-          begin: IDENT_RE$1 + regex.lookahead(':'),
+          scope: 'attr',
+          match: IDENT_RE$1 + regex.lookahead(':'),
           relevance: 0
         },
         FUNCTION_VARIABLE,
@@ -780,6 +782,7 @@ var hljsGrammar = (function () {
 
   /** @type LanguageFn */
   function typescript(hljs) {
+    const regex = hljs.regex;
     const tsLanguage = javascript(hljs);
 
     const IDENT_RE$1 = IDENT_RE;
@@ -836,13 +839,11 @@ var hljsGrammar = (function () {
       "override",
       "satisfies"
     ];
-
     /*
       namespace is a TS keyword but it's fine to use it as a variable name too.
       const message = 'foo';
       const namespace = 'bar';
     */
-
     const KEYWORDS$1 = {
       $pattern: IDENT_RE,
       keyword: KEYWORDS.concat(TS_SPECIFIC_KEYWORDS),
@@ -850,6 +851,7 @@ var hljsGrammar = (function () {
       built_in: BUILT_INS.concat(TYPES),
       "variable.language": BUILT_IN_VARIABLES
     };
+
     const DECORATOR = {
       className: 'meta',
       begin: '@' + IDENT_RE$1,
@@ -870,15 +872,25 @@ var hljsGrammar = (function () {
     tsLanguage.exports.PARAMS_CONTAINS.push(DECORATOR);
 
     // highlight the function params
-    const ATTRIBUTE_HIGHLIGHT = tsLanguage.contains.find(c => c.className === "attr");
+    const ATTRIBUTE_HIGHLIGHT = tsLanguage.contains.find(c => c.scope === "attr");
+
+    // take default attr rule and extend it to support optionals
+    const OPTIONAL_KEY_OR_ARGUMENT = Object.assign({},
+      ATTRIBUTE_HIGHLIGHT,
+      { match: regex.concat(IDENT_RE$1, regex.lookahead(/\s*\?:/)) }
+    );
     tsLanguage.exports.PARAMS_CONTAINS.push([
       tsLanguage.exports.CLASS_REFERENCE, // class reference for highlighting the params types
       ATTRIBUTE_HIGHLIGHT, // highlight the params key
+      OPTIONAL_KEY_OR_ARGUMENT, // Added for optional property assignment highlighting
     ]);
+
+    // Add the optional property assignment highlighting for objects or classes
     tsLanguage.contains = tsLanguage.contains.concat([
       DECORATOR,
       NAMESPACE,
       INTERFACE,
+      OPTIONAL_KEY_OR_ARGUMENT, // Added for optional property assignment highlighting
     ]);
 
     // TS gets a simpler shebang rule than JS

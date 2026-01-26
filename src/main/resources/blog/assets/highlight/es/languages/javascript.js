@@ -1,4 +1,4 @@
-/*! `javascript` grammar compiled for Highlight.js 11.10.0 */
+/*! `javascript` grammar compiled for Highlight.js 11.11.1 */
 var hljsGrammar = (function () {
   'use strict';
 
@@ -44,7 +44,9 @@ var hljsGrammar = (function () {
     "import",
     "from",
     "export",
-    "extends"
+    "extends",
+    // It's reached stage 3, which is "recommended for implementation":
+    "using"
   ];
   const LITERALS = [
     "true",
@@ -426,7 +428,7 @@ var hljsGrammar = (function () {
     const PARAMS = {
       className: 'params',
       // convert this to negative lookbehind in v12
-      begin: /(\s*)\(/, // to match the parms with 
+      begin: /(\s*)\(/, // to match the parms with
       end: /\)/,
       excludeBegin: true,
       excludeEnd: true,
@@ -637,8 +639,8 @@ var hljsGrammar = (function () {
         NUMBER,
         CLASS_REFERENCE,
         {
-          className: 'attr',
-          begin: IDENT_RE$1 + regex.lookahead(':'),
+          scope: 'attr',
+          match: IDENT_RE$1 + regex.lookahead(':'),
           relevance: 0
         },
         FUNCTION_VARIABLE,

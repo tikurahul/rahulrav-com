@@ -1,4 +1,4 @@
-/*! `bash` grammar compiled for Highlight.js 11.10.0 */
+/*! `bash` grammar compiled for Highlight.js 11.11.1 */
 var hljsGrammar = (function () {
   'use strict';
 
@@ -127,6 +127,7 @@ var hljsGrammar = (function () {
       "else",
       "elif",
       "fi",
+      "time",
       "for",
       "while",
       "until",
@@ -135,6 +136,7 @@ var hljsGrammar = (function () {
       "done",
       "case",
       "esac",
+      "coproc",
       "function",
       "select"
     ];

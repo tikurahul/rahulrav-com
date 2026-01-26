@@ -1,4 +1,4 @@
-/*! `sql` grammar compiled for Highlight.js 11.10.0 */
+/*! `sql` grammar compiled for Highlight.js 11.11.1 */
   (function(){
     var hljsGrammar = (function () {
   'use strict';
@@ -29,19 +29,19 @@
     const regex = hljs.regex;
     const COMMENT_MODE = hljs.COMMENT('--', '$');
     const STRING = {
-      className: 'string',
+      scope: 'string',
       variants: [
         {
           begin: /'/,
           end: /'/,
-          contains: [ { begin: /''/ } ]
+          contains: [ { match: /''/ } ]
         }
       ]
     };
     const QUOTED_IDENTIFIER = {
       begin: /"/,
       end: /"/,
-      contains: [ { begin: /""/ } ]
+      contains: [ { match: /""/ } ]
     };
 
     const LITERALS = [
@@ -611,20 +611,40 @@
     });
 
     const VARIABLE = {
-      className: "variable",
-      begin: /@[a-z0-9][a-z0-9_]*/,
+      scope: "variable",
+      match: /@[a-z0-9][a-z0-9_]*/,
     };
 
     const OPERATOR = {
-      className: "operator",
-      begin: /[-+*/=%^~]|&&?|\|\|?|!=?|<(?:=>?|<|>)?|>[>=]?/,
+      scope: "operator",
+      match: /[-+*/=%^~]|&&?|\|\|?|!=?|<(?:=>?|<|>)?|>[>=]?/,
       relevance: 0,
     };
 
     const FUNCTION_CALL = {
-      begin: regex.concat(/\b/, regex.either(...FUNCTIONS), /\s*\(/),
+      match: regex.concat(/\b/, regex.either(...FUNCTIONS), /\s*\(/),
       relevance: 0,
       keywords: { built_in: FUNCTIONS }
+    };
+
+    // turns a multi-word keyword combo into a regex that doesn't
+    // care about extra whitespace etc.
+    // input: "START QUERY"
+    // output: /\bSTART\s+QUERY\b/
+    function kws_to_regex(list) {
+      return regex.concat(
+        /\b/,
+        regex.either(...list.map((kw) => {
+          return kw.replace(/\s+/, "\\s+")
+        })),
+        /\b/
+      )
+    }
+
+    const MULTI_WORD_KEYWORDS = {
+      scope: "keyword",
+      match: kws_to_regex(COMBOS),
+      relevance: 0,
     };
 
     // keywords with less than 3 letters are reduced in relevancy
@@ -659,19 +679,10 @@
       },
       contains: [
         {
-          begin: regex.either(...COMBOS),
-          relevance: 0,
-          keywords: {
-            $pattern: /[\w\.]+/,
-            keyword: KEYWORDS.concat(COMBOS),
-            literal: LITERALS,
-            type: TYPES
-          },
+          scope: "type",
+          match: kws_to_regex(MULTI_WORD_TYPES)
         },
-        {
-          className: "type",
-          begin: regex.either(...MULTI_WORD_TYPES)
-        },
+        MULTI_WORD_KEYWORDS,
         FUNCTION_CALL,
         VARIABLE,
         STRING,

@@ -17,3 +17,4 @@ Here is a list of all the blog posts.
 * [OAK-D-IOT and MicroPython](/blog/depthai_micropython.html)
 * [Mutable Types in Wire](/blog/mutable_types_in_wire.html)
 * [10 Years at Google](/blog/10_years_at_google.html)
+* [Kotlin Intrinsics on Android](/blog/kotlin_intrinsics_on_android.html)

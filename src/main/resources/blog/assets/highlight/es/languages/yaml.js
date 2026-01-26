@@ -1,4 +1,4 @@
-/*! `yaml` grammar compiled for Highlight.js 11.10.0 */
+/*! `yaml` grammar compiled for Highlight.js 11.11.1 */
 var hljsGrammar = (function () {
   'use strict';
 
@@ -24,15 +24,15 @@ var hljsGrammar = (function () {
     const KEY = {
       className: 'attr',
       variants: [
-        // added brackets support 
-        { begin: /\w[\w :()\./-]*:(?=[ \t]|$)/ },
-        { // double quoted keys - with brackets
-          begin: /"\w[\w :()\./-]*":(?=[ \t]|$)/ },
-        { // single quoted keys - with brackets
-          begin: /'\w[\w :()\./-]*':(?=[ \t]|$)/ },
+        // added brackets support and special char support
+        { begin: /[\w*@][\w*@ :()\./-]*:(?=[ \t]|$)/ },
+        { // double quoted keys - with brackets and special char support
+          begin: /"[\w*@][\w*@ :()\./-]*":(?=[ \t]|$)/ },
+        { // single quoted keys - with brackets and special char support
+          begin: /'[\w*@][\w*@ :()\./-]*':(?=[ \t]|$)/ },
       ]
     };
-
+    
     const TEMPLATE_VARIABLES = {
       className: 'template-variable',
       variants: [
@@ -46,14 +46,25 @@ var hljsGrammar = (function () {
         }
       ]
     };
+
+    const SINGLE_QUOTE_STRING = {
+      className: 'string',
+      relevance: 0,
+      begin: /'/,
+      end: /'/,
+      contains: [
+        {
+          match: /''/,
+          scope: 'char.escape',
+          relevance: 0
+        }
+      ]
+    };
+
     const STRING = {
       className: 'string',
       relevance: 0,
       variants: [
-        {
-          begin: /'/,
-          end: /'/
-        },
         {
           begin: /"/,
           end: /"/
@@ -71,7 +82,13 @@ var hljsGrammar = (function () {
     const CONTAINER_STRING = hljs.inherit(STRING, { variants: [
       {
         begin: /'/,
-        end: /'/
+        end: /'/,
+        contains: [
+          {
+            begin: /''/,
+            relevance: 0
+          }
+        ]
       },
       {
         begin: /"/,
@@ -180,6 +197,7 @@ var hljsGrammar = (function () {
       },
       OBJECT,
       ARRAY,
+      SINGLE_QUOTE_STRING,
       STRING
     ];
 

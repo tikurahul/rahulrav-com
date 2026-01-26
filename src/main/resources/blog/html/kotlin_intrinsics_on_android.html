@@ -1,0 +1,177 @@
+
+  <!doctype html>
+    <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Kotlin Intrinsics on Android</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+      </head>
+      <body>
+        
+      <header class="container-fluid">
+        <nav>
+          <ul>
+            <li><strong><a href="/blog/toc.html">Rahul Ravikumar's Blog</a></strong></li>
+          </ul>
+          <ul>
+            <li><a href="/blog/toc.html" class="contrast">More Articles</a></li>
+            <li><a href="/blog/talks.html" class="contrast">Talks</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main class="container">
+        <p>Jan 26 2026, Monday</p>
+<h2 id="kotlin-intrinsics-on-android">Kotlin Intrinsics on Android</h2>
+<p>The Kotlin programming language is fully interoperable with Java. It does this by effectively generating JVM bytecode. As far as the <code class="prettyprint">Android Runtime</code> ( <code class="prettyprint">ART</code>) is concerned it's <strong>all just byte code</strong>.</p>
+<blockquote>
+  <p><strong>Note</strong>: <code class="prettyprint">ART</code> does not execute JVM byte code. It executes <code class="prettyprint">dex</code> instead which in turn is produced by <code class="prettyprint">D8</code> / <code class="prettyprint">R8</code> during the compilation step.</p>
+</blockquote>
+<p>A (massively) simplified version of the compilation pipeline looks like the the following.</p>
+<pre class="prettyprint linenums"><code class="text language-text">Kotlin (kt) -&gt; Java byte-code (.class) -&gt; D8/R8 -&gt; dex</code></pre>
+<h3 id="java-interoperability">Java Interoperability</h3>
+<p>Let's say we are building an SDK in Kotlin which includes the following function as part of the public API.</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">fun printInput(input: String) {
+    formatAndPrint(input)
+}
+
+// An internal format and print function.
+internal fun formatAndPrint(input: Any) {
+
+}</code></pre>
+<h3 id="modeling-of-non-null-types">Modeling of non-null types</h3>
+<p>Kotlin supports many things Java does not, including modeling <code class="prettyprint">null</code>-ness in the type system.<br />
+The corresponding bytecode for the above APIs looks something like:</p>
+<pre class="prettyprint linenums"><code class="java language-java">public final class DemoKt {
+    public static final void printInput(@NotNull String input) {
+        Intrinsics.checkNotNullParameter(input, "input");
+        formatAndPrint(input);
+    }
+
+    public static final void formatAndPrint(@NotNull Object input) {
+        Intrinsics.checkNotNullParameter(input, "input");
+    }
+}</code></pre>
+<p>You might be wondering why there is a call to <code class="prettyprint">Intrinsics.checkNotNull(...)</code>?</p>
+<p>Here is what the <a href="https://github.com/JetBrains/kotlin/blob/master/libraries/stdlib/jvm/runtime/kotlin/jvm/internal/Intrinsics.java#L29">implementation</a> does.</p>
+<pre class="prettyprint linenums"><code class="java language-java">@SuppressWarnings({"unused", "WeakerAccess"})
+public class Intrinsics {
+    private Intrinsics() {
+    }
+
+    // More methods ...
+
+    public static void checkNotNull(Object object, String message) {
+        if (object == null) {
+            throwJavaNpe(message);
+        }
+    }
+}</code></pre>
+<p>What the Kotlin compiler is trying to do is to provide a helpful error message if someone were to pass <code class="prettyprint">null</code> as an argument to <code class="prettyprint">printInput</code>. However, that can <strong>only happen when the caller is using Java</strong>. Remember, <code class="prettyprint">Java</code> users can also compile against your library.</p>
+<p>The core problem is that <code class="prettyprint">Kotlin</code> is much more precise about the <code class="prettyprint">null</code>-ness of types where as <code class="prettyprint">Java</code> cannot.</p>
+<h3 id="the-problem">The Problem</h3>
+<p>If the application and the library are both using <code class="prettyprint">Kotlin</code>, then everything the compiler is doing by sprinkling <code class="prettyprint">Intrinsics</code> checks is pure <strong>overhead</strong>. Worse still, given the compiler is being precise about the variable names in the <code class="prettyprint">error</code> message we end up <strong>adding more and more strings into the <code class="prettyprint">dex</code> string pool</strong>.</p>
+<blockquote>
+  <p><strong>Note:</strong> <code class="prettyprint">Null</code> checks are not the only category of problems that we have <code class="prettyprint">Intrinsics</code> for. Unsafe casts for e.g. are another category of problems that they protect against. The Kotlin compiler also lets you pass in additional compiler flags to get rid of some of these <code class="prettyprint">Intrisics</code>. You are effectively opting out of runtime safety checks entirely.</p>
+</blockquote>
+<h3 id="solving-the-problem-with-r8">Solving the problem with R8</h3>
+<p>If you are using <code class="prettyprint">R8</code> (to optimize the byte code) then you could use the following snippet of configuration and request that <code class="prettyprint">R8</code> strip out every single call to <code class="prettyprint">Intrinsics</code>.</p>
+<pre class="prettyprint linenums"><code class="text language-text">-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+  public static void checkNotNull(...); // and other similar methods
+}</code></pre>
+<p>While this technique solves the problem and can be employed by the eventual application developer,<br />
+you don't want to do this when distributing the library. Developers would be extremely confused by the lack of error messages.</p>
+<p>There are also other classes similar to <code class="prettyprint">Intrinsics</code> that do the same thing. The JDK has <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Objects.html#requireNonNull-T-java.lang.String-">Objects.requireNotNull(…)</a>, and other popular Java libraries like <code class="prettyprint">Guava</code> do their own thing. These classes are everywhere!</p>
+<p>Ideally, what we want is to be able to treat all of this as dead code, without the application developer needing to understand all of this. Ideally, we preserve the semantics of these checks without the overhead (and the specific error messages).</p>
+<h3 id="r8--android-gradle-plugin-90--🔥">R8 + Android Gradle Plugin 9.0 = 🔥</h3>
+<p>Starting Android Gradle Plugin <code class="prettyprint">9.0</code>, R8 automatically takes care of this problem without the application developer needing to intervene at all. <a href="https://r8-review.googlesource.com/c/r8/+/112940">Here</a> is the patch that added this feature.</p>
+<p>Just <a href="https://godbolt.org/z/T1MK64hG6">toggle</a> the version of <code class="prettyprint">R8</code> being used in Compiler Explorer, and look at the generated byte code before and after.</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">public class Person(val name: String)</code></pre>
+<p>with R8 <code class="prettyprint">8.7.18</code> the generated byte code looks like:</p>
+<pre class="prettyprint linenums"><code class="java language-java">.class public final LPerson;
+.super Ljava/lang/Object;
+.source "SourceFile"
+
+# instance fields
+.field public final a:Ljava/lang/String;
+
+# direct methods
+.method public constructor &lt;init&gt;(Ljava/lang/String;)V
+    .registers 3
+    #@0
+    const-string v0, "name"
+    #@2
+    invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;-&gt;checkNotNullParameter(Ljava/lang/Object;Ljava/lang/String;)V
+    #@5
+    .line 13
+    invoke-direct {p0}, Ljava/lang/Object;-&gt;&lt;init&gt;()V
+    #@8
+    iput-object p1, p0, LPerson;-&gt;a:Ljava/lang/String;
+    #@a
+    return-void
+.end method</code></pre>
+<p>with the <code class="prettyprint">latest</code> R8 release, this turns into:</p>
+<pre class="prettyprint linenums"><code class="java language-java">.class public final LPerson;
+.super Ljava/lang/Object;
+.source "SourceFile"
+
+# instance fields
+.field public final a:Ljava/lang/String;
+
+# direct methods
+.method public constructor &lt;init&gt;(Ljava/lang/String;)V
+    .registers 2
+    #@0
+    invoke-virtual {p1}, Ljava/lang/Object;-&gt;getClass()Ljava/lang/Class;
+    #@3
+    .line 13
+    invoke-direct {p0}, Ljava/lang/Object;-&gt;&lt;init&gt;()V
+    #@6
+    iput-object p1, p0, LPerson;-&gt;a:Ljava/lang/String;
+    #@8
+    return-void
+.end method</code></pre>
+<h4 id="the-fix">The Fix</h4>
+<p>The actual change in the generated byte code is:</p>
+<pre class="prettyprint linenums"><code class="java language-java">// From
+invoke-static {p1, v0}, Lkotlin/jvm/internal/Intrinsics;-&gt;checkNotNullParameter(Ljava/lang/Object;Ljava/lang/String;)V
+
+// To
+invoke-virtual {p1}, Ljava/lang/Object;-&gt;getClass()Ljava/lang/Class;</code></pre>
+<p>The reason this works is that if the parameter <code class="prettyprint">p1</code> was <code class="prettyprint">null</code>, then calling <code class="prettyprint">p1.getClass()</code> will throw a <code class="prettyprint">NullPointerException</code>, without all the additional overhead of dispatching a call to <code class="prettyprint">Intrinsics</code>. Additionally, the <code class="prettyprint">Android Runtime</code> has an <code class="prettyprint">intrinsic</code> to compile the call to <code class="prettyprint">getClass()</code> to extremely efficient assembly code. We also end up eliminating the <code class="prettyprint">String</code> constants from the pool entirely.</p>
+<p>While we do lose out on the helpful <code class="prettyprint">error</code> message, we gain significantly in performance.</p>
+<p>Here are the results from a <code class="prettyprint">Compose</code> <a href="https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/integration-tests/hero/pokedex/pokedex-macrobenchmark/src/main/java/androidx/compose/integration/hero/pokedex/macrobenchmark/PokedexScrollBenchmark.kt">PokedexScrollBenchmark</a>.</p>
+<p><img class="card"  src="/assets/images/kotlin_intrinsics_improvements.jpg" alt="Kotlin Instrinsics" style="width: 80%;" /></p>
+<p>You can clearly see the <strong>positive shift</strong> in <strong>frame durations</strong> after the change. ( <code class="prettyprint">Compose</code> can produce frames with lower latency).</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>As Android developers, we often worry about the <code class="prettyprint">Kotlin</code> tax—the extra code generated to support language features. With AGP 9.0, R8 effectively eliminates the overhead of null-safety intrinsics, giving us Kotlin's type safety at compile time and better performance at runtime.</p>
+        <section class="footer">
+          <p>
+          Rahul Ravikumar &nbsp;
+            <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://bsky.app/profile/rahulrav.com">Bluesky</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp;
+          </p>
+        </section>
+      </main>
+    </div>
+  
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
+        <link rel="stylesheet" href="/assets/highlight/styles/atom-one-dark.min.css">
+        <link rel="stylesheet" href="/assets/core/page.css">
+        <script type="text/javascript" src="/assets/core/page.js"></script>
+        <script type="text/javascript" src="/assets/highlight/highlight.min.js"></script>
+        <script type="text/javascript">
+          // Highlight code snippets
+          document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightElement(block);
+            });
+          });
+        </script>
+      </body>
+    </html>
+  

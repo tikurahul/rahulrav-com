@@ -65,6 +65,10 @@
       "path": "10_years_at_google.md"
     },
     {
+      "title": "Kotlin Intrinsics on Android",
+      "path": "kotlin_intrinsics_on_android.md"
+    },
+    {
       "title": "My Talks",
       "path": "talks.md"
     }
