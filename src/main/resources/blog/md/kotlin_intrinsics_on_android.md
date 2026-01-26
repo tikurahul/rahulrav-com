@@ -67,7 +67,7 @@ public class Intrinsics {
 
 What the Kotlin compiler is trying to do is to provide a helpful error message if someone were to pass `null` as an argument to `printInput`. However, that can __only happen when the caller is using Java__. Remember, `Java` users can also compile against your library.
 
-The core problem is that `Kotlin` is much more precise about the `null`-ness of types where as `Java` cannot.
+The core problem is that `Kotlin` is much more precise about the `null`-ness of types where as `Java` cannot be.
 
 ### The Problem
 

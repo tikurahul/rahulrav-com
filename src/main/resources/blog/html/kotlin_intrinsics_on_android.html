@@ -67,7 +67,7 @@ public class Intrinsics {
     }
 }</code></pre>
 <p>What the Kotlin compiler is trying to do is to provide a helpful error message if someone were to pass <code class="prettyprint">null</code> as an argument to <code class="prettyprint">printInput</code>. However, that can <strong>only happen when the caller is using Java</strong>. Remember, <code class="prettyprint">Java</code> users can also compile against your library.</p>
-<p>The core problem is that <code class="prettyprint">Kotlin</code> is much more precise about the <code class="prettyprint">null</code>-ness of types where as <code class="prettyprint">Java</code> cannot.</p>
+<p>The core problem is that <code class="prettyprint">Kotlin</code> is much more precise about the <code class="prettyprint">null</code>-ness of types where as <code class="prettyprint">Java</code> cannot be.</p>
 <h3 id="the-problem">The Problem</h3>
 <p>If the application and the library are both using <code class="prettyprint">Kotlin</code>, then everything the compiler is doing by sprinkling <code class="prettyprint">Intrinsics</code> checks is pure <strong>overhead</strong>. Worse still, given the compiler is being precise about the variable names in the <code class="prettyprint">error</code> message we end up <strong>adding more and more strings into the <code class="prettyprint">dex</code> string pool</strong>.</p>
 <blockquote>
