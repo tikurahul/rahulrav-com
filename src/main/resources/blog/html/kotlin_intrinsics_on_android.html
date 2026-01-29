@@ -142,6 +142,10 @@ invoke-virtual {p1}, Ljava/lang/Object;-&gt;getClass()Ljava/lang/Class;</code></
 <p>Here are the results from a <code class="prettyprint">Compose</code> <a href="https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:compose/integration-tests/hero/pokedex/pokedex-macrobenchmark/src/main/java/androidx/compose/integration/hero/pokedex/macrobenchmark/PokedexScrollBenchmark.kt">PokedexScrollBenchmark</a>.</p>
 <p><img class="card"  src="/assets/images/kotlin_intrinsics_improvements.jpg" alt="Kotlin Instrinsics" style="width: 80%;" /></p>
 <p>You can clearly see the <strong>positive shift</strong> in <strong>frame durations</strong> after the change. ( <code class="prettyprint">Compose</code> can produce frames with lower latency).</p>
+<h4 id="being-extra-aggressive-with-optimizations">Being extra aggressive with optimizations</h4>
+<p>The R8 <a href="https://d.android.com/topic/performance/app-optimization/global-options#global-options">documentation</a> has additional notes on tuning how <strong>aggressive</strong> these optimizations should be. If the app is fully written in Kotlin, then <em>even</em> the call to <code class="prettyprint">getClass()</code> can be stripped entirely using the below configuration.</p>
+<pre class="prettyprint linenums"><code class="text language-text">// Completely removes the checks
+-processkotlinnullchecks remove</code></pre>
 <h3 id="conclusion">Conclusion</h3>
 <p>As Android developers, we often worry about the <code class="prettyprint">Kotlin</code> tax—the extra code generated to support language features. With AGP 9.0, R8 effectively eliminates the overhead of null-safety intrinsics, giving us Kotlin's type safety at compile time and better performance at runtime.</p>
         <section class="footer">

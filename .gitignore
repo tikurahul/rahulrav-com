@@ -18,6 +18,7 @@ src/main/tools/.parcel-cache/
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+.idea/AndroidProjectSystem.xml
 
 # IntelliJ
 out/

@@ -176,6 +176,15 @@ Here are the results from a `Compose` [PokedexScrollBenchmark](https://cs.androi
 
 You can clearly see the __positive shift__ in __frame durations__ after the change. (`Compose` can produce frames with lower latency).
 
+#### Being extra aggressive with optimizations
+
+The R8 [documentation](https://d.android.com/topic/performance/app-optimization/global-options#global-options) has additional notes on tuning how __aggressive__ these optimizations should be. If the app is fully written in Kotlin, then _even_ the call to `getClass()` can be stripped entirely using the below configuration.
+
+```text
+// Completely removes the checks
+-processkotlinnullchecks remove
+```
+
 ### Conclusion
 
 As Android developers, we often worry about the `Kotlin` tax—the extra code generated to support language features. With AGP 9.0, R8 effectively eliminates the overhead of null-safety intrinsics, giving us Kotlin's type safety at compile time and better performance at runtime.
