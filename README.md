@@ -1,14 +1,14 @@
-## rahulrav.com 
+# rahulrav.com
 
-This is my blog. 
+This is my blog.
 
-### Running the web app.
+## Running the web app
 
 ```bash
 ./gradlew run
 ```
 
-### Deploying the web app.
+## Deploying the web app
 
 Select the GCP project. Then deploy to App Engine.
 

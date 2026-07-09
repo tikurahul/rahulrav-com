@@ -8,13 +8,13 @@
     "showdown-prettify": "^1.3.0"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.16.3",
-    "@types/node": "^25.0.9",
+    "@parcel/transformer-sass": "^2.16.4",
+    "@types/node": "^26.1.1",
     "@types/showdown": "^2.0.6",
     "http-server": "^14.1.1",
-    "parcel": "^2.16.3",
-    "sass": "^1.97.2",
-    "typescript": "^5.9.3",
+    "parcel": "^2.16.4",
+    "sass": "^1.101.0",
+    "typescript": "^7.0.2",
     "watch": "^1.0.2"
   },
   "scripts": {
@@ -29,5 +29,11 @@
     "watch": "npm run-script --silent watch-core & npm run-script --silent watch-tools & npm run-script --silent watch-blog"
   },
   "author": "tikurahul@gmail.com",
-  "license": "MIT"
+  "license": "MIT",
+  "allowScripts": {
+    "@parcel/watcher@2.5.1": true,
+    "@swc/core@1.15.43": true,
+    "lmdb@2.8.5": true,
+    "msgpackr-extract@3.0.4": true
+  }
 }
