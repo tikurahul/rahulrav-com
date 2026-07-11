@@ -1,6 +1,6 @@
 ## About
 
-Hi, I'm Rahul. I'm a Staff Software Engineer at Google on AndroidX Performance, focusing on making the Android ecosystem fast and efficient. This blog is my outlet for writing about software engineering and Android performance. Outside of work, I'm a bit of a tinkerer—obsessed with mechanical keyboards, cameras, and my homelab.
+Hi, I'm Rahul. I'm a Staff Software Engineer at Google working on AndroidX Performance; focusing on making the Android ecosystem fast and efficient. This blog is my outlet for writing about software engineering and Android performance. Outside of work, I'm a bit of a tinkerer—obsessed with mechanical keyboards, cameras, and my Ubiquiti homelab.
 
 ## Blog Posts
 
