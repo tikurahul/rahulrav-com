@@ -75,3 +75,20 @@ October 10 Thursday, 2026
 ```md
 * [Title of the blog entry](/blog/title_of_blog_entry.html)
 ```
+
+Make sure to add this link under the right year (based on the current date).
+
+## Deploying to Google App Engine
+
+Make sure you do the following:
+
+```bash
+# 1. Build the blog
+cd src/main/tools && npm run-script build && cd -
+
+# 2. Stage the application for appengine
+./gradlew appengineStage
+
+# 3. Deploy
+cd build/staged-app && gcloud app deploy && cd -
+```
