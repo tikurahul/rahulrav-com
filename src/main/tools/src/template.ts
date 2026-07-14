@@ -2,7 +2,7 @@ import { HIGHLIGHT_JS, HIGHLIGHT_STYLES } from './flags';
 
 
 /**
- * Wraps the content in the MarkDown into this HTML file.
+ * Wraps the content in the Markdown into this HTML file.
  */
 export function buildPage(title: string, content: string): string {
   const html = `
