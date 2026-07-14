@@ -84,7 +84,7 @@ Make sure you do the following:
 
 ```bash
 # 1. Build the blog
-cd src/main/tools && npm run-script build && cd -
+cd src/main/tools && npm run-script build && npm run-script blog && cd -
 
 # 2. Stage the application for appengine
 ./gradlew appengineStage
