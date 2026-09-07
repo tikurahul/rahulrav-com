@@ -1,0 +1,194 @@
+
+  <!doctype html>
+    <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Magic Move for Code Snippets from first principles</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      </head>
+      <body>
+        
+      <header class="container-fluid">
+        <nav>
+          <ul>
+            <li><strong><a href="/blog/toc.html">Rahul Ravikumar's Blog</a></strong></li>
+          </ul>
+          <ul>
+            <li><a href="/blog/toc.html" class="contrast">More Articles</a></li>
+            <li><a href="/blog/talks.html" class="contrast">Talks</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main class="container">
+        <p>September 06 2026, Monday</p>
+<h2 id="magic-move-for-code-snippets-from-first-principles">Magic Move for Code Snippets from first principles</h2>
+<h3 id="introduction">Introduction</h3>
+<p>I have been using a Framework 16 as my daily driver ever since its launch. For a long time, I maintained a fragile truce dual-booting Ubuntu and Windows. But in late 2025, I finally pulled the plug, wiped both, and went all-in on <strong>CachyOS</strong>. Why I switched is probably worth a dedicated blog post, but the short version: I couldn't be happier. Arch / CachyOS has been an absolute breath of fresh air.</p>
+<p>At work, my daily driver is an M5 MacBook. Lately, macOS has felt increasingly frustrating to live with. How Apple managed to trade away desktop performance in favor of <code class="prettyprint">Liquid Glass</code> eye candy is a compromise I will never quite understand.</p>
+<p>Moving to Linux full-time was surprisingly painless. Most tools I rely on had native Linux builds, and for the few that didn't, solid alternatives stepped in. But there was one painful sacrifice that gave me pause: <strong>Apple Keynote</strong> (and, more specifically, <strong>Magic Move</strong>).</p>
+<p>As someone who speaks at conferences fairly often, presentation tooling isn't vanity - it's narrative scaffolding. For years, I had the luxury of leaning on Keynote to make complex technical concepts look effortless. Walking away from that workflow stung.</p>
+<h3 id="magic-move-and-its-shortcomings">Magic Move, and Its Shortcomings</h3>
+<p>Yet for all its brilliance, Magic Move has always had a glaring blind spot: <strong>animating code snippets</strong>.</p>
+<p>If you've ever tried to transition between two snippets of code in Keynote, you know the horror. Keynote doesn't understand code; it understands glyphs. Watch in dismay as the <code class="prettyprint">val</code> from line 1 flies diagonally across the slide to morph into the <code class="prettyprint">al</code> of <code class="prettyprint">calculate()</code>, while punctuation scrambles like alphabet soup.</p>
+<p>To make it look professional, you're forced into brittle, unhinged workarounds: splitting lines into invisible bounding boxes, inserting transparent dummy characters, and pixel-nudging tokens by hand just to show a clean three-line refactor. You <strong>can</strong> make it look magical, but only through sheer brute force. Still, the payoff was real: after almost every conference talk, people would come up not to ask about the architecture, but to ask: <em>"How on earth did you do those cool animations?"</em></p>
+<p>Working on the <a href="https://developer.android.com/compose">Jetpack Compose</a> team, a UI toolkit that is now fully <a href="https://kotlinlang.org/compose-multiplatform">multiplatform</a> - this comes up constantly. In fact, it's practically an annual tradition: every Google I/O or major conference season, someone on the team inevitably stares at a mangled transition and declares: <em>"What if we just wrote our entire slide deck in Compose so code animates properly?"</em></p>
+<p>A few brave souls have actually done it using Compose's <a href="https://developer.android.com/develop/ui/compose/animation/shared-elements">Shared Element transitions</a>. I wasn't quite brave enough to abandon WYSIWYG tooling entirely - Keynote is still unmatched for layout, typography, and the parts of your presentation that are <strong>not</strong> code (even if Apple is slowly gatekeeping more templates behind a subscription).</p>
+<h3 id="the-trigger">The Trigger</h3>
+<p>A couple of weeks ago on HN, there was a project called <a href="https://github.com/nyblnet/bento">Bento</a> that really caught my attention. This is a fully local, offline and an extensible presentation toolkit. The project is <strong>very slick</strong>, and definitely worth paying attention to. Bento supports <em>morph</em> already for shapes and mathematical expressions. You can tween position, colors &amp; even gradients. The only feature missing from my perspective was to be able to support morphing code snippets.</p>
+<h3 id="research">Research</h3>
+<p>I decided to roll up my sleeves and see what it would take to build this. The first step in a project like this is to survey the existing literature. It turns out there is plenty, given that diffing content is a well-trodden problem. We do this every day as developers whenever we run <code class="prettyprint">git diff</code>, for example.</p>
+<p>The usual suspects are <code class="prettyprint">Myers</code> and <code class="prettyprint">Patience</code> diff, both of which compute the shortest edit distance between two sequences. There have also been previous attempts at this problem by members of the Kotlin / Android community (such as <a href="https://www.youtube.com/watch?v=PgzBWebeJsk">Re-creating Magic Move with Compose</a>).</p>
+<h3 id="intuition-when-math-makes-for-bad-animations">Intuition: When Math Makes for Bad Animations</h3>
+<p>Having looked at past attempts, my intuition was that <code class="prettyprint">Myers</code> diff was solving the wrong problem for this use case.</p>
+<p>Myers diff is mathematically elegant: it finds the <em>shortest sequence of edits</em> to turn String A into String B. But the mathematically optimal diff often makes for a visually jarring animation. If a variable is renamed or moved, Myers might choose to delete three characters here, insert two there, and slice an identifier in half because it saves a single edit step.</p>
+<p>In an animation, human perception matters far more than minimal edit distance. You don't want minimal operations; you want <strong>visual continuity</strong>. You want tokens to glide smoothly to their new positions or fade away gracefully.</p>
+<p>That led me to a 1978 paper by Paul Heckel: <a href="https://dl.acm.org/doi/10.1145/359460.359467">A technique for isolating differences between files</a> (<em>Communications of the ACM</em>, Volume 21, Issue 4, <strong>1978</strong>). This paper approached diffing from a completely different perspective. The algorithm runs in <code class="prettyprint">O(n)</code> time and feels tailor-made for animations. Given my familiarity with Kotlin and Jetpack Compose, I decided to experiment with adapting this paper to compute differences between two <em>token streams</em>, rather than treating code snippets as plain text.</p>
+<h3 id="defining-what-to-diff">Defining what to <code class="prettyprint">diff</code></h3>
+<p>Our first step is to use a tokenizer to convert the code snippet into a token stream.</p>
+<p>When thinking about tokenizing code, the immediate instinct is often: <em>"Let's build/use an AST."</em></p>
+<p>But, an AST is a trap for code snippets because:</p>
+<ul>
+<li>We want to support multiple programming languages without bundling a heavy parsers / compiler infrastructure.</li>
+<li>Code snippets are inherently messy. Speakers frequently use partial snippets, omit imports or trailing braces, and lean on pseudo-code that would cause a strict parser to blow up.</li>
+</ul>
+<p>Instead, what we want is a general representation of what tokens and fragments mean. Text editors face the exact same challenge: they need fast, fault-tolerant syntax highlighting across dozens of languages. One of the many ways that they solve this is using <strong>TextMate grammars</strong>. Originally designed for <code class="prettyprint">TextMate</code> (the legendary macOS text editor), this format was later adopted by Sublime Text, Visual Studio Code, and Eclipse, making it a de facto industry standard.</p>
+<p>This grammar is effectively a prioritized list of regular expressions that can identify each token and assign it a <code class="prettyprint">scope</code>. So, if you have a snippet that looks something like:</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">val x = 10
+print(x)</code></pre>
+<p>The token stream looks something like:</p>
+<pre class="prettyprint linenums"><code>Token(content='val', scopes='[source.kotlin, storage.type.kotlin]', lineNumber=0, startIndex=0, endIndex=3)
+Token(content=' x ', scopes='[source.kotlin]', lineNumber=0, startIndex=3, endIndex=6)
+Token(content='=', scopes='[source.kotlin, keyword.operator.assignment.kotlin]', lineNumber=0, startIndex=6, endIndex=7)
+Token(content=' ', scopes='[source.kotlin]', lineNumber=0, startIndex=7, endIndex=8)
+Token(content='10', scopes='[source.kotlin, constant.numeric.integer.kotlin]', lineNumber=0, startIndex=8, endIndex=10)
+Token(content='print', scopes='[source.kotlin, support.function.kotlin]', lineNumber=1, startIndex=0, endIndex=5)
+Token(content='(', scopes='[source.kotlin, meta.group.kotlin, punctuation.section.group.begin.kotlin]', lineNumber=1, startIndex=5, endIndex=6)
+Token(content='x', scopes='[source.kotlin, meta.group.kotlin]', lineNumber=1, startIndex=6, endIndex=7)
+Token(content=')', scopes='[source.kotlin, meta.group.kotlin, punctuation.section.group.end.kotlin]', lineNumber=1, startIndex=7, endIndex=8)</code></pre>
+<p>The <code class="prettyprint">Token</code> class can be represented by something like:</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">class Token(
+    /** The actual content of the parsed token. */
+    val content: String,
+    val scopes: List&lt;String&gt;,
+    val lineNumber: Int,
+    val startIndex: Int,
+    val endIndex: Int
+) {
+    // ...
+}</code></pre>
+<p> <code class="prettyprint">TextMate</code> scopes give us the full picture of what a <code class="prettyprint">Token</code> represents. In our example, the first scope is always the root ( <code class="prettyprint">source.kotlin</code>), signaling that we are looking at Kotlin source code. The <em>last</em> scope in the list tells us the specific role the token plays (e.g. <code class="prettyprint">storage.type.kotlin</code> or <code class="prettyprint">constant.numeric.integer.kotlin</code>). TextMate defines a comprehensive hierarchy of standard scopes, which is how text editors decide what color to paint each token.</p>
+<h4 id="structural-similarity">Structural similarity</h4>
+<p>As we diff the sequence of <code class="prettyprint">Token</code>s to produce a great Magic Move effect, it becomes clear that line numbers and character offsets shouldn't dictate structural identity. Tokens are free to move across lines-and during a presentation showing a refactor, they frequently do.</p>
+<p>The traits that truly define a <code class="prettyprint">Token</code> when diffing are its <code class="prettyprint">content</code>, its primary <code class="prettyprint">scope</code> (the last entry in the list), and its <code class="prettyprint">depth</code> (i.e. <code class="prettyprint">scopes.size</code>). The depth provides structural insights-distinguishing, for instance, a token at <code class="prettyprint">top-level</code> scope from one that is nested deeply inside a function body.</p>
+<p>So our <code class="prettyprint">Token</code> class actually becomes:</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">class Token(
+    /** The actual content of the parsed token. */
+    val content: String,
+    /** The primary scope */
+    val scope: String,
+    /** The depth of the primary scope. */
+    val depth: Int,
+    /* More context for animations (but NOT structural similarity). */
+    val lineNumber: Int,
+    val startIndex: Int,
+    val endIndex: Int
+) {
+    // ...
+}</code></pre>
+<h3 id="the-heckel-diff-algorithm">The Heckel Diff Algorithm</h3>
+<h4 id="1-finding-anchors-islands-of-certainty">1. Finding Anchors (Islands of Certainty)</h4>
+<p>At its core, the Heckel diff algorithm is simple. The first goal is to find <em>anchors</em> - tokens that appear <strong>exactly once</strong> in both the <code class="prettyprint">previous</code> and <code class="prettyprint">current</code> sequences. If a token only occurs once in both snippets, we can be confident that it represents the exact same token before and after the transformation.</p>
+<p>Consider two snippets: <code class="prettyprint">previous</code> and the transformed <code class="prettyprint">current</code>.</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">// Previous
+val x = 10</code></pre>
+<p>produces,</p>
+<pre class="prettyprint linenums"><code>Token(content='val', scope='storage.type.kotlin', depth=2, lineNumber=0, startIndex=0, endIndex=3)
+Token(content=' x ', scope='source.kotlin', depth=1, lineNumber=0, startIndex=3, endIndex=6)
+Token(content='=', scope='keyword.operator.assignment.kotlin', depth=2, lineNumber=0, startIndex=6, endIndex=7)
+Token(content=' ', scope='source.kotlin', depth=1, lineNumber=0, startIndex=7, endIndex=8)
+Token(content='10', scope='constant.numeric.integer.kotlin', depth=2, lineNumber=0, startIndex=8, endIndex=10)</code></pre>
+<p>and:</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">// Current
+val x = 20</code></pre>
+<p>produces,</p>
+<pre class="prettyprint linenums"><code>Token(content='val', scope='storage.type.kotlin', depth=2, lineNumber=0, startIndex=0, endIndex=3)
+Token(content=' x ', scope='source.kotlin', depth=1, lineNumber=0, startIndex=3, endIndex=6)
+Token(content='=', scope='keyword.operator.assignment.kotlin', depth=2, lineNumber=0, startIndex=6, endIndex=7)
+Token(content=' ', scope='source.kotlin', depth=1, lineNumber=0, startIndex=7, endIndex=8)
+Token(content='20', scope='constant.numeric.integer.kotlin', depth=2, lineNumber=0, startIndex=8, endIndex=10)</code></pre>
+<p>Every token in both lists except for the last constant ( <code class="prettyprint">10</code> vs <code class="prettyprint">20</code>) occurs <strong>only once</strong>, so they become our anchors and <strong>share the same identity</strong>.</p>
+<h4 id="2-forward-pass-marching-forward">2. Forward Pass (Marching forward)</h4>
+<p>Once we have our anchors pinned down, we look at their immediate neighbors.<br />
+For each anchor, we check if the token immediately following it in <code class="prettyprint">current</code> ( <code class="prettyprint">currentIdx + 1</code>) matches the token immediately following it in <code class="prettyprint">previous</code> ( <code class="prettyprint">previousIdx + 1</code>) sequence. If they match, they are paired up. We continue walking forward until the tokens diverge.</p>
+<h4 id="3-backward-pass-marching-backward">3. Backward Pass (Marching backward)</h4>
+<p>Next, we do the forward pass in reverse. Starting from our anchors, we check offsets <code class="prettyprint">currentIdx - 1</code> and <code class="prettyprint">previousIdx - 1</code>. If the preceding tokens match, we pair them up and keep walking backward.</p>
+<h4 id="4-final-pass">4. Final Pass</h4>
+<p>By the end of these passes, all surviving and repositioned tokens have been matched. Whatever remains unmatched in <code class="prettyprint">previous</code> is marked as a <strong>deleted</strong> token, and whatever remains unmatched in <code class="prettyprint">current</code> is marked as an <strong>inserted</strong> token.</p>
+<h3 id="a-slightly-more-complicated-example">A <em>slightly</em> more complicated example</h3>
+<p>If you have:</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">// Previous
+val x = 10
+fun convert(input: Int) {
+  // ...
+}</code></pre>
+<p>and :</p>
+<pre class="prettyprint linenums"><code class="kotlin language-kotlin">val x = 10
+fun convert(input: Int) {
+  println("The actual implementation")
+}</code></pre>
+<p>The actual changes look like:</p>
+<pre class="prettyprint linenums"><code>Match(previous=Token(content='val', scope='storage.type.kotlin', depth=2, lineNumber=0, startIndex=0, endIndex=3), previousIdx=0, current=Token(content='val', scope='storage.type.kotlin', depth=2, lineNumber=0, startIndex=0, endIndex=3), currentIdx=0)
+// ...
+Match(previous=Token(content='  ', scope='meta.block.kotlin', depth=3, lineNumber=2, startIndex=0, endIndex=2), previousIdx=16, current=Token(content='  ', scope='meta.block.kotlin', depth=3, lineNumber=2, startIndex=0, endIndex=2), currentIdx=16)
+Delete(token=Token(content='//', scope='comment.line.double-slash.kotlin', depth=5, lineNumber=2, startIndex=2, endIndex=4), index=17)
+Delete(token=Token(content=' ...', scope='punctuation.definition.comment.kotlin', depth=4, lineNumber=2, startIndex=4, endIndex=8), index=18)
+Insert(token=Token(content='println', scope='support.function.kotlin', depth=4, lineNumber=2, startIndex=2, endIndex=9), index=17)
+Insert(token=Token(content='(', scope='punctuation.section.group.begin.kotlin', depth=5, lineNumber=2, startIndex=9, endIndex=10), index=18)
+Insert(token=Token(content='"', scope='punctuation.definition.string.begin.kotlin', depth=6, lineNumber=2, startIndex=10, endIndex=11), index=19)
+Insert(token=Token(content='The actual implementation', scope='string.quoted.double.kotlin', depth=5, lineNumber=2, startIndex=11, endIndex=36), index=20)
+Insert(token=Token(content='"', scope='punctuation.definition.string.end.kotlin', depth=6, lineNumber=2, startIndex=36, endIndex=37), index=21)
+Insert(token=Token(content=')', scope='punctuation.section.group.end.kotlin', depth=5, lineNumber=2, startIndex=37, endIndex=38), index=22)
+Match(previous=Token(content='}', scope='punctuation.section.group.end.kotlin', depth=4, lineNumber=3, startIndex=0, endIndex=1), previousIdx=19, current=Token(content='}', scope='punctuation.section.group.end.kotlin', depth=4, lineNumber=3, startIndex=0, endIndex=1), currentIdx=23)</code></pre>
+<p>You can see that tokens match cleanly across both sequences right up to the block body.</p>
+<p>We <code class="prettyprint">Delete</code> the comment tokens ( <code class="prettyprint">//</code> and <code class="prettyprint">...</code>) and <code class="prettyprint">Insert</code> the new <code class="prettyprint">println(...)</code> call. Crucially, the trailing <code class="prettyprint">}</code> matches cleanly because it served as an anchor point at the end of the block.</p>
+<blockquote>
+  <p><strong>Pro-tip for smooth animations:</strong> If you animate deletions token-by-token independently, the animations look unorchestrated. In our implementation contiguous deleted tokens are <strong>batched together</strong> so they fade out in unison, while newly inserted tokens fade in smoothly. Anchored tokens glide gracefully to their new coordinates. The result feels cohesive and cinematic rather than chaotic.</p>
+</blockquote>
+<h3 id="demo">Demo</h3>
+<p><img class="card"  src="/assets/images/magic_move.webp" alt="Magic Move Demo" style="width: 64rem;" /></p>
+<p>The full implementation is available at <a href="https://github.com/tikurahul/warp">https://github.com/tikurahul/warp</a>.</p>
+<h3 id="epilogue">Epilogue</h3>
+<p>I also managed to contribute to <a href="https://github.com/nyblnet/bento">Bento</a>. Bento release <code class="prettyprint">1.19</code> includes the ability to morph code snippets.</p>
+<p>Here is the link to my <a href="https://github.com/nyblnet/bento/pull/259">pull request</a>.</p>
+        <section class="footer">
+          <p>
+          Rahul Ravikumar &nbsp;
+            <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://bsky.app/profile/rahulrav.com">Bluesky</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://discuss.systems/@rahulrav">Mastodon</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp;
+          </p>
+        </section>
+      </main>
+    </div>
+  
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
+        <link rel="stylesheet" href="/assets/highlight/styles/atom-one-dark.min.css">
+        <link rel="stylesheet" href="/assets/core/page.css">
+        <script type="text/javascript" src="/assets/core/page.js"></script>
+        <script type="text/javascript" src="/assets/highlight/highlight.min.js"></script>
+        <script type="text/javascript">
+          // Highlight code snippets
+          document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightElement(block);
+            });
+          });
+        </script>
+      </body>
+    </html>
+  

@@ -11,11 +11,12 @@ export function buildPage(title: string, content: string): string {
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>${title}</title>
-        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       </head>
       <body>
         ${buildContent(title, content)}
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&family=Zilla+Slab&display=swap">
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap">
         <link rel="stylesheet" href="${HIGHLIGHT_STYLES}">
         <link rel="stylesheet" href="/assets/core/page.css">
@@ -57,7 +58,7 @@ function buildContent(title: string, content: string) {
             <a rel="me" href="https://github.com/tikurahul">GitHub</a> &nbsp; | &nbsp;
             <a rel="me" href="https://bsky.app/profile/rahulrav.com">Bluesky</a> &nbsp; | &nbsp;
             <a rel="me" href="https://www.linkedin.com/in/rahulrav/">LinkedIn</a> &nbsp; | &nbsp;
-            <a rel="me" href="https://androiddev.social/@rahulrav">AndroidDev Mastodon</a> &nbsp; | &nbsp;
+            <a rel="me" href="https://discuss.systems/@rahulrav">Mastodon</a> &nbsp; | &nbsp;
             <a rel="me" href="https://rahulrav.svbtle.com/">Svbtle</a> &nbsp; | &nbsp;
             <a rel="me" href="https://twitter.com/tikurahul">Twitter</a> &nbsp;
           </p>
