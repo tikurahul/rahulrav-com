@@ -2,6 +2,8 @@ September 06 2026, Monday
 
 ## Magic Move for Code Snippets from first principles
 
+<img src="/assets/images/magic_move.webp" alt="Magic Move Demo" style="width: 64rem;" />
+
 ### Introduction
 
 I have been using a Framework 16 as my daily driver ever since its launch. For a long time, I maintained a fragile truce dual-booting Ubuntu and Windows. But in late 2025, I finally pulled the plug, wiped both, and went all-in on **CachyOS**. Why I switched is probably worth a dedicated blog post, but the short version: I couldn't be happier. Arch / CachyOS has been an absolute breath of fresh air.
@@ -219,14 +221,12 @@ We `Delete` the comment tokens (`//` and ` ...`) and `Insert` the new `println(.
 
 > **Pro-tip for smooth animations:** If you animate deletions token-by-token independently, the animations look unorchestrated. In our implementation contiguous deleted tokens are **batched together** so they fade out in unison, while newly inserted tokens fade in smoothly. Anchored tokens glide gracefully to their new coordinates. The result feels cohesive and cinematic rather than chaotic.
 
-### Demo
-
-<img src="/assets/images/magic_move.webp" alt="Magic Move Demo" style="width: 64rem;" />
+### Source Code
 
 The full implementation is available at [https://github.com/tikurahul/warp](https://github.com/tikurahul/warp).
 
 ### Epilogue
 
-I also managed to contribute to [Bento](https://github.com/nyblnet/bento). Bento release `1.19` includes the ability to morph code snippets.
+I also managed to contribute to [Bento](https://github.com/nyblnet/bento). Bento release `1.0.19` includes the ability to morph code snippets.
 
 Here is the link to my [pull request](https://github.com/nyblnet/bento/pull/259).
