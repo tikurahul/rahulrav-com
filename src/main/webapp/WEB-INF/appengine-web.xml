@@ -3,10 +3,16 @@
     <runtime>java17</runtime>
     <service>default</service>
     <threadsafe>true</threadsafe>
-    <instance-class>F4</instance-class>
+    <instance-class>F2</instance-class>
+    <env-variables>
+      <!-- Prevent the JVM from expanding past cgroup thresholds -->
+      <!-- Ideally we could use `-XX:+UseContainerSupport` as well; That is only supported on Linux. -->
+      <env-var name="JAVA_TOOL_OPTIONS" value="-XX:MaxRAMPercentage=75.0" />
+    </env-variables>
     <automatic-scaling>
-        <target-cpu-utilization>0.5</target-cpu-utilization>
-        <min-idle-instances>1</min-idle-instances>
+      <target-cpu-utilization>0.75</target-cpu-utilization>
+      <max-concurrent-requests>30</max-concurrent-requests>
+      <min-instances>0</min-instances>
     </automatic-scaling>
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>

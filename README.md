@@ -45,5 +45,8 @@ To deploy the app:
 # Use this because `./gradlew appengineDeploy` just seems to hang forever.
 ./gradlew appengineStage
 # Navigate to the staging directory
+# Make sure the app.yaml has
+env_variables:
+  'JAVA_TOOL_OPTIONS': '-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0'
 cd build/staged-app && gcloud app deploy && cd ..
 ```
