@@ -3,7 +3,7 @@
     <runtime>java17</runtime>
     <service>default</service>
     <threadsafe>true</threadsafe>
-    <instance-class>F2</instance-class>
+    <instance-class>F1</instance-class>
     <env-variables>
       <!-- Prevent the JVM from expanding past cgroup thresholds -->
       <!-- Ideally we could use `-XX:+UseContainerSupport` as well; That is only supported on Linux. -->
