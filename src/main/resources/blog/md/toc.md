@@ -5,6 +5,7 @@ Hi, I'm Rahul. I'm a Staff Software Engineer at Google working on AndroidX Perfo
 ## Blog Posts
 
 ### 2026
+* [Trace me if you can](files/presentations/trace-me-if-you-can.html)
 * [Magic Move for Code Snippets from first principles](/blog/magic_move.html)
 * [Mechanical Keyboards and the end game](/blog/keyboard_end_game.html)
 * [Kotlin Intrinsics on Android](/blog/kotlin_intrinsics_on_android.html)
