@@ -7,7 +7,7 @@
     <env-variables>
       <!-- Prevent the JVM from expanding past cgroup thresholds -->
       <!-- Ideally we could use `-XX:+UseContainerSupport` as well; That is only supported on Linux. -->
-      <env-var name="JAVA_TOOL_OPTIONS" value="-XX:MaxRAMPercentage=75.0" />
+      <env-var name="JAVA_TOOL_OPTIONS" value="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0" />
     </env-variables>
     <automatic-scaling>
       <target-cpu-utilization>0.75</target-cpu-utilization>
